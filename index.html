@@ -2253,62 +2253,6 @@
             }
         }
 
-        // UI Updates
-        function updateUI() {
-            // Player info
-            document.getElementById('playerName').textContent = gameState.player.name;
-            document.getElementById('playerLevel').textContent = gameState.player.level;
-            document.getElementById('playerCoins').textContent = gameState.player.coins;
-            document.getElementById('playerTitle').textContent = gameState.player.title;
-            
-            // Player image
-            const avatarEl = document.getElementById('playerAvatar');
-            if (gameState.player.profileImage) {
-                avatarEl.innerHTML = `<img src="${gameState.player.profileImage}" alt="Profile">`;
-                avatarEl.classList.add('has-image');
-            } else {
-                avatarEl.innerHTML = '';
-                avatarEl.classList.remove('has-image');
-            }
-            
-            // Rank
-            const rankElement = document.getElementById('playerRank');
-            rankElement.textContent = `${gameState.player.rank}-Rank Hunter`;
-            rankElement.className = `rank-display rank-${gameState.player.rank}`;
-            
-            // XP Bar
-            const maxXP = getXPRequirement(gameState.player.level);
-            const xpPercentage = (gameState.player.xp / maxXP) * 100;
-            const xpNeeded = maxXP - gameState.player.xp;
-            document.getElementById('currentXP').textContent = gameState.player.xp;
-            document.getElementById('maxXP').textContent = maxXP;
-            document.getElementById('xpBar').style.width = `${xpPercentage}%`;
-            document.getElementById('xpNeeded').textContent = xpNeeded;
-            document.getElementById('nextLevel').textContent = gameState.player.level + 1;
-            
-            // Stats
-            document.getElementById('strengthValue').textContent = gameState.stats.strength;
-            document.getElementById('agilityValue').textContent = gameState.stats.agility;
-            document.getElementById('vitalityValue').textContent = gameState.stats.vitality;
-            document.getElementById('intelligenceValue').textContent = gameState.stats.intelligence;
-            document.getElementById('sensesValue').textContent = gameState.stats.senses;
-            document.getElementById('availablePoints').textContent = gameState.stats.availablePoints;
-            
-            // Update radar chart
-            updateRadarChart();
-            
-            // Update daily login button
-            const today = new Date().toDateString();
-            const loginBtn = document.getElementById('dailyLoginBtn');
-            if (gameState.player.lastLogin === today) {
-                loginBtn.disabled = true;
-                loginBtn.textContent = '✓ RECOMPENSA RECLAMADA HOY';
-            } else {
-                loginBtn.disabled = false;
-                loginBtn.textContent = '🎁 RECLAMAR RECOMPENSA DIARIA';
-            }
-        }
-
         // Section Navigation
         function showSection(sectionId) {
             document.querySelectorAll('.section').forEach(section => {
@@ -2320,6 +2264,12 @@
             
             document.getElementById(sectionId).classList.add('active');
             event.target.classList.add('active');
+            
+            // Render dungeons when switching to dungeons section
+            if (sectionId === 'dungeons') {
+                renderDungeons();
+                renderDungeonHistory();
+            }
         }
 
         // Tab switching for missions/habits
@@ -2747,11 +2697,11 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
+            initializeDungeons();
             loadGameState();
             checkDailyPenalty();
             checkAndGenerateHabits();
             
-            initializeDungeons();
             renderDungeons();
             renderDungeonHistory();
             
