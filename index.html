@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Desarrollo Personal - Shadow Monarch</title>
+    <title>Solo Leveling System</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -1048,20 +1048,555 @@
             color: var(--warning-red);
             font-weight: 700;
         }
+
+        /* Dungeons Section */
+        .dungeon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .dungeon-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border: 2px solid var(--border-color);
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dungeon-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+        }
+
+        .dungeon-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-cyan);
+            box-shadow: 0 10px 30px rgba(0, 217, 255, 0.2);
+        }
+
+        .dungeon-card.locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .dungeon-card.on-cooldown {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .dungeon-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            margin-bottom: 10px;
+        }
+
+        .dungeon-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+
+        .dungeon-requirement {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+        }
+
+        .dungeon-status {
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .dungeon-status.unlocked {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success-green);
+            border: 1px solid var(--success-green);
+        }
+
+        .dungeon-status.locked {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--warning-red);
+            border: 1px solid var(--warning-red);
+        }
+
+        .dungeon-status.cooldown {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+            border: 1px solid #fbbf24;
+        }
+
+        .enter-dungeon-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: white;
+            border: 2px solid var(--accent-cyan);
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .enter-dungeon-btn:hover:not(:disabled) {
+            box-shadow: 0 0 20px var(--glow-cyan);
+            transform: scale(1.05);
+        }
+
+        .enter-dungeon-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Combat System */
+        .combat-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 14, 26, 0.95);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .combat-container.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .combat-scene {
+            width: 100%;
+            max-width: 1200px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .combat-character {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .combat-image {
+            width: 250px;
+            height: 350px;
+            background: var(--bg-card);
+            border: 3px solid var(--accent-cyan);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0, 217, 255, 0.3);
+        }
+
+        .combat-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .combat-image.empty {
+            font-size: 100px;
+            opacity: 0.3;
+        }
+
+        .combat-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            text-align: center;
+        }
+
+        .combat-stats {
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .stat-bar {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .stat-bar-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        .stat-bar-container {
+            height: 30px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue));
+            transition: width 0.5s ease;
+            position: relative;
+            box-shadow: 0 0 10px var(--glow-cyan);
+        }
+
+        .stat-bar-fill.energy {
+            background: linear-gradient(90deg, #fbbf24, #f59e0b);
+            box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+
+        .stat-bar-fill.hp {
+            background: linear-gradient(90deg, var(--warning-red), #dc2626);
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+        }
+
+        .stat-bar-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+            z-index: 1;
+        }
+
+        /* Combat Actions */
+        .combat-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            width: 100%;
+            max-width: 600px;
+            margin-top: 30px;
+        }
+
+        .action-btn {
+            padding: 15px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            border: 2px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+
+        .action-btn:hover:not(:disabled) {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 15px var(--glow-cyan);
+            transform: translateY(-3px);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .action-btn.attack {
+            border-color: var(--warning-red);
+            color: var(--warning-red);
+        }
+
+        .action-btn.attack:hover:not(:disabled) {
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
+        }
+
+        .action-btn.defend {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        .action-btn.defend:hover:not(:disabled) {
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+        }
+
+        .action-btn.skill {
+            border-color: var(--accent-purple);
+            color: var(--accent-purple);
+        }
+
+        .action-btn.skill:hover:not(:disabled) {
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.5);
+        }
+
+        /* Battle Log */
+        .battle-log {
+            width: 100%;
+            max-width: 900px;
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            padding: 20px;
+            border-radius: 5px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 30px;
+        }
+
+        .battle-log-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .battle-message {
+            padding: 10px;
+            margin-bottom: 8px;
+            border-left: 3px solid var(--border-color);
+            padding-left: 12px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            animation: slideInLeft 0.3s ease-out;
+        }
+
+        .battle-message.player {
+            border-left-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+
+        .battle-message.enemy {
+            border-left-color: var(--warning-red);
+            color: var(--warning-red);
+        }
+
+        .battle-message.damage {
+            color: var(--warning-red);
+            font-weight: 600;
+        }
+
+        .battle-message.heal {
+            color: var(--success-green);
+            font-weight: 600;
+        }
+
+        .battle-message.info {
+            border-left-color: var(--accent-purple);
+            color: var(--accent-purple);
+        }
+
+        .combat-exit-btn {
+            padding: 12px 30px;
+            background: var(--warning-red);
+            color: white;
+            border: 2px solid var(--warning-red);
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .combat-exit-btn:hover {
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
+            transform: scale(1.05);
+        }
+
+        /* Dungeon Completion Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1001;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 3px solid var(--accent-cyan);
+            padding: 40px;
+            max-width: 600px;
+            text-align: center;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        .modal-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--accent-cyan);
+            margin-bottom: 20px;
+            text-shadow: 0 0 30px var(--glow-cyan);
+        }
+
+        .modal-rewards {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .reward-item {
+            padding: 15px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid var(--border-color);
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-cyan);
+        }
+
+        .modal-btn {
+            padding: 15px 40px;
+            margin-top: 20px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: white;
+            border: 2px solid var(--accent-cyan);
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            letter-spacing: 1px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn:hover {
+            box-shadow: 0 0 25px var(--glow-cyan);
+            transform: scale(1.05);
+        }
+
+        /* Key counter */
+        .dungeon-keys {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent-purple);
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(139, 92, 246, 0.1);
+            border: 2px solid var(--accent-purple);
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        /* Enemy customization */
+        .enemy-customization {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .enemy-upload-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .enemy-upload-item {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .enemy-upload-label {
+            font-weight: 600;
+            color: var(--accent-cyan);
+            font-size: 0.95rem;
+        }
+
+        .enemy-preview {
+            width: 150px;
+            height: 150px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .enemy-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .enemy-preview.empty {
+            font-size: 50px;
+            opacity: 0.3;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header class="header">
-            <h1>SHADOW MONARCH SYSTEM</h1>
+            <h1>Solo Leveling System</h1>
             <p>Sistema de Desarrollo Personal</p>
         </header>
 
         <nav class="nav">
-            <button class="nav-btn active" onclick="showSection('dashboard')">MENÚ PRINCIPAL</button>
-            <button class="nav-btn" onclick="showSection('stats')">ESTADÍSTICAS</button>
-            <button class="nav-btn" onclick="showSection('missions')">MISIONES Y HÁBITOS</button>
-            <button class="nav-btn" onclick="showSection('settings')">CONFIGURACIÓN</button>
+            <button class="nav-btn active" onclick="showSection('dashboard', this)">MENÚ PRINCIPAL</button>
+            <button class="nav-btn" onclick="showSection('stats', this)">ESTADÍSTICAS</button>
+            <button class="nav-btn" onclick="showSection('missions', this)">MISIONES Y HÁBITOS</button>
+            <button class="nav-btn" onclick="showSection('dungeons', this)">⚔️ MAZMORRAS</button>
+            <button class="nav-btn" onclick="showSection('settings', this)">CONFIGURACIÓN</button>
         </nav>
 
         <!-- Dashboard Section -->
@@ -1241,8 +1776,8 @@
         <section id="missions" class="section">
             <!-- Tabs -->
             <div class="tab-container">
-                <button class="tab-btn active" onclick="switchTab('missions-tab')">🎯 MISIONES</button>
-                <button class="tab-btn" onclick="switchTab('habits-tab')">🔄 HÁBITOS</button>
+                <button class="tab-btn active" onclick="switchTab('missions-tab', this)">🎯 MISIONES</button>
+                <button class="tab-btn" onclick="switchTab('habits-tab', this)">🔄 HÁBITOS</button>
             </div>
 
             <!-- Missions Tab -->
@@ -1322,6 +1857,22 @@
         </section>
 
         <!-- Settings Section -->
+        <section id="dungeons" class="section">
+            <div class="card">
+                <h2 class="card-title">⚔️ Sistema de Mazmorras</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 20px; line-height: 1.6;">
+                    Accede a mazmorras según tu rango. Necesitas una llave de mazmorra para entrar. Obtén llaves completando 5 hábitos.
+                </p>
+                
+                <div class="dungeon-keys" id="dungeonKeysDisplay">
+                    🔑 Llaves disponibles: 0
+                </div>
+
+                <div class="dungeon-grid" id="dungeonsList"></div>
+            </div>
+        </section>
+
+        <!-- Settings Section -->
         <section id="settings" class="section">
             <div class="settings-grid">
                 <div class="setting-item">
@@ -1344,11 +1895,239 @@
                     <button class="save-settings-btn" onclick="saveSettings()">💾 GUARDAR CONFIGURACIÓN</button>
                 </div>
             </div>
+
+            <!-- Enemy Customization -->
+            <div class="enemy-customization">
+                <h2 class="card-title">🎨 Personalización de Enemigos</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                    Sube imágenes o GIFs para personalizar la apariencia de enemigos y jefes en las mazmorras.
+                </p>
+                <div class="enemy-upload-grid" id="enemyCustomizationGrid"></div>
+            </div>
         </section>
     </div>
 
+    <!-- Combat System Modal -->
+    <div class="combat-container" id="combatContainer">
+        <div class="combat-scene">
+            <!-- Enemy -->
+            <div class="combat-character">
+                <div class="combat-name" id="enemyName">Enemigo</div>
+                <div class="combat-image" id="enemyImage">
+                    <span class="combat-image empty">👹</span>
+                </div>
+                <div class="combat-stats">
+                    <div class="stat-bar">
+                        <div class="stat-bar-label">
+                            <span>VIDA</span>
+                            <span id="enemyHPText">0/0</span>
+                        </div>
+                        <div class="stat-bar-container">
+                            <div class="stat-bar-fill hp" id="enemyHPBar" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    <div class="stat-bar">
+                        <div class="stat-bar-label">
+                            <span>ENERGÍA</span>
+                            <span id="enemyEnergyText">0/0</span>
+                        </div>
+                        <div class="stat-bar-container">
+                            <div class="stat-bar-fill energy" id="enemyEnergyBar" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Player -->
+            <div class="combat-character">
+                <div class="combat-name" id="playerCombatName">Jugador</div>
+                <div class="combat-image" id="playerCombatImage">
+                    <span class="combat-image empty">👤</span>
+                </div>
+                <div class="combat-stats">
+                    <div class="stat-bar">
+                        <div class="stat-bar-label">
+                            <span>VIDA</span>
+                            <span id="playerHPText">0/0</span>
+                        </div>
+                        <div class="stat-bar-container">
+                            <div class="stat-bar-fill hp" id="playerHPBar" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    <div class="stat-bar">
+                        <div class="stat-bar-label">
+                            <span>ENERGÍA</span>
+                            <span id="playerEnergyText">0/0</span>
+                        </div>
+                        <div class="stat-bar-container">
+                            <div class="stat-bar-fill energy" id="playerEnergyBar" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Battle Log -->
+        <div class="battle-log">
+            <div class="battle-log-title">📜 LOG DE BATALLA</div>
+            <div id="battleLog"></div>
+        </div>
+
+        <!-- Combat Actions -->
+        <div class="combat-actions">
+            <button class="action-btn attack" id="attackBtn" onclick="playerAttack()">⚔️ ATACAR</button>
+            <button class="action-btn defend" id="defendBtn" onclick="playerDefend()">🛡️ DEFENDER</button>
+            <button class="action-btn skill" id="skillBtn" onclick="playerSkill()">✨ HABILIDAD</button>
+            <button class="combat-exit-btn" id="exitBtn" onclick="exitCombat()">❌ RENDIRSE</button>
+        </div>
+    </div>
+
+    <!-- Completion Modal -->
+    <div class="modal" id="completionModal">
+        <div class="modal-content">
+            <div class="modal-title">🎉 ¡MAZMORRA COMPLETADA!</div>
+            <div class="modal-rewards" id="modalRewards"></div>
+            <button class="modal-btn" onclick="closeCompletionModal()">CONTINUAR</button>
+        </div>
+    </div>
+
     <script>
-        // Game State
+        // Dungeon System Data
+        const DUNGEONS = {
+            'F': [
+                {
+                    id: 'f1',
+                    name: 'Cueva de Losers',
+                    rooms: 10,
+                    minLevel: 1,
+                    maxLevel: 5,
+                    baseRewards: { xp: 200, coins: 100 },
+                    enemyTypes: ['goblin', 'lobo-pequeño', 'rata-gigante']
+                },
+                {
+                    id: 'f2',
+                    name: 'Ruinas Olvidadas',
+                    rooms: 12,
+                    minLevel: 5,
+                    maxLevel: 10,
+                    baseRewards: { xp: 300, coins: 150 },
+                    enemyTypes: ['esqueleto', 'orco-pequeño', 'murciélago-gigante']
+                }
+            ],
+            'E': [
+                {
+                    id: 'e1',
+                    name: 'Mazmorra Cristalina',
+                    rooms: 12,
+                    minLevel: 10,
+                    maxLevel: 20,
+                    baseRewards: { xp: 500, coins: 250 },
+                    enemyTypes: ['golem-cristal', 'orco', 'troll-pequeño']
+                },
+                {
+                    id: 'e2',
+                    name: 'Templo Antiguo',
+                    rooms: 15,
+                    minLevel: 15,
+                    maxLevel: 25,
+                    baseRewards: { xp: 600, coins: 300 },
+                    enemyTypes: ['mummy', 'sacerdote-oscuro', 'espectro']
+                }
+            ],
+            'D': [
+                {
+                    id: 'd1',
+                    name: 'Fortaleza Subterránea',
+                    rooms: 15,
+                    minLevel: 20,
+                    maxLevel: 35,
+                    baseRewards: { xp: 1000, coins: 500 },
+                    enemyTypes: ['guerrero-hierro', 'dragón-pequeño', 'oni']
+                },
+                {
+                    id: 'd2',
+                    name: 'Bosque Maldito',
+                    rooms: 18,
+                    minLevel: 25,
+                    maxLevel: 40,
+                    baseRewards: { xp: 1200, coins: 600 },
+                    enemyTypes: ['bestia-siniestra', 'demonio-menor', 'hechicero-oscuro']
+                }
+            ],
+            'C': [
+                {
+                    id: 'c1',
+                    name: 'Castillo Sangriento',
+                    rooms: 20,
+                    minLevel: 35,
+                    maxLevel: 50,
+                    baseRewards: { xp: 2000, coins: 1000 },
+                    enemyTypes: ['vampiro', 'caballero-oscuro', 'demonio']
+                },
+                {
+                    id: 'c2',
+                    name: 'Abismo Celestial',
+                    rooms: 22,
+                    minLevel: 40,
+                    maxLevel: 55,
+                    baseRewards: { xp: 2500, coins: 1200 },
+                    enemyTypes: ['ángel-caído', 'titán-menor', 'ser-cósmico']
+                }
+            ],
+            'B': [
+                {
+                    id: 'b1',
+                    name: 'Dimensión Rota',
+                    rooms: 25,
+                    minLevel: 50,
+                    maxLevel: 70,
+                    baseRewards: { xp: 4000, coins: 2000 },
+                    enemyTypes: ['aberración', 'Dios-Menor', 'entidad-interdimensional']
+                }
+            ],
+            'A': [
+                {
+                    id: 'a1',
+                    name: 'Núcleo del Caos',
+                    rooms: 30,
+                    minLevel: 70,
+                    maxLevel: 100,
+                    baseRewards: { xp: 7000, coins: 3500 },
+                    enemyTypes: ['señor-caos', 'primordial', 'encarnación-del-mal']
+                }
+            ],
+            'S': [
+                {
+                    id: 's1',
+                    name: 'Reino del Monarca',
+                    rooms: 50,
+                    minLevel: 100,
+                    maxLevel: 150,
+                    baseRewards: { xp: 15000, coins: 7500 },
+                    enemyTypes: ['monarca-sombra', 'ser-supremo', 'dios-antiguo']
+                }
+            ]
+        };
+
+        const ENEMY_DEFAULTS = {
+            'goblin': { maxHP: 30, maxEnergy: 20, attack: 5, defense: 2, skills: ['ataque-rápido'] },
+            'lobo-pequeño': { maxHP: 40, maxEnergy: 30, attack: 8, defense: 3, skills: ['ataque-rápido', 'mordida'] },
+            'rata-gigante': { maxHP: 25, maxEnergy: 15, attack: 6, defense: 2, skills: ['ataque-rápido'] },
+            'esqueleto': { maxHP: 50, maxEnergy: 25, attack: 10, defense: 4, skills: ['ataque-armado', 'grito-terrorifico'] },
+            'orco-pequeño': { maxHP: 60, maxEnergy: 35, attack: 12, defense: 5, skills: ['ataque-salvaje', 'bramido'] },
+            'murciélago-gigante': { maxHP: 45, maxEnergy: 40, attack: 9, defense: 3, skills: ['ataque-rápido', 'supersónico'] },
+            'golem-cristal': { maxHP: 80, maxEnergy: 30, attack: 14, defense: 8, skills: ['golpe-pesado', 'explosión-cristalina'] },
+            'orco': { maxHP: 90, maxEnergy: 40, attack: 16, defense: 7, skills: ['ataque-salvaje', 'bramido-fiero'] },
+            'troll-pequeño': { maxHP: 100, maxEnergy: 35, attack: 15, defense: 6, skills: ['golpe-tosco', 'regeneración'] },
+            'jefe': { maxHP: 200, maxEnergy: 100, attack: 25, defense: 15, skills: ['ataque-devastador', 'habilidad-especial', 'regeneración'] }
+        };
+
+        // Current combat state
+        let currentCombat = null;
+        let currentDungeon = null;
+        let currentRoom = 0;
+
+        // Initialize game state extension
         let gameState = {
             player: {
                 name: 'HUNTER',
@@ -1378,7 +2157,14 @@
             missions: [],
             habits: [],
             todayHabits: [],
-            notifications: []
+            notifications: [],
+            dungeons: {
+                keys: 0,
+                completedToday: [],
+                cooldowns: {},
+                enemyImages: {},
+                habitsCompletedToday: 0
+            }
         };
 
         // XP requirements per level
@@ -1885,7 +2671,7 @@
                     const deadline = new Date(mission.deadline);
                     const daysLeft = Math.ceil((deadline - new Date()) / (1000 * 60 * 60 * 24));
                     return `
-                        <div class="system-task-item priority-${mission.priority}" onclick="showSection('missions')">
+                        <div class="system-task-item priority-${mission.priority}" onclick="goToMissions()">
                             <div class="system-task-title">${mission.title}</div>
                             <div class="system-task-meta">
                                 <span>📅 ${daysLeft} días</span>
@@ -1902,7 +2688,7 @@
                 habitsContainer.innerHTML = '<div class="system-empty">✅ Todos los hábitos completados</div>';
             } else {
                 habitsContainer.innerHTML = gameState.todayHabits.map(habit => `
-                    <div class="system-task-item priority-${habit.priority}" onclick="showSection('missions'); switchTab('habits-tab')">
+                    <div class="system-task-item priority-${habit.priority}" onclick="goToMissionsAndHabits()">
                         <div class="system-task-title">${habit.title}</div>
                         <div class="system-task-meta">
                             <span>🕐 ${habit.time}</span>
@@ -1969,8 +2755,20 @@
             }
         }
 
+        // Wrapper functions
+        function goToMissions() {
+            showSection('missions', document.querySelector('[onclick*="missions"]'));
+        }
+
+        function goToMissionsAndHabits() {
+            showSection('missions', document.querySelector('[onclick*="missions"]'));
+            setTimeout(() => {
+                switchTab('habits-tab', document.querySelector('[onclick*="habits-tab"]'));
+            }, 100);
+        }
+
         // Section Navigation
-        function showSection(sectionId) {
+        function showSection(sectionId, button) {
             document.querySelectorAll('.section').forEach(section => {
                 section.classList.remove('active');
             });
@@ -1979,11 +2777,20 @@
             });
             
             document.getElementById(sectionId).classList.add('active');
-            event.target.classList.add('active');
+            if (button) {
+                button.classList.add('active');
+            } else {
+                // Find the button with matching section and activate it
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    if (btn.getAttribute('onclick').includes(`'${sectionId}'`)) {
+                        btn.classList.add('active');
+                    }
+                });
+            }
         }
 
         // Tab switching for missions/habits
-        function switchTab(tabId) {
+        function switchTab(tabId, button) {
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
@@ -1992,7 +2799,15 @@
             });
             
             document.getElementById(tabId).classList.add('active');
-            event.target.classList.add('active');
+            if (button) {
+                button.classList.add('active');
+            } else {
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    if (btn.getAttribute('onclick').includes(`'${tabId}'`)) {
+                        btn.classList.add('active');
+                    }
+                });
+            }
         }
 
         // Settings functions
@@ -2036,6 +2851,14 @@
 
         // Local Storage
         function saveGameState() {
+            // Clean up old cooldowns
+            const now = new Date().getTime();
+            Object.keys(gameState.dungeons.cooldowns).forEach(key => {
+                if (gameState.dungeons.cooldowns[key] < now) {
+                    delete gameState.dungeons.cooldowns[key];
+                }
+            });
+            
             localStorage.setItem('shadowMonarchSystem', JSON.stringify(gameState));
         }
 
@@ -2043,6 +2866,17 @@
             const saved = localStorage.getItem('shadowMonarchSystem');
             if (saved) {
                 gameState = JSON.parse(saved);
+            }
+            
+            // Initialize dungeon system if not present
+            if (!gameState.dungeons) {
+                gameState.dungeons = {
+                    keys: 0,
+                    completedToday: [],
+                    cooldowns: {},
+                    enemyImages: {},
+                    habitsCompletedToday: 0
+                };
             }
             
             // Check for overdue missions
@@ -2071,6 +2905,9 @@
                 preview.classList.remove('empty');
             }
             document.getElementById('settingsName').value = gameState.player.name;
+            
+            // Update dungeon keys based on today's completed habits
+            checkDungeonKeysGeneration();
         }
 
         // Check for missed daily login
@@ -2094,6 +2931,10 @@
             checkDailyPenalty();
             checkAndGenerateHabits(); // Check and generate habits automatically
             
+            // Initialize dungeon system
+            renderDungeons();
+            renderEnemyCustomization();
+            
             // Set today's date as default for mission deadline
             const today = new Date();
             today.setDate(today.getDate() + 1);
@@ -2102,6 +2943,450 @@
             // Check for habits every hour
             setInterval(checkAndGenerateHabits, 60 * 60 * 1000);
         });
+
+        // ===== DUNGEON SYSTEM =====
+
+        function renderDungeons() {
+            const container = document.getElementById('dungeonsList');
+            const playerRank = gameState.player.rank;
+            const playerLevel = gameState.player.level;
+            
+            let dungeonHTML = '';
+
+            // Get all available dungeons for player's rank and below
+            const ranks = ['F', 'E', 'D', 'C', 'B', 'A', 'S'];
+            const playerRankIndex = ranks.indexOf(playerRank);
+
+            for (let i = 0; i <= playerRankIndex; i++) {
+                const rank = ranks[i];
+                const rankDungeons = DUNGEONS[rank] || [];
+
+                rankDungeons.forEach(dungeon => {
+                    const isLocked = playerLevel < dungeon.minLevel;
+                    const hasKey = gameState.dungeons.keys > 0;
+                    const cooldownKey = `${dungeon.id}`;
+                    const cooldownTime = gameState.dungeons.cooldowns[cooldownKey] || 0;
+                    const now = new Date().getTime();
+                    const isOnCooldown = now < cooldownTime;
+                    const cooldownRemaining = Math.ceil((cooldownTime - now) / 60000); // minutes
+
+                    let statusHTML = '';
+                    let buttonDisabled = false;
+
+                    if (isLocked) {
+                        statusHTML = `<div class="dungeon-status locked">🔒 Requiere Nivel ${dungeon.minLevel}</div>`;
+                        buttonDisabled = true;
+                    } else if (isOnCooldown) {
+                        statusHTML = `<div class="dungeon-status cooldown">⏰ Disponible en ${cooldownRemaining} minutos</div>`;
+                        buttonDisabled = true;
+                    } else if (!hasKey) {
+                        statusHTML = `<div class="dungeon-status locked">🔑 Necesitas una llave</div>`;
+                        buttonDisabled = true;
+                    } else {
+                        statusHTML = `<div class="dungeon-status unlocked">✓ Disponible</div>`;
+                    }
+
+                    dungeonHTML += `
+                        <div class="dungeon-card ${isLocked ? 'locked' : ''} ${isOnCooldown ? 'on-cooldown' : ''}">
+                            <div class="dungeon-name">${dungeon.name}</div>
+                            <div class="dungeon-info">
+                                <div class="dungeon-requirement">📊 Nivel requerido: ${dungeon.minLevel}</div>
+                                <div class="dungeon-requirement">🏠 Habitaciones: ${dungeon.rooms}</div>
+                                <div class="dungeon-requirement">👹 Min-Máx nivel enemigo: ${dungeon.minLevel}-${dungeon.maxLevel}</div>
+                                <div class="dungeon-requirement">🎁 Recompensas: +${dungeon.baseRewards.xp} XP, +${dungeon.baseRewards.coins} 💰</div>
+                            </div>
+                            ${statusHTML}
+                            <button class="enter-dungeon-btn" onclick="enterDungeon('${dungeon.id}')" ${buttonDisabled ? 'disabled' : ''}>
+                                ⚔️ ENTRAR
+                            </button>
+                        </div>
+                    `;
+                });
+            }
+
+            container.innerHTML = dungeonHTML;
+            updateDungeonKeysDisplay();
+        }
+
+        function updateDungeonKeysDisplay() {
+            const display = document.getElementById('dungeonKeysDisplay');
+            display.textContent = `🔑 Llaves disponibles: ${gameState.dungeons.keys}`;
+        }
+
+        function enterDungeon(dungeonId) {
+            // Find dungeon
+            let dungeon = null;
+            Object.values(DUNGEONS).forEach(rankDungeons => {
+                const found = rankDungeons.find(d => d.id === dungeonId);
+                if (found) dungeon = found;
+            });
+
+            if (!dungeon) return;
+
+            // Check requirements
+            if (gameState.dungeons.keys === 0) {
+                alert('No tienes llaves de mazmorra');
+                return;
+            }
+
+            // Use key
+            gameState.dungeons.keys--;
+            updateDungeonKeysDisplay();
+
+            // Initialize dungeon
+            currentDungeon = {
+                ...dungeon,
+                currentRoom: 0,
+                roomsCleared: 0,
+                enemiesDefeated: 0,
+                totalXP: 0,
+                totalCoins: 0
+            };
+
+            // Start first room
+            startDungeonRoom();
+            document.getElementById('combatContainer').classList.add('active');
+        }
+
+        function startDungeonRoom() {
+            currentDungeon.currentRoom++;
+            const isBossRoom = currentDungeon.currentRoom === currentDungeon.rooms;
+
+            let enemyType;
+            if (isBossRoom) {
+                enemyType = 'boss';
+            } else {
+                const types = currentDungeon.enemyTypes;
+                enemyType = types[Math.floor(Math.random() * types.length)];
+            }
+
+            // Generate enemy
+            const baseStats = ENEMY_DEFAULTS[enemyType] || ENEMY_DEFAULTS['goblin'];
+            const levelDiff = currentDungeon.currentRoom / currentDungeon.rooms;
+            const enemyLevel = Math.floor(currentDungeon.minLevel + (currentDungeon.maxLevel - currentDungeon.minLevel) * levelDiff);
+            
+            currentCombat = {
+                enemy: {
+                    name: isBossRoom ? `Jefe: ${currentDungeon.name}` : `${enemyType} Nivel ${enemyLevel}`,
+                    type: enemyType,
+                    level: enemyLevel,
+                    maxHP: Math.floor(baseStats.maxHP + enemyLevel * 5),
+                    maxEnergy: baseStats.maxEnergy,
+                    hp: 0,
+                    energy: 0,
+                    attack: baseStats.attack + Math.floor(enemyLevel * 0.5),
+                    defense: baseStats.defense + Math.floor(enemyLevel * 0.3),
+                    skills: baseStats.skills,
+                    image: gameState.dungeons.enemyImages[enemyType] || null
+                },
+                player: {
+                    name: gameState.player.name,
+                    level: gameState.player.level,
+                    maxHP: (gameState.stats.vitality * 5) + gameState.stats.vitality,
+                    maxEnergy: (gameState.stats.intelligence * 3) + gameState.stats.intelligence,
+                    hp: 0,
+                    energy: 0,
+                    attack: gameState.stats.strength * 0.8,
+                    defense: gameState.stats.vitality * 0.5,
+                    image: gameState.player.profileImage
+                },
+                defending: false,
+                battleLog: []
+            };
+
+            // Initialize HP and Energy
+            currentCombat.enemy.hp = currentCombat.enemy.maxHP;
+            currentCombat.enemy.energy = currentCombat.enemy.maxEnergy;
+            currentCombat.player.hp = currentCombat.player.maxHP;
+            currentCombat.player.energy = currentCombat.player.maxEnergy;
+
+            addBattleLog(`⚔️ ¡Mazmorra ${currentDungeon.name}! Sala ${currentDungeon.currentRoom}/${currentDungeon.rooms}`);
+            addBattleLog(`👹 Un enemigo apareció: ${currentCombat.enemy.name}`);
+
+            updateCombatUI();
+        }
+
+        function playerAttack() {
+            if (currentCombat.player.energy < 10) {
+                addBattleLog('⚠️ No tienes suficiente energía');
+                return;
+            }
+
+            currentCombat.player.energy -= 10;
+            const damage = currentCombat.player.attack + (Math.random() * 5);
+            const actualDamage = Math.max(1, damage - currentCombat.enemy.defense - (Math.random() * 2));
+
+            currentCombat.enemy.hp -= actualDamage;
+
+            addBattleLog(`👤 ¡Atacaste! 🗡️ Daño: ${Math.round(actualDamage)}`);
+
+            if (currentCombat.enemy.hp <= 0) {
+                endCombat();
+            } else {
+                enemyTurn();
+            }
+
+            updateCombatUI();
+        }
+
+        function playerDefend() {
+            if (currentCombat.player.energy < 5) {
+                addBattleLog('⚠️ No tienes suficiente energía');
+                return;
+            }
+
+            currentCombat.player.energy -= 5;
+            currentCombat.defending = true;
+
+            addBattleLog(`👤 Te defensas y reduces el daño 🛡️`);
+            enemyTurn();
+
+            currentCombat.defending = false;
+            updateCombatUI();
+        }
+
+        function playerSkill() {
+            if (currentCombat.player.energy < 30) {
+                addBattleLog('⚠️ No tienes suficiente energía (necesitas 30)');
+                return;
+            }
+
+            currentCombat.player.energy -= 30;
+            const skillDamage = currentCombat.player.attack * 2 + Math.random() * 10;
+            const actualDamage = Math.max(5, skillDamage - currentCombat.enemy.defense);
+
+            currentCombat.enemy.hp -= actualDamage;
+
+            addBattleLog(`👤 ✨ Usaste una habilidad especial! Daño: ${Math.round(actualDamage)}`);
+
+            if (currentCombat.enemy.hp <= 0) {
+                endCombat();
+            } else {
+                enemyTurn();
+            }
+
+            updateCombatUI();
+        }
+
+        function enemyTurn() {
+            const actions = ['attack', 'defend'];
+            const action = actions[Math.floor(Math.random() * actions.length)];
+
+            if (action === 'attack') {
+                const damage = currentCombat.enemy.attack + (Math.random() * 5);
+                let actualDamage = damage - gameState.stats.vitality * 0.3;
+
+                if (currentCombat.defending) {
+                    actualDamage *= 0.5;
+                    addBattleLog(`👹 El enemigo ataca pero tu defensa reduce el daño`);
+                } else {
+                    addBattleLog(`👹 ¡El enemigo te ataca! Daño: ${Math.round(actualDamage)}`);
+                }
+
+                currentCombat.player.hp -= actualDamage;
+
+                if (currentCombat.player.hp <= 0) {
+                    addBattleLog(`💀 ¡Has sido derrotado!`);
+                    exitCombat();
+                }
+            } else {
+                addBattleLog(`👹 El enemigo se defiende`);
+            }
+
+            // Regenerate enemy energy
+            currentCombat.enemy.energy = Math.min(currentCombat.enemy.maxEnergy, currentCombat.enemy.energy + 10);
+        }
+
+        function endCombat() {
+            currentDungeon.enemiesDefeated++;
+            const xpReward = Math.floor(currentCombat.enemy.level * 10);
+            const coinsReward = Math.floor(currentCombat.enemy.level * 5);
+
+            currentDungeon.totalXP += xpReward;
+            currentDungeon.totalCoins += coinsReward;
+
+            addBattleLog(`✅ ¡Victoria! +${xpReward} XP, +${coinsReward} 💰`);
+
+            // Check if boss defeated
+            if (currentDungeon.currentRoom === currentDungeon.rooms) {
+                completeDungeon();
+            } else {
+                // Next room
+                setTimeout(() => {
+                    currentCombat = null;
+                    startDungeonRoom();
+                }, 2000);
+            }
+        }
+
+        function completeDungeon() {
+            addXP(currentDungeon.totalXP);
+            addCoins(currentDungeon.totalCoins);
+
+            // Set cooldown (1 hour)
+            const cooldownKey = currentDungeon.id;
+            gameState.dungeons.cooldowns[cooldownKey] = new Date().getTime() + (60 * 60 * 1000);
+            gameState.dungeons.completedToday.push(currentDungeon.id);
+
+            addNotification(
+                `✨ ¡Mazmorra Completada! ${currentDungeon.rooms} enemigos derrotados. +${currentDungeon.totalXP} XP, +${currentDungeon.totalCoins} 💰`,
+                'achievement'
+            );
+
+            showCompletionModal();
+            saveGameState();
+        }
+
+        function showCompletionModal() {
+            const modal = document.getElementById('completionModal');
+            const rewardsContainer = document.getElementById('modalRewards');
+
+            rewardsContainer.innerHTML = `
+                <div class="reward-item">🎁 XP Ganado: +${currentDungeon.totalXP}</div>
+                <div class="reward-item">💰 Monedas Ganadas: +${currentDungeon.totalCoins}</div>
+                <div class="reward-item">⚔️ Enemigos Derrotados: ${currentDungeon.enemiesDefeated}</div>
+                <div class="reward-item">🏠 Salas Completadas: ${currentDungeon.rooms}</div>
+            `;
+
+            modal.classList.add('active');
+        }
+
+        function closeCompletionModal() {
+            document.getElementById('completionModal').classList.remove('active');
+            document.getElementById('combatContainer').classList.remove('active');
+            showSection('dungeons');
+            renderDungeons();
+        }
+
+        function exitCombat() {
+            if (confirm('¿Estás seguro de que quieres abandonar la mazmorra?')) {
+                document.getElementById('combatContainer').classList.remove('active');
+                showSection('dungeons');
+                renderDungeons();
+            }
+        }
+
+        function addBattleLog(message) {
+            currentCombat.battleLog.push(message);
+            const logContainer = document.getElementById('battleLog');
+            
+            const isBattleMessage = true;
+            let messageClass = 'info';
+            if (message.includes('👤')) messageClass = 'player';
+            if (message.includes('👹')) messageClass = 'enemy';
+            if (message.includes('-') || message.includes('💀')) messageClass = 'damage';
+            if (message.includes('+')) messageClass = 'heal';
+
+            const messageEl = document.createElement('div');
+            messageEl.className = `battle-message ${messageClass}`;
+            messageEl.textContent = message;
+            logContainer.appendChild(messageEl);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        function updateCombatUI() {
+            // Enemy
+            document.getElementById('enemyName').textContent = currentCombat.enemy.name;
+            document.getElementById('enemyHPText').textContent = `${Math.max(0, Math.round(currentCombat.enemy.hp))}/${currentCombat.enemy.maxHP}`;
+            document.getElementById('enemyEnergyText').textContent = `${Math.round(currentCombat.enemy.energy)}/${currentCombat.enemy.maxEnergy}`;
+            
+            const enemyHPPercent = Math.max(0, (currentCombat.enemy.hp / currentCombat.enemy.maxHP) * 100);
+            document.getElementById('enemyHPBar').style.width = `${enemyHPPercent}%`;
+            document.getElementById('enemyEnergyBar').style.width = `${(currentCombat.enemy.energy / currentCombat.enemy.maxEnergy) * 100}%`;
+
+            // Enemy image
+            if (currentCombat.enemy.image) {
+                document.getElementById('enemyImage').innerHTML = `<img src="${currentCombat.enemy.image}" alt="Enemy">`;
+                document.getElementById('enemyImage').classList.remove('empty');
+            }
+
+            // Player
+            document.getElementById('playerCombatName').textContent = currentCombat.player.name;
+            document.getElementById('playerHPText').textContent = `${Math.max(0, Math.round(currentCombat.player.hp))}/${currentCombat.player.maxHP}`;
+            document.getElementById('playerEnergyText').textContent = `${Math.round(currentCombat.player.energy)}/${currentCombat.player.maxEnergy}`;
+            
+            const playerHPPercent = Math.max(0, (currentCombat.player.hp / currentCombat.player.maxHP) * 100);
+            document.getElementById('playerHPBar').style.width = `${playerHPPercent}%`;
+            document.getElementById('playerEnergyBar').style.width = `${(currentCombat.player.energy / currentCombat.player.maxEnergy) * 100}%`;
+
+            // Player image
+            if (currentCombat.player.image) {
+                document.getElementById('playerCombatImage').innerHTML = `<img src="${currentCombat.player.image}" alt="Player">`;
+                document.getElementById('playerCombatImage').classList.remove('empty');
+            }
+        }
+
+        function renderEnemyCustomization() {
+            const container = document.getElementById('enemyCustomizationGrid');
+            const enemyTypes = ['goblin', 'lobo-pequeño', 'esqueleto', 'orco', 'troll-pequeño', 'boss'];
+
+            let html = '';
+            enemyTypes.forEach(type => {
+                const currentImage = gameState.dungeons.enemyImages[type];
+                html += `
+                    <div class="enemy-upload-item">
+                        <div class="enemy-upload-label">${type.charAt(0).toUpperCase() + type.slice(1)}</div>
+                        <div class="enemy-preview ${currentImage ? '' : 'empty'}" id="preview-${type}">
+                            ${currentImage ? `<img src="${currentImage}" alt="${type}">` : '👹'}
+                        </div>
+                        <div class="file-input-wrapper" style="width: 100%;">
+                            <input type="file" id="enemy-${type}" accept="image/*,video/*" onchange="previewEnemyImage(event, '${type}')">
+                            <label for="enemy-${type}" class="file-input-label" style="width: 100%;">📁 SUBIR</label>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function previewEnemyImage(event, enemyType) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    gameState.dungeons.enemyImages[enemyType] = e.target.result;
+                    const preview = document.getElementById(`preview-${enemyType}`);
+                    preview.innerHTML = `<img src="${e.target.result}" alt="${enemyType}">`;
+                    preview.classList.remove('empty');
+                    saveGameState();
+                    addNotification(`✅ Imagen de ${enemyType} actualizada`, 'info');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Update dungeon keys when habits are completed
+        function checkDungeonKeysGeneration() {
+            const today = new Date().toDateString();
+            const completedHabitCount = gameState.todayHabits.filter(h => h.date === today && h.completed !== false).length;
+            const newKey = Math.floor(completedHabitCount / 5);
+            gameState.dungeons.keys = newKey;
+            updateDungeonKeysDisplay();
+        }
+
+        // Update the completeTodayHabit function to generate keys
+        function completeTodayHabit(id) {
+            const habit = gameState.todayHabits.find(h => h.id === id);
+            if (!habit) return;
+
+            const rewards = calculateRewards(habit.difficulty, habit.priority);
+            const now = new Date();
+            const endOfDay = new Date();
+            endOfDay.setHours(23, 59, 59, 999);
+
+            if (now <= endOfDay) {
+                addXP(rewards.xp);
+                addCoins(rewards.coins);
+                addNotification(`✅ ¡Hábito "${habit.title}" completado! +${rewards.xp} XP, +${rewards.coins} monedas`, 'info');
+            }
+
+            gameState.todayHabits = gameState.todayHabits.filter(h => h.id !== id);
+            renderTodayHabits();
+            renderSystemTasks();
+            checkDungeonKeysGeneration(); // Check for new keys
+            saveGameState();
+        }
     </script>
 </body>
 </html>
