@@ -1249,14 +1249,25 @@
       </div>
 
       <div class="card config-card">
-        <div class="card-header"><span class="dot"></span> Títulos Personalizados</div>
+        <div class="card-header"><span class="dot"></span> Títulos</div>
         <div style="padding:14px 16px;display:flex;flex-direction:column;gap:10px;">
-          <div id="titles-list">
-            <!-- filled by JS -->
-          </div>
-          <div style="display:flex;gap:8px;">
-            <input class="form-input" id="new-title-input" placeholder="Nuevo título..." style="flex:1;">
-            <button class="btn-secondary" onclick="addTitle()">+ Añadir</button>
+          <div style="font-size:11px;color:var(--text3);letter-spacing:1px;margin-bottom:2px;">Los títulos se desbloquean automáticamente según nivel o logro.</div>
+          <div id="titles-list"></div>
+          <div style="border-top:1px solid var(--border);padding-top:10px;display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;gap:8px;">
+              <input class="form-input" id="new-title-input" placeholder="Nombre del título..." style="flex:1;">
+              <input class="form-input" id="new-title-icon" placeholder="🎖️" style="width:52px;text-align:center;">
+              <input type="color" id="new-title-color" value="#e8263d" title="Color" style="width:36px;height:36px;border:none;background:none;cursor:pointer;border-radius:6px;padding:2px;">
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <select class="form-select" id="new-title-unlock-type" style="flex:1;" onchange="toggleTitleUnlockInput()">
+                <option value="manual">Manual (disponible ya)</option>
+                <option value="level">Por nivel</option>
+                <option value="achievement">Por logro</option>
+              </select>
+              <input class="form-input" id="new-title-unlock-val" placeholder="Nv. o clave" style="width:90px;display:none;">
+            </div>
+            <button class="btn-secondary" onclick="addTitle()">+ Añadir título</button>
           </div>
         </div>
       </div>
@@ -1277,10 +1288,9 @@
 
       <div class="card config-card">
         <div class="card-header"><span class="dot"></span> Rangos & Niveles</div>
-        <div style="padding:14px 16px;display:flex;flex-direction:column;gap:10px;">
-          <div style="font-size:12px;color:var(--text2);margin-bottom:4px;">Sistema de Rangos (automático según nivel)</div>
-          <div id="ranks-display" style="display:flex;flex-direction:column;gap:6px;"></div>
-          <div style="margin-top:8px;font-size:11px;color:var(--text3);font-style:italic;">Los rangos se asignan automáticamente al subir de nivel.</div>
+        <div style="padding:14px 16px;display:flex;flex-direction:column;gap:6px;">
+          <div style="font-size:11px;color:var(--text3);margin-bottom:6px;letter-spacing:1px;">ÍCONO · NOMBRE · NIVEL MÍNIMO</div>
+          <div id="ranks-display" style="display:flex;flex-direction:column;gap:4px;"></div>
         </div>
       </div>
 
@@ -1391,40 +1401,65 @@
 let state = {
   name: 'Protagonista',
   title: 'Aprendiz del Sistema',
-  titles: ['Aprendiz del Sistema', 'La Imparable', 'Cazadora de Metas', 'Maestra del Enfoque'],
+  // titles: { name, icon, unlockType: 'level'|'achievement'|'manual', unlockVal, unlocked }
+  titles: [
+    { name: 'Aprendiz del Sistema', icon: '📖', color: '#9090a8', unlockType: 'manual',      unlockVal: null,       unlocked: true  },
+    { name: 'La Imparable',         icon: '⚡', color: '#f0c040', unlockType: 'level',        unlockVal: 5,          unlocked: false },
+    { name: 'Cazadora de Metas',    icon: '🎯', color: '#e8263d', unlockType: 'achievement',  unlockVal: '5_quests', unlocked: false },
+    { name: 'Maestra del Enfoque',  icon: '🔮', color: '#9060d0', unlockType: 'level',        unlockVal: 10,         unlocked: false },
+    { name: 'Leyenda Viviente',     icon: '👑', color: '#d4a017', unlockType: 'level',        unlockVal: 25,         unlocked: false },
+  ],
   portrait: null,
   level: 1,
   xp: 0,
   totalXP: 0,
   vitals: { energy: 7, focus: 6, mood: 8 },
+  // stats: val = raw points accumulated. statLevel = floor(val/10)+1
   stats: [
-    { name: 'Físico', val: 30, color: '#e040a0' },
-    { name: 'Psique', val: 40, color: '#e040a0' },
-    { name: 'Intel', val: 35, color: '#e040a0' },
-    { name: 'Espiritual', val: 25, color: '#e040a0' },
-    { name: 'Core', val: 30, color: '#e040a0' },
+    { name: 'Físico',     val: 0, color: '#e040a0' },
+    { name: 'Psique',     val: 0, color: '#9060d0' },
+    { name: 'Intel',      val: 0, color: '#4080e0' },
+    { name: 'Espiritual', val: 0, color: '#40c880' },
+    { name: 'Core',       val: 0, color: '#d4a017' },
   ],
   arc: { name: '', mantras: [] },
   quests: [],
   achievements: [
     { name: 'Primera Misión', icon: '⚔️', unlocked: false, key: 'first_quest' },
-    { name: 'Rayo Veloz', icon: '⚡', unlocked: false, key: '5_quests' },
-    { name: 'Nivel 5', icon: '🌟', unlocked: false, key: 'level_5' },
-    { name: 'Racha x7', icon: '🔥', unlocked: false, key: 'streak_7' },
-    { name: 'Jefe Caído', icon: '💀', unlocked: false, key: 'boss' },
-    { name: 'Imparable', icon: '👑', unlocked: false, key: 'level_10' },
-  ]
+    { name: 'Rayo Veloz',     icon: '⚡', unlocked: false, key: '5_quests' },
+    { name: 'Nivel 5',        icon: '🌟', unlocked: false, key: 'level_5' },
+    { name: 'Racha x7',       icon: '🔥', unlocked: false, key: 'streak_7' },
+    { name: 'Jefe Caído',     icon: '💀', unlocked: false, key: 'boss' },
+    { name: 'Imparable',      icon: '👑', unlocked: false, key: 'level_10' },
+  ],
+  // RANKS stored in state so they're customizable
+  ranks: [
+    { label: 'C',  icon: '◈',  minLevel: 1  },
+    { label: 'B',  icon: '◆',  minLevel: 5  },
+    { label: 'A',  icon: '◈',  minLevel: 10 },
+    { label: 'S',  icon: '★',  minLevel: 15 },
+    { label: 'SS', icon: '★★', minLevel: 25 },
+  ],
 };
 
-const RANKS = [
-  { min: 1, max: 4, label: 'C', cls: 'rank-C', icon: '◈' },
-  { min: 5, max: 9, label: 'B', cls: 'rank-B', icon: '◆' },
-  { min: 10, max: 14, label: 'A', cls: 'rank-A', icon: '◈' },
-  { min: 15, max: 24, label: 'S', cls: 'rank-S', icon: '★' },
-  { min: 25, max: 999, label: 'SS', cls: 'rank-S', icon: '★★' },
-];
-
 const XP_PER_LEVEL = (lvl) => lvl * 100;
+
+// helpers
+function statLevel(val) { return Math.floor(val / 10) + 1; }
+function statLevelProgress(val) { return val % 10; }
+
+function getCurrentRank() {
+  const sorted = [...state.ranks].sort((a,b) => b.minLevel - a.minLevel);
+  return sorted.find(r => state.level >= r.minLevel) || state.ranks[0];
+}
+
+function getRankColor(label) {
+  const l = label.toUpperCase();
+  if (l.startsWith('SS') || l === 'S') return 'var(--accent2)';
+  if (l === 'A') return 'var(--gold2)';
+  if (l === 'B') return 'var(--blue)';
+  return 'var(--text2)';
+}
 
 // ============================================================
 // LOAD / SAVE
@@ -1436,7 +1471,43 @@ function saveState() {
 function loadState() {
   const saved = localStorage.getItem('leveling_state');
   if (saved) {
-    try { state = { ...state, ...JSON.parse(saved) }; } catch(e) {}
+    try {
+      const parsed = JSON.parse(saved);
+      state = { ...state, ...parsed };
+
+      // Migrate old titles format (array of strings → array of objects)
+      if (state.titles.length > 0 && typeof state.titles[0] === 'string') {
+        state.titles = state.titles.map((t, i) => ({
+          name: t,
+          icon: '🎖️',
+          unlockType: 'manual',
+          unlockVal: null,
+          unlocked: true,
+        }));
+      }
+
+      // Ensure all title objects have required fields
+      state.titles = state.titles.map(t => ({
+        name: t.name || 'Sin nombre',
+        icon: t.icon || '🎖️',
+        color: t.color || '#e8263d',
+        unlockType: t.unlockType || 'manual',
+        unlockVal: t.unlockVal ?? null,
+        unlocked: t.unlocked ?? true,
+      }));
+
+      // Ensure ranks exist (migrate if missing)
+      if (!state.ranks || state.ranks.length === 0) {
+        state.ranks = [
+          { label: 'C',  icon: '◈',  minLevel: 1  },
+          { label: 'B',  icon: '◆',  minLevel: 5  },
+          { label: 'A',  icon: '◈',  minLevel: 10 },
+          { label: 'S',  icon: '★',  minLevel: 15 },
+          { label: 'SS', icon: '★★', minLevel: 25 },
+        ];
+      }
+
+    } catch(e) { console.warn('Error loading state:', e); }
   }
 }
 
@@ -1445,6 +1516,14 @@ function loadState() {
 // ============================================================
 function init() {
   loadState();
+
+  // Ensure state.title is always a valid unlocked title
+  const validTitle = state.titles.find(t => t.name === state.title && t.unlocked);
+  if (!validTitle) {
+    const firstUnlocked = state.titles.find(t => t.unlocked);
+    state.title = firstUnlocked ? firstUnlocked.name : state.titles[0]?.name || '';
+  }
+
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('q-start').value = today;
   document.getElementById('q-end').value = today;
@@ -1474,6 +1553,11 @@ function renderPlayer() {
   document.getElementById('player-title-text').textContent = state.title;
   document.getElementById('profile-name-text').textContent = state.name;
   document.getElementById('profile-title-text').textContent = state.title;
+  // Apply active title color
+  const activeTitle = state.titles.find(t => t.name === state.title);
+  const titleColor = activeTitle?.color || '#e8263d';
+  document.getElementById('player-title-text').style.color = titleColor;
+  document.getElementById('profile-title-text').style.color = titleColor;
 
   const lvlEl = document.getElementById('player-level-num');
   const lvlEl2 = document.getElementById('profile-level-num');
@@ -1543,28 +1627,36 @@ function renderStats() {
   const listEl = document.getElementById('stats-list-dash');
   if (!listEl) return;
   listEl.innerHTML = '';
-  const maxVal = Math.max(...state.stats.map(s => s.val), 100);
   state.stats.forEach(s => {
-    const pct = (s.val / maxVal) * 100;
+    const lvl = statLevel(s.val);
+    const prog = statLevelProgress(s.val); // 0-9
+    const pct = (prog / 10) * 100;
     listEl.innerHTML += `
       <div class="stat-row">
         <span class="stat-name">${s.name}</span>
         <div class="stat-bar-wrap">
-          <div class="stat-bar"><div class="stat-fill" style="width:${pct}%"></div></div>
+          <div class="stat-bar"><div class="stat-fill" style="width:${pct}%;background:linear-gradient(90deg,${s.color}88,${s.color})"></div></div>
         </div>
-        <span class="stat-val">${s.val}</span>
+        <span class="stat-val" style="color:${s.color};width:44px;font-size:11px;">Nv.${lvl}</span>
       </div>`;
   });
 
   // Profile stats detail
   const detailEl = document.getElementById('profile-stats-detail');
   if (detailEl) {
-    detailEl.innerHTML = state.stats.map(s => `
+    detailEl.innerHTML = state.stats.map(s => {
+      const lvl = statLevel(s.val);
+      const prog = statLevelProgress(s.val);
+      return `
       <div class="stat-detail-item">
-        <div class="stat-detail-name">${s.name}</div>
-        <div class="stat-detail-val">${s.val}</div>
-        <div class="stat-detail-sub">puntos acumulados</div>
-      </div>`).join('');
+        <div class="stat-detail-name" style="color:${s.color}88;">${s.name}</div>
+        <div class="stat-detail-val" style="color:${s.color};">Nv. ${lvl}</div>
+        <div style="margin:6px 0 4px;">
+          <div class="stat-bar" style="height:5px;"><div class="stat-fill" style="width:${(prog/10)*100}%;background:${s.color};"></div></div>
+        </div>
+        <div class="stat-detail-sub">${s.val} pts totales · ${prog}/10 para nivel ${lvl+1}</div>
+      </div>`;
+    }).join('');
   }
 }
 
@@ -1603,9 +1695,11 @@ function renderRadar(svgId) {
     html += `<line class="radar-axis" x1="${cx}" y1="${cy}" x2="${p.x}" y2="${p.y}"/>`;
   }
 
-  // Data polygon
+  // Data polygon — use stat level, cap at 20 for display
+  const maxStatLvl = 20;
   const dataPts = stats.map((s, i) => {
-    const r = (Math.min(s.val, maxVal) / maxVal) * maxR;
+    const lvl = statLevel(s.val);
+    const r = (Math.min(lvl, maxStatLvl) / maxStatLvl) * maxR;
     return pt(i, r);
   });
   html += `<polygon class="radar-polygon" points="${dataPts.map(p => `${p.x},${p.y}`).join(' ')}"/>`;
@@ -1669,10 +1763,17 @@ function toggleQuest(id) {
     q.done = true;
     q.doneDate = new Date().toISOString().split('T')[0];
     addXP(q.xp);
-    // Stat bonus
+    // +1 stat point only
     if (q.stat) {
       const stat = state.stats.find(s => s.name === q.stat);
-      if (stat) { stat.val += Math.ceil(q.xp / 20); }
+      if (stat) {
+        const prevLvl = statLevel(stat.val);
+        stat.val += 1;
+        const newLvl = statLevel(stat.val);
+        if (newLvl > prevLvl) {
+          showNotification('📈', `¡${stat.name} subió a nivel ${newLvl}!`);
+        }
+      }
     }
     showNotification('⚡', `+${q.xp} XP — "${q.name}" completada`);
     checkAchievements();
@@ -1870,17 +1971,34 @@ function renderProfile() {
 // ============================================================
 function checkAchievements() {
   const done = state.quests.filter(q => q.done).length;
+
   const unlock = (key) => {
     const a = state.achievements.find(x => x.key === key);
     if (a && !a.unlocked) {
       a.unlocked = true;
       showNotification('🏆', `Logro desbloqueado: ${a.name}`);
+      // auto-unlock titles tied to this achievement
+      state.titles.forEach(t => {
+        if (t.unlockType === 'achievement' && t.unlockVal === key && !t.unlocked) {
+          t.unlocked = true;
+          showNotification('🎖️', `Título desbloqueado: "${t.name}"`);
+        }
+      });
     }
   };
+
   if (done >= 1) unlock('first_quest');
   if (done >= 5) unlock('5_quests');
-  if (state.level >= 5) unlock('level_5');
+  if (state.level >= 5)  unlock('level_5');
   if (state.level >= 10) unlock('level_10');
+
+  // auto-unlock titles tied to level
+  state.titles.forEach(t => {
+    if (t.unlockType === 'level' && state.level >= t.unlockVal && !t.unlocked) {
+      t.unlocked = true;
+      showNotification('🎖️', `Título desbloqueado: "${t.name}"`);
+    }
+  });
 }
 
 // ============================================================
@@ -1894,10 +2012,11 @@ function renderSummary() {
   document.getElementById('total-xp-earned').textContent = state.totalXP + ' XP';
 
   // Rank
-  const rank = RANKS.find(r => state.level >= r.min && state.level <= r.max) || RANKS[0];
+  const rank = getCurrentRank();
   const rankEl = document.getElementById('rank-badge');
   if (rankEl) {
-    rankEl.className = `rank-badge ${rank.cls}`;
+    rankEl.className = 'rank-badge';
+    rankEl.style.color = getRankColor(rank.label);
     rankEl.textContent = `${rank.icon} ${rank.label}`;
   }
 }
@@ -1915,18 +2034,30 @@ function renderConfig() {
   document.getElementById('config-arc-name').value = state.arc.name || '';
   document.getElementById('config-arc-mantras').value = state.arc.mantras.join('\n');
 
-  // Titles
+  // Titles select — only unlocked ones
   const titleSel = document.getElementById('config-title');
-  titleSel.innerHTML = state.titles.map(t =>
-    `<option ${t === state.title ? 'selected' : ''}>${t}</option>`).join('');
+  const unlocked = state.titles.filter(t => t.unlocked);
+  titleSel.innerHTML = unlocked.map(t =>
+    `<option value="${t.name}" ${t.name === state.title ? 'selected' : ''}>${t.icon} ${t.name}</option>`).join('');
 
+  // Titles list with unlock conditions
   const titlesList = document.getElementById('titles-list');
   if (titlesList) {
-    titlesList.innerHTML = state.titles.map((t, i) => `
-      <div style="display:flex;align-items:center;gap:8px;">
-        <span style="flex:1;font-size:13px;color:var(--text2);">${t}</span>
-        ${i > 0 ? `<button class="remove-btn" onclick="removeTitle(${i})">✕</button>` : ''}
-      </div>`).join('');
+    titlesList.innerHTML = state.titles.map((t, i) => {
+      const unlockDesc = t.unlockType === 'manual' ? 'Manual'
+        : t.unlockType === 'level' ? `Nivel ${t.unlockVal}`
+        : `Logro: ${t.unlockVal}`;
+      return `
+      <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);">
+        <span style="font-size:16px;">${t.icon}</span>
+        <div style="flex:1;">
+          <div style="font-size:13px;color:${t.unlocked ? (t.color || 'var(--text)') : 'var(--text3)'};">${t.name}</div>
+          <div style="font-size:10px;color:var(--text3);letter-spacing:0.8px;">${unlockDesc} · ${t.unlocked ? '✓ Desbloqueado' : '🔒 Bloqueado'}</div>
+        </div>
+        ${t.unlocked ? `<input type="color" value="${t.color || '#e8263d'}" title="Color del título" style="width:24px;height:24px;border:none;background:none;cursor:pointer;border-radius:4px;padding:0;" onchange="updateTitleColor(${i},this.value)">` : '<div style="width:24px;"></div>'}
+        ${i > 0 ? `<button class="remove-btn" onclick="removeTitle(${i})">✕</button>` : '<div style="width:28px;"></div>'}
+      </div>`;
+    }).join('');
   }
 
   // Stats config
@@ -1934,21 +2065,25 @@ function renderConfig() {
   if (statsCfg) {
     statsCfg.innerHTML = state.stats.map((s, i) => `
       <div class="stat-config-item">
-        <div class="stat-color-dot" style="background:${s.color}"></div>
+        <input type="color" value="${s.color}" style="width:28px;height:28px;border:none;background:none;cursor:pointer;border-radius:4px;" onchange="updateStatColor(${i},this.value)">
         <input class="form-input" value="${s.name}" style="flex:1;" onchange="updateStatName(${i},this.value)">
-        <input class="form-input" type="number" value="${s.val}" style="width:60px;" onchange="updateStatVal(${i},this.value)">
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;">Nv.${statLevel(s.val)} (${s.val}pts)</span>
         <button class="remove-btn" onclick="removeStat(${i})">✕</button>
       </div>`).join('');
   }
 
-  // Ranks display
+  // Ranks config — editable
   const ranksEl = document.getElementById('ranks-display');
   if (ranksEl) {
-    ranksEl.innerHTML = RANKS.map(r => `
-      <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);">
-        <span class="rank-badge ${r.cls}">${r.icon} ${r.label}</span>
-        <span style="font-size:12px;color:var(--text2);">Nivel ${r.min}–${r.max === 999 ? '∞' : r.max}</span>
-      </div>`).join('');
+    ranksEl.innerHTML = state.ranks.map((r, i) => `
+      <div style="display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid var(--border);">
+        <input class="form-input" value="${r.icon}" style="width:44px;text-align:center;" onchange="updateRank(${i},'icon',this.value)" placeholder="◈">
+        <input class="form-input" value="${r.label}" style="width:60px;" onchange="updateRank(${i},'label',this.value)" placeholder="A">
+        <span style="font-size:11px;color:var(--text3);">desde Nv.</span>
+        <input class="form-input" type="number" value="${r.minLevel}" style="width:56px;" onchange="updateRank(${i},'minLevel',+this.value)" min="1">
+        ${i > 0 ? `<button class="remove-btn" onclick="removeRank(${i})">✕</button>` : '<div style="width:28px;"></div>'}
+      </div>`).join('') + `
+      <button class="btn-secondary" style="margin-top:8px;width:100%;" onclick="addRank()">+ Añadir rango</button>`;
   }
 }
 
@@ -1958,8 +2093,12 @@ function updateNameFromConfig() {
 }
 
 function updateTitleFromConfig() {
-  state.title = document.getElementById('config-title').value;
-  saveState(); renderPlayer();
+  const val = document.getElementById('config-title').value;
+  if (val) {
+    state.title = val;
+    saveState();
+    renderPlayer();
+  }
 }
 
 function updateArc() {
@@ -1969,18 +2108,59 @@ function updateArc() {
   saveState(); renderPlayer();
 }
 
+function toggleTitleUnlockInput() {
+  const type = document.getElementById('new-title-unlock-type').value;
+  const valInput = document.getElementById('new-title-unlock-val');
+  valInput.style.display = type === 'manual' ? 'none' : 'block';
+  valInput.placeholder = type === 'level' ? 'Nv. ej: 10' : 'Clave logro';
+}
+
 function addTitle() {
-  const val = document.getElementById('new-title-input').value.trim();
-  if (!val) return;
-  state.titles.push(val);
+  const name = document.getElementById('new-title-input').value.trim();
+  if (!name) return;
+  const icon = document.getElementById('new-title-icon').value.trim() || '🎖️';
+  const color = document.getElementById('new-title-color').value || '#e8263d';
+  const unlockType = document.getElementById('new-title-unlock-type').value;
+  const rawVal = document.getElementById('new-title-unlock-val').value.trim();
+  const unlockVal = unlockType === 'level' ? (parseInt(rawVal) || 1) : (rawVal || null);
+  const unlocked = unlockType === 'manual';
+  state.titles.push({ name, icon, color, unlockType, unlockVal, unlocked });
   document.getElementById('new-title-input').value = '';
+  document.getElementById('new-title-icon').value = '';
+  document.getElementById('new-title-unlock-val').value = '';
   saveState(); renderConfig();
+}
+
+function updateTitleColor(i, color) {
+  state.titles[i].color = color;
+  saveState();
+  renderPlayer(); // update displayed title color immediately
+  renderConfig();
 }
 
 function removeTitle(i) {
   state.titles.splice(i, 1);
-  if (state.title === state.titles[i]) state.title = state.titles[0];
+  // If active title was removed, fallback to first unlocked
+  if (!state.titles.find(t => t.name === state.title)) {
+    state.title = state.titles.find(t => t.unlocked)?.name || '';
+  }
+  saveState(); renderConfig(); renderPlayer();
+}
+
+function addRank() {
+  const maxLvl = Math.max(...state.ranks.map(r => r.minLevel));
+  state.ranks.push({ label: 'NEW', icon: '◇', minLevel: maxLvl + 5 });
   saveState(); renderConfig();
+}
+
+function removeRank(i) {
+  state.ranks.splice(i, 1);
+  saveState(); renderConfig(); renderSummary();
+}
+
+function updateRank(i, field, val) {
+  state.ranks[i][field] = val;
+  saveState(); renderSummary();
 }
 
 function addStat() {
@@ -1993,6 +2173,11 @@ function addStat() {
 
 function removeStat(i) {
   state.stats.splice(i, 1);
+  saveState(); renderAll();
+}
+
+function updateStatColor(i, val) {
+  state.stats[i].color = val;
   saveState(); renderAll();
 }
 
