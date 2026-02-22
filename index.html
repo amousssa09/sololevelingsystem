@@ -1200,6 +1200,7 @@
       <button class="nav-btn active" onclick="showSection('dashboard')">Dashboard</button>
       <button class="nav-btn" onclick="showSection('profile')">Perfil</button>
       <button class="nav-btn" onclick="showSection('missions')">Misiones</button>
+        <button class="nav-btn" onclick="showSection('evaluations')">Evaluaciones</button>
       <button class="nav-btn" onclick="showSection('calendar')">Calendario</button>
       <button class="nav-btn" onclick="showSection('config')">Config</button>
     </div>
@@ -1442,6 +1443,8 @@
               <label class="form-label">Nombre</label>
               <input class="form-input" id="config-name" placeholder="Tu nombre..." oninput="updateNameFromConfig()">
             </div>
+
+            
             <div class="form-group">
               <label class="form-label">Título Activo</label>
               <select class="form-select" id="config-title" onchange="updateTitleFromConfig()">
@@ -1528,6 +1531,70 @@
         </div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- ======== CALENDAR ======== -->
+  <!-- ======== EVALUACIONES ======== -->
+  <div class="section" id="section-evaluations">
+    <div style="font-family:'Cinzel',serif;font-size:20px;color:var(--text);margin-bottom:12px;">Evaluaciones</div>
+    <div style="display:grid;grid-template-columns:1fr 420px;gap:12px;align-items:start;">
+      <div>
+        <div class="card">
+          <div class="card-header"><span class="dot"></span> Métricas</div>
+          <div style="padding:14px;" id="eval-metrics">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px;">
+          <div class="card-header"><span class="dot"></span> Resumen Semanal</div>
+          <div style="padding:14px;" id="eval-weekly">
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <div class="card-header"><span class="dot"></span> Kaizen — Reflexión diaria</div>
+          <div style="padding:12px;display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;gap:8px;">
+              <input class="form-input" type="date" id="kaizen-date" style="flex:1;">
+              <button class="btn-secondary" onclick="fillKaizenToday()">Hoy</button>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Resumen del día</label>
+              <textarea id="kaizen-summary" class="form-textarea" rows="2"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Qué salió bien y por qué</label>
+              <textarea id="kaizen-well" class="form-textarea" rows="2"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Qué salió mal y por qué</label>
+              <textarea id="kaizen-wrong" class="form-textarea" rows="2"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Qué debo mejorar</label>
+              <textarea id="kaizen-improve" class="form-textarea" rows="2"></textarea>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <input class="form-input" id="kaizen-mini-input" placeholder="Tarea de mejora..." style="flex:1;">
+              <button class="btn-secondary" onclick="addMiniToForm()">+ Añadir</button>
+            </div>
+            <div id="kaizen-mini-list" style="display:flex;flex-direction:column;gap:6px;"></div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn-secondary" onclick="resetKaizenForm()">Cancelar</button>
+              <button class="btn-primary" onclick="saveKaizenEntry()">Guardar reflexión</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px;">
+          <div class="card-header"><span class="dot"></span> Entradas Kaizen</div>
+          <div style="padding:12px;" id="kaizen-entries-list"></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1878,6 +1945,7 @@
       { label: 'S',  icon: '★',  minLevel: 15 },
       { label: 'SS', icon: '★★', minLevel: 25 },
     ],
+    kaizen: { entries: [] },
   };
 
   const XP_PER_LEVEL = (lvl) => lvl * 100;
@@ -1937,6 +2005,7 @@
         // Ensure habits and timeBlocks arrays exist
         if (!state.habits) state.habits = [];
         if (!state.timeBlocks) state.timeBlocks = [];
+        if (!state.kaizen) state.kaizen = { entries: [] };
 
         // Migrate quests missing time fields
         state.quests = state.quests.map(q => ({
@@ -1988,6 +2057,7 @@
     renderMissions();
     renderProfile();
     renderConfig();
+    try { renderEvaluations(); } catch(e) {}
     renderSummary();
     updateTopbar();
   }
@@ -2299,6 +2369,8 @@
       return;
     }
 
+    
+
     const today = new Date().toISOString().split('T')[0];
 
     container.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px;">` +
@@ -2344,6 +2416,139 @@
   function freqLabel(freq) {
     return { daily: 'Diario', weekdays: 'L–V', weekends: 'S–D', custom: 'Custom' }[freq] || freq;
   }
+
+// ============================================================
+// EVALUATIONS & KAIZEN (moved to global scope)
+// ============================================================
+function isHabitScheduledOn(q, dateStr) {
+  if (!q || q.type !== 'habit') return false;
+  const d = new Date(dateStr).getDay(); // 0-6
+  if (!q.freq) return true;
+  if (q.freq === 'daily') return true;
+  if (q.freq === 'weekdays') return d >= 1 && d <= 5;
+  if (q.freq === 'weekends') return d === 0 || d === 6;
+  if (q.freq === 'custom' && Array.isArray(q.customDays)) return q.customDays.includes(d);
+  return false;
+}
+
+function renderEvaluations() {
+  const el = document.getElementById('eval-metrics');
+  const weeklyEl = document.getElementById('eval-weekly');
+  if (!el || !weeklyEl) return;
+  fillKaizenToday();
+  const today = new Date().toISOString().split('T')[0];
+
+  // planned tasks today: quests that start today or objectives within range, plus scheduled habits
+  const plannedQuests = state.quests.filter(q => {
+    if (q.type === 'habit') return isHabitScheduledOn(q, today);
+    if (q.start && q.end) return (q.start <= today && q.end >= today);
+    return q.start === today;
+  });
+  const planned = plannedQuests.length;
+
+  const completedQuestsToday = state.quests.filter(q => q.done && q.doneDate === today).length;
+  const completedHabitsToday = state.habits.filter(h => h.date === today && h.done).length;
+
+  const totalCompletedToday = completedQuestsToday + completedHabitsToday;
+  const pct = planned > 0 ? Math.round((totalCompletedToday / planned) * 100) : (totalCompletedToday > 0 ? 100 : 0);
+
+  el.innerHTML = `
+    <div style="font-size:14px;font-weight:600;margin-bottom:8px;">Rendimiento hoy — ${today}</div>
+    <div style="display:flex;gap:10px;align-items:center;"> <div style="font-size:28px;font-weight:700;">${totalCompletedToday}</div> <div style="font-size:12px;color:var(--text3);">Tareas completadas</div> </div>
+    <div style="margin-top:8px;">Planned: ${planned} · Completadas: ${totalCompletedToday} · <strong>${pct}%</strong></div>
+    <div style="height:10px;background:var(--surface2);border-radius:6px;margin-top:8px;overflow:hidden;"><div style="height:10px;width:${pct}%;background:linear-gradient(90deg,var(--accent),var(--gold));"></div></div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text3);">Quests hoy: ${plannedQuests.filter(q=>q.type!=='habit').length} · Habits programados hoy: ${plannedQuests.filter(q=>q.type==='habit').length}</div>
+  `;
+
+  // weekly summary (last 7 days)
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const ds = d.toISOString().split('T')[0];
+    const completed = state.quests.filter(q => q.done && q.doneDate === ds).length + state.habits.filter(h => h.date === ds && h.done).length;
+    days.push({ date: ds, completed });
+  }
+  weeklyEl.innerHTML = `<div style="display:flex;gap:6px;align-items:end;">` + days.map(d => `
+    <div style="flex:1;text-align:center;">
+      <div style="height:${Math.min(120,d.completed*12)}px;background:var(--accent);border-radius:4px;margin-bottom:6px;">&nbsp;</div>
+      <div style="font-size:11px;color:var(--text3);">${d.date.slice(5)}</div>
+    </div>
+  `).join('') + `</div>`;
+
+  renderKaizen();
+}
+
+// KAIZEN
+let _kaizenFormMini = [];
+function fillKaizenToday() { const el = document.getElementById('kaizen-date'); if (el) el.value = new Date().toISOString().split('T')[0]; }
+function addMiniToForm() {
+  const input = document.getElementById('kaizen-mini-input'); if (!input) return;
+  const v = input.value.trim();
+  if (!v) return;
+  _kaizenFormMini.push({ id: Date.now().toString(), name: v, done: false });
+  input.value = '';
+  renderKaizenFormMini();
+}
+function renderKaizenFormMini() {
+  const el = document.getElementById('kaizen-mini-list'); if (!el) return;
+  el.innerHTML = _kaizenFormMini.map((m,i) => `<div style="display:flex;align-items:center;gap:8px;"><input type="checkbox" ${m.done? 'checked':''} onclick="_kaizenFormMini[${i}].done=!_kaizenFormMini[${i}].done;renderKaizenFormMini()"> <div style="flex:1;">${m.name}</div> <button class="remove-btn" onclick="_kaizenFormMini.splice(${i},1);renderKaizenFormMini()">✕</button></div>`).join('');
+}
+function resetKaizenForm() {
+  const dateEl = document.getElementById('kaizen-date'); if (dateEl) dateEl.value = '';
+  const els = ['kaizen-summary','kaizen-well','kaizen-wrong','kaizen-improve']; els.forEach(id=>{ const e=document.getElementById(id); if(e) e.value=''; });
+  _kaizenFormMini = [];
+  renderKaizenFormMini();
+  // restore save button behavior
+  document.querySelector('#section-evaluations .btn-primary')?.setAttribute('onclick', `saveKaizenEntry()`);
+}
+function saveKaizenEntry(editId) {
+  if (!state.kaizen) state.kaizen = { entries: [] };
+  const id = editId || Date.now().toString();
+  const date = (document.getElementById('kaizen-date')?.value) || new Date().toISOString().split('T')[0];
+  const summary = (document.getElementById('kaizen-summary')?.value || '').trim();
+  const well = (document.getElementById('kaizen-well')?.value || '').trim();
+  const wrong = (document.getElementById('kaizen-wrong')?.value || '').trim();
+  const improve = (document.getElementById('kaizen-improve')?.value || '').trim();
+  const mini = _kaizenFormMini.map(m=>({ ...m }));
+  const existingIdx = state.kaizen.entries.findIndex(e => e.id === id);
+  const entry = { id, date, summary, well, wrong, improve, miniTasks: mini };
+  if (existingIdx >= 0) state.kaizen.entries[existingIdx] = entry; else state.kaizen.entries.push(entry);
+  saveState();
+  resetKaizenForm();
+  renderKaizen();
+  showNotification('📝','Reflexión guardada');
+}
+function renderKaizen() {
+  const listEl = document.getElementById('kaizen-entries-list'); if (!listEl) return;
+  listEl.innerHTML = (state.kaizen.entries || []).slice().reverse().map(e => `
+    <div style="padding:8px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:6px;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div style="font-weight:700;flex:1;">${e.date}</div>
+        <div style="display:flex;gap:6px;"><button class="btn-secondary" onclick="editKaizen('${e.id}')">Editar</button><button class="remove-btn" onclick="deleteKaizen('${e.id}')">✕</button></div>
+      </div>
+      <div style="font-size:13px;color:var(--text);">${e.summary || '<i>Sin resumen</i>'}</div>
+      <div style="font-size:12px;color:var(--text3);">Bien: ${e.well || '-'} · Mal: ${e.wrong || '-'} · A mejorar: ${e.improve || '-'}</div>
+      <div style="display:flex;flex-direction:column;gap:4px;margin-top:6px;">
+        ${ (e.miniTasks||[]).map(m=>`<div style="display:flex;align-items:center;gap:8px;"><input type="checkbox" ${m.done? 'checked':''} onclick="toggleKaizenMini('${e.id}','${m.id}')"> <div style="flex:1;">${m.name}</div> <button class="btn-secondary" onclick="promoteMiniToQuest('${e.id}','${m.id}')">Promover</button></div>`).join('') }
+      </div>
+    </div>
+  `).join('');
+}
+function editKaizen(id) {
+  const e = state.kaizen.entries.find(x=>x.id===id); if (!e) return;
+  const setVal = (id,val)=>{ const el=document.getElementById(id); if(el) el.value = val || ''; };
+  setVal('kaizen-date', e.date);
+  setVal('kaizen-summary', e.summary);
+  setVal('kaizen-well', e.well);
+  setVal('kaizen-wrong', e.wrong);
+  setVal('kaizen-improve', e.improve);
+  _kaizenFormMini = (e.miniTasks||[]).map(m=>({ ...m })); renderKaizenFormMini();
+  // replace save action to edit existing
+  document.querySelector('#section-evaluations .btn-primary')?.setAttribute('onclick', `saveKaizenEntry('${id}')`);
+}
+function deleteKaizen(id) { if (!confirm('Eliminar entrada?')) return; state.kaizen.entries = state.kaizen.entries.filter(x=>x.id!==id); saveState(); renderKaizen(); }
+function toggleKaizenMini(entryId, miniId) { const e = state.kaizen.entries.find(x=>x.id===entryId); if(!e) return; const m = e.miniTasks.find(x=>x.id===miniId); if(m) m.done=!m.done; saveState(); renderKaizen(); }
+function promoteMiniToQuest(entryId, miniId) { const e = state.kaizen.entries.find(x=>x.id===entryId); if(!e) return; const m = e.miniTasks.find(x=>x.id===miniId); if(!m) return; const q = { id: Date.now().toString(), name: m.name, type: 'objective', priority: 'C', difficulty: 'easy', start: e.date, end: e.date, startTime:'', endTime:'', stat:'', freq:null, customDays:null, xp:10, done:false }; state.quests.push(q); saveState(); renderAll(); renderKaizen(); showNotification('➕','Tarea de mejora creada'); }
 
   function deleteQuest(id) {
     if (!confirm('¿Eliminar?')) return;
@@ -3422,11 +3627,12 @@
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('section-' + id).classList.add('active');
     const btns = document.querySelectorAll('.nav-btn');
-    const sections = ['dashboard', 'profile', 'missions', 'calendar', 'config'];
+    const sections = ['dashboard', 'profile', 'missions', 'evaluations', 'calendar', 'config'];
     const idx = sections.indexOf(id);
     if (idx >= 0) btns[idx].classList.add('active');
 
     if (id === 'missions') renderMissions();
+    if (id === 'evaluations') renderEvaluations();
     if (id === 'profile') renderProfile();
     if (id === 'config') renderConfig();
     if (id === 'calendar') renderCalendar();
