@@ -955,6 +955,214 @@
   .radar-label { font-family: 'Rajdhani', sans-serif; font-size: 10px; fill: var(--text2); font-weight: 600; letter-spacing: 1px; }
   .radar-dot { fill: var(--accent); }
 
+  /* ===================== CALENDAR ===================== */
+  .calendar-layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 16px;
+    height: calc(100vh - 100px);
+  }
+
+  .cal-sidebar { display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
+
+  .cal-mini { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+
+  .cal-mini-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .cal-mini-title {
+    font-family: 'Cinzel', serif; font-size: 13px; color: var(--gold);
+  }
+
+  .cal-mini-nav {
+    background: none; border: none; color: var(--text2); cursor: pointer;
+    font-size: 14px; padding: 2px 6px; border-radius: 3px;
+    transition: color 0.15s;
+  }
+  .cal-mini-nav:hover { color: var(--text); }
+
+  .cal-mini-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 2px; }
+
+  .cal-mini-day-label {
+    font-size: 9px; font-weight: 700; letter-spacing: 1px;
+    color: var(--text3); text-align: center; padding: 2px 0;
+  }
+
+  .cal-mini-day {
+    font-size: 11px; text-align: center; padding: 4px 2px;
+    border-radius: 4px; cursor: pointer; color: var(--text2);
+    transition: all 0.15s; font-family: 'Share Tech Mono', monospace;
+  }
+
+  .cal-mini-day:hover { background: var(--surface2); color: var(--text); }
+  .cal-mini-day.today { background: var(--accent); color: white; font-weight: 700; }
+  .cal-mini-day.selected { outline: 1px solid var(--gold); color: var(--gold); }
+  .cal-mini-day.has-events::after {
+    content: '•'; display: block; font-size: 8px;
+    color: var(--gold); margin-top: -4px;
+  }
+  .cal-mini-day.other-month { opacity: 0.3; }
+
+  /* Main calendar */
+  .cal-main {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+
+  .cal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px; border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .cal-date-title {
+    font-family: 'Cinzel', serif; font-size: 16px; color: var(--text);
+  }
+
+  .cal-view-btns { display: flex; gap: 4px; }
+  .cal-view-btn {
+    background: none; border: 1px solid var(--border); border-radius: 4px;
+    color: var(--text2); font-family: 'Rajdhani', sans-serif;
+    font-size: 11px; font-weight: 600; letter-spacing: 1px;
+    padding: 4px 10px; cursor: pointer; transition: all 0.15s;
+  }
+  .cal-view-btn:hover { color: var(--text); border-color: var(--border2); }
+  .cal-view-btn.active { color: var(--gold); border-color: var(--gold); background: rgba(212,160,23,0.08); }
+
+  /* Day view (24h) */
+  .cal-day-view {
+    display: flex; flex: 1; overflow: hidden;
+  }
+
+  .cal-time-col {
+    width: 52px; flex-shrink: 0;
+    overflow-y: scroll; border-right: 1px solid var(--border);
+  }
+
+  .cal-time-col::-webkit-scrollbar { display: none; }
+
+  .cal-time-label {
+    height: 60px; display: flex; align-items: flex-start;
+    justify-content: flex-end; padding: 4px 8px 0 0;
+    font-family: 'Share Tech Mono', monospace; font-size: 10px;
+    color: var(--text3); flex-shrink: 0;
+  }
+
+  .cal-events-col {
+    flex: 1; overflow-y: scroll; position: relative;
+    cursor: crosshair;
+  }
+
+  .cal-hour-row {
+    height: 60px; border-bottom: 1px solid var(--border);
+    position: relative; flex-shrink: 0;
+  }
+
+  .cal-hour-row:hover { background: rgba(255,255,255,0.01); }
+
+  .cal-half-line {
+    position: absolute; top: 50%; left: 0; right: 0;
+    border-top: 1px dashed rgba(255,255,255,0.04);
+  }
+
+  /* Events on calendar */
+  .cal-event {
+    position: absolute; left: 4px; right: 4px;
+    border-radius: 5px; padding: 3px 7px;
+    font-size: 11px; font-weight: 600;
+    overflow: hidden; cursor: pointer;
+    transition: filter 0.15s, opacity 0.15s;
+    z-index: 2; border-left: 3px solid rgba(255,255,255,0.3);
+    user-select: none;
+  }
+
+  .cal-event:hover { filter: brightness(1.15); }
+
+  .cal-event.type-daily   { background: rgba(200,16,46,0.25);  border-color: var(--accent); }
+  .cal-event.type-habit   { background: rgba(64,200,128,0.2);  border-color: var(--green); }
+  .cal-event.type-objective { background: rgba(212,160,23,0.2); border-color: var(--gold); }
+  .cal-event.type-block   { background: rgba(64,80,160,0.25);  border-color: var(--blue); }
+
+  .cal-event-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cal-event-time  { font-size: 9px; opacity: 0.7; font-family: 'Share Tech Mono', monospace; }
+
+  /* Current time line */
+  .cal-now-line {
+    position: absolute; left: 0; right: 0; height: 2px;
+    background: var(--accent2); z-index: 5; pointer-events: none;
+  }
+
+  .cal-now-dot {
+    position: absolute; left: -4px; top: -4px;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--accent2);
+  }
+
+  /* Week view */
+  .cal-week-view { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+
+  .cal-week-header {
+    display: grid; grid-template-columns: 52px repeat(7, 1fr);
+    border-bottom: 1px solid var(--border); flex-shrink: 0;
+  }
+
+  .cal-week-day-header {
+    padding: 8px 4px; text-align: center;
+    font-size: 11px; font-weight: 600; letter-spacing: 1px;
+    color: var(--text2); border-left: 1px solid var(--border);
+  }
+
+  .cal-week-day-header.today-col { color: var(--gold); }
+
+  .cal-week-body {
+    flex: 1; overflow-y: scroll;
+    display: grid; grid-template-columns: 52px repeat(7, 1fr);
+  }
+
+  .cal-week-col {
+    position: relative; border-left: 1px solid var(--border);
+    cursor: crosshair;
+  }
+
+  /* Drag-select ghost */
+  .cal-drag-ghost {
+    position: absolute; left: 4px; right: 4px;
+    background: rgba(212,160,23,0.15); border: 1px dashed var(--gold);
+    border-radius: 5px; z-index: 10; pointer-events: none;
+  }
+
+  /* Habit tracker sidebar */
+  .habit-tracker-card { }
+
+  .habit-day-row {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 0; border-bottom: 1px solid var(--border);
+  }
+  .habit-day-row:last-child { border-bottom: none; }
+
+  .habit-name { font-size: 12px; color: var(--text); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .habit-streak { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--gold); }
+
+  .habit-check-dot {
+    width: 16px; height: 16px; border-radius: 50%;
+    border: 1px solid var(--border2); cursor: pointer;
+    transition: all 0.2s; flex-shrink: 0;
+  }
+
+  .habit-check-dot.done { background: var(--green); border-color: var(--green); }
+  .habit-check-dot.missed { background: rgba(200,16,46,0.3); border-color: var(--accent); }
+
+  .block-color-opt {
+    width: 28px; height: 28px; border-radius: 6px; cursor: pointer;
+    border: 2px solid transparent; transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .block-color-opt:hover { transform: scale(1.1); }
+  .block-color-opt.selected { border-color: white; }
+
   /* tabs in missions */
   .tab-row {
     display: flex;
@@ -992,6 +1200,7 @@
     <button class="nav-btn active" onclick="showSection('dashboard')">Dashboard</button>
     <button class="nav-btn" onclick="showSection('profile')">Perfil</button>
     <button class="nav-btn" onclick="showSection('missions')">Misiones</button>
+    <button class="nav-btn" onclick="showSection('calendar')">Calendario</button>
     <button class="nav-btn" onclick="showSection('config')">Config</button>
   </div>
   <div class="topbar-xp">
@@ -1199,10 +1408,11 @@
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
     <div>
       <div style="font-family:'Cinzel',serif;font-size:20px;color:var(--text);margin-bottom:4px;">Misiones & Objetivos</div>
-      <div style="font-size:13px;color:var(--text2);">Crea y gestiona tus misiones diarias y objetivos a largo plazo</div>
+      <div style="font-size:13px;color:var(--text2);">Crea y gestiona tus misiones, hábitos y objetivos</div>
     </div>
     <div style="display:flex;gap:8px;">
-      <button class="btn-secondary" onclick="openQuestModal('daily')">+ Misión Diaria</button>
+      <button class="btn-secondary" onclick="openQuestModal('habit')">+ Hábito</button>
+      <button class="btn-secondary" onclick="openQuestModal('daily')">+ Misión</button>
       <button class="btn-primary" onclick="openQuestModal('objective')">+ Objetivo</button>
     </div>
   </div>
@@ -1210,6 +1420,7 @@
   <div class="tab-row">
     <button class="tab-btn active" onclick="switchMissionsTab('all',this)">Todas</button>
     <button class="tab-btn" onclick="switchMissionsTab('daily',this)">Diarias</button>
+    <button class="tab-btn" onclick="switchMissionsTab('habit',this)">Hábitos</button>
     <button class="tab-btn" onclick="switchMissionsTab('objective',this)">Objetivos</button>
     <button class="tab-btn" onclick="switchMissionsTab('done',this)">Completadas</button>
   </div>
@@ -1308,6 +1519,87 @@
   </div>
 </div>
 
+<!-- ======== CALENDAR ======== -->
+<div class="section" id="section-calendar">
+  <div class="calendar-layout">
+    <div class="cal-sidebar">
+      <div class="cal-mini">
+        <div class="cal-mini-header">
+          <button class="cal-mini-nav" onclick="miniCalPrev()">‹</button>
+          <div class="cal-mini-title" id="mini-cal-title">—</div>
+          <button class="cal-mini-nav" onclick="miniCalNext()">›</button>
+        </div>
+        <div class="cal-mini-grid" id="mini-cal-grid"></div>
+      </div>
+      <div class="card habit-tracker-card">
+        <div class="card-header"><span class="dot" style="background:var(--green)"></span> Hábitos de Hoy</div>
+        <div style="padding:8px 16px;" id="cal-habits-today"></div>
+        <div class="empty-state" id="cal-habits-empty">No hay hábitos creados aún</div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="dot"></span> Leyenda</div>
+        <div style="padding:10px 16px;display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);"><span style="width:12px;height:12px;border-radius:3px;background:rgba(200,16,46,0.4);border-left:3px solid var(--accent);display:inline-block;flex-shrink:0;"></span> Misión Diaria</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);"><span style="width:12px;height:12px;border-radius:3px;background:rgba(64,200,128,0.3);border-left:3px solid var(--green);display:inline-block;flex-shrink:0;"></span> Hábito</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);"><span style="width:12px;height:12px;border-radius:3px;background:rgba(212,160,23,0.3);border-left:3px solid var(--gold);display:inline-block;flex-shrink:0;"></span> Objetivo</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);"><span style="width:12px;height:12px;border-radius:3px;background:rgba(64,80,160,0.35);border-left:3px solid var(--blue);display:inline-block;flex-shrink:0;"></span> Bloque libre</div>
+        </div>
+      </div>
+    </div>
+    <div class="cal-main">
+      <div class="cal-header">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <button class="cal-mini-nav" style="font-size:18px;" onclick="calNav(-1)">‹</button>
+          <div class="cal-date-title" id="cal-main-title">—</div>
+          <button class="cal-mini-nav" style="font-size:18px;" onclick="calNav(1)">›</button>
+          <button class="btn-secondary" style="padding:4px 10px;font-size:11px;margin-left:6px;" onclick="calGoToday()">Hoy</button>
+        </div>
+        <div class="cal-view-btns">
+          <button class="cal-view-btn active" id="cal-btn-day" onclick="setCalView('day',this)">Día</button>
+          <button class="cal-view-btn" id="cal-btn-week" onclick="setCalView('week',this)">Semana</button>
+        </div>
+      </div>
+      <div id="cal-body" style="flex:1;overflow:hidden;display:flex;flex-direction:column;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- BLOCK MODAL -->
+<div class="modal-overlay" id="block-modal">
+  <div class="modal" style="width:400px;">
+    <div class="modal-header">
+      <div class="modal-title">Bloque de Tiempo Libre</div>
+      <button class="modal-close" onclick="closeBlockModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Nombre</label>
+        <input class="form-input" id="block-name" placeholder="Ej: Lectura, Descanso, Paseo...">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Hora inicio</label>
+          <input class="form-input" type="time" id="block-start-time">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Hora fin</label>
+          <input class="form-input" type="time" id="block-end-time">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Color</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;" id="block-color-picker"></div>
+      </div>
+      <input type="hidden" id="block-date">
+      <input type="hidden" id="block-edit-id">
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="closeBlockModal()">Cancelar</button>
+        <button class="btn-primary" onclick="saveBlock()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- QUEST MODAL -->
 <div class="modal-overlay" id="quest-modal">
   <div class="modal">
@@ -1317,13 +1609,14 @@
     </div>
     <div class="modal-body">
       <div class="form-group">
-        <label class="form-label">Nombre de la misión</label>
+        <label class="form-label">Nombre</label>
         <input class="form-input" id="q-name" placeholder="¿Qué vas a conquistar?">
       </div>
       <div class="form-group">
         <label class="form-label">Tipo</label>
         <select class="form-select" id="q-type" onchange="updateQuestType()">
           <option value="daily">Misión Diaria</option>
+          <option value="habit">Hábito</option>
           <option value="objective">Objetivo</option>
         </select>
       </div>
@@ -1356,6 +1649,52 @@
           <input class="form-input" type="date" id="q-end">
         </div>
       </div>
+      <div class="form-row" id="q-time-row">
+        <div class="form-group">
+          <label class="form-label">Hora inicio</label>
+          <input class="form-input" type="time" id="q-time-start" value="09:00">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Hora fin</label>
+          <input class="form-input" type="time" id="q-time-end" value="10:00">
+        </div>
+      </div>
+      <!-- Habit-specific: frequency -->
+      <div class="form-group" id="q-freq-row" style="display:none;">
+        <label class="form-label">Frecuencia</label>
+        <select class="form-select" id="q-freq">
+          <option value="daily">Todos los días</option>
+          <option value="weekdays">Días laborables (L–V)</option>
+          <option value="weekends">Fines de semana</option>
+          <option value="custom">Personalizado</option>
+        </select>
+      </div>
+      <div class="form-group" id="q-freq-days-row" style="display:none;">
+        <label class="form-label">Días</label>
+        <div style="display:flex;gap:6px;">
+          <label style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--text2);cursor:pointer;">
+            <input type="checkbox" class="freq-day" value="1"> L
+          </label>
+          <label style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--text2);cursor:pointer;">
+            <input type="checkbox" class="freq-day" value="2"> M
+          </label>
+          <label style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--text2);cursor:pointer;">
+            <input type="checkbox" class="freq-day" value="3"> X
+          </label>
+          <label style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--text2);cursor:pointer;">
+            <input type="checkbox" class="freq-day" value="4"> J
+          </label>
+          <label style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--text2);cursor:pointer;">
+            <input type="checkbox" class="freq-day" value="5"> V
+          </label>
+          <label style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--text2);cursor:pointer;">
+            <input type="checkbox" class="freq-day" value="6"> S
+          </label>
+          <label style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--text2);cursor:pointer;">
+            <input type="checkbox" class="freq-day" value="0"> D
+          </label>
+        </div>
+      </div>
       <div class="form-group">
         <label class="form-label">Estadística relacionada</label>
         <select class="form-select" id="q-stat">
@@ -1368,7 +1707,7 @@
       </div>
       <div class="btn-row">
         <button class="btn-secondary" onclick="closeQuestModal()">Cancelar</button>
-        <button class="btn-primary" onclick="saveQuest()">Crear Misión</button>
+        <button class="btn-primary" onclick="saveQuest()">Crear</button>
       </div>
     </div>
   </div>
@@ -1424,6 +1763,8 @@ let state = {
   ],
   arc: { name: '', mantras: [] },
   quests: [],
+  habits: [],        // separate habit tracking: { questId, date, done }
+  timeBlocks: [],    // free blocks: { id, date, name, startTime, endTime, color }
   achievements: [
     { name: 'Primera Misión', icon: '⚔️', unlocked: false, key: 'first_quest' },
     { name: 'Rayo Veloz',     icon: '⚡', unlocked: false, key: '5_quests' },
@@ -1496,7 +1837,14 @@ function loadState() {
         unlocked: t.unlocked ?? true,
       }));
 
-      // Ensure ranks exist (migrate if missing)
+      // Ensure habits and timeBlocks arrays exist
+      if (!state.habits) state.habits = [];
+      if (!state.timeBlocks) state.timeBlocks = [];
+
+      // Migrate quests missing time fields
+      state.quests = state.quests.map(q => ({
+        startTime: '', endTime: '', freq: null, customDays: null, ...q
+      }));
       if (!state.ranks || state.ranks.length === 0) {
         state.ranks = [
           { label: 'C',  icon: '◈',  minLevel: 1  },
@@ -1726,25 +2074,42 @@ function renderTodayQuests() {
   const el = document.getElementById('today-quests-list');
   if (!el) return;
   const today = new Date().toISOString().split('T')[0];
+  const todayDow = new Date().getDay();
+
   const todayQuests = state.quests.filter(q =>
     q.type === 'daily' && q.start <= today && q.end >= today
   );
 
-  if (todayQuests.length === 0) {
+  const todayHabits = state.quests.filter(q => {
+    if (q.type !== 'habit' || q.start > today || q.end < today) return false;
+    if (q.freq === 'weekdays' && (todayDow === 0 || todayDow === 6)) return false;
+    if (q.freq === 'weekends' && todayDow !== 0 && todayDow !== 6) return false;
+    if (q.freq === 'custom' && q.customDays && !q.customDays.includes(todayDow)) return false;
+    return true;
+  });
+
+  const all = [...todayQuests, ...todayHabits];
+
+  if (all.length === 0) {
     el.innerHTML = '<div class="empty-state">No hay misiones para hoy. ¡Crea una!</div>';
     return;
   }
 
-  el.innerHTML = todayQuests.map(q => {
+  el.innerHTML = all.map(q => {
+    const isHabit = q.type === 'habit';
+    const done = isHabit
+      ? state.habits.some(h => h.questId === q.id && h.date === today && h.done)
+      : q.done;
     const diffCls = `diff-${q.difficulty}`;
     const prioCls = `prio-${q.priority.toLowerCase()}`;
+    const onclick = isHabit ? `toggleHabitToday('${q.id}')` : `toggleQuest('${q.id}')`;
     return `
     <div class="quest-item">
-      <div class="quest-check ${q.done ? 'done' : ''}" onclick="toggleQuest('${q.id}')">
-        ${q.done ? '✓' : ''}
+      <div class="quest-check ${done ? 'done' : ''}" onclick="${onclick}">
+        ${done ? '✓' : ''}
       </div>
       <div class="quest-info">
-        <div class="quest-name ${q.done ? 'done-text' : ''}">${q.name}</div>
+        <div class="quest-name ${done ? 'done-text' : ''}">${q.name}${isHabit ? ' 🔄' : ''}</div>
         <div class="quest-tags">
           <span class="tag ${prioCls}">${q.priority}</span>
           <span class="tag ${diffCls}">${q.difficulty}</span>
@@ -1825,44 +2190,110 @@ function renderMissions() {
 
   let quests = state.quests;
   if (currentMissionsTab === 'daily') quests = quests.filter(q => q.type === 'daily');
+  else if (currentMissionsTab === 'habit') quests = quests.filter(q => q.type === 'habit');
   else if (currentMissionsTab === 'objective') quests = quests.filter(q => q.type === 'objective');
-  else if (currentMissionsTab === 'done') quests = quests.filter(q => q.done);
-  else quests = quests.filter(q => !q.done || currentMissionsTab === 'all');
+  else if (currentMissionsTab === 'done') quests = quests.filter(q => q.done && q.type !== 'habit');
+  else quests = quests.filter(q => !q.done || q.type === 'habit');
 
   if (quests.length === 0) {
-    container.innerHTML = '<div class="empty-state" style="padding:40px;">No hay misiones aquí todavía.</div>';
+    container.innerHTML = '<div class="empty-state" style="padding:40px;">No hay nada aquí todavía.</div>';
     return;
   }
+
+  const today = new Date().toISOString().split('T')[0];
 
   container.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px;">` +
     quests.map(q => {
       const diffCls = `diff-${q.difficulty}`;
       const prioCls = `prio-${q.priority.toLowerCase()}`;
+      const isHabit = q.type === 'habit';
+      const habitDoneToday = isHabit && state.habits.some(h => h.questId === q.id && h.date === today && h.done);
+      const streak = isHabit ? getHabitStreak(q.id) : 0;
+      const typeLabel = isHabit ? 'Hábito' : q.type === 'daily' ? 'Diaria' : 'Objetivo';
+      const typeCls = isHabit ? 'diff-easy' : '';
+      const timeStr = q.startTime ? `${q.startTime}–${q.endTime}` : '';
+
       return `
-      <div class="mission-item ${q.done ? 'opacity-60' : ''}">
+      <div class="mission-item">
         <div class="mission-header">
-          <div class="mission-name">${q.done ? '✓ ' : ''}${q.name}</div>
+          <div>
+            <div class="mission-name">${isHabit && habitDoneToday ? '✓ ' : ''}${q.name}</div>
+            ${timeStr ? `<div style="font-size:10px;color:var(--text3);font-family:'Share Tech Mono',monospace;margin-top:2px;">🕐 ${timeStr}</div>` : ''}
+          </div>
           <span class="mission-xp-reward">${q.xp} XP</span>
         </div>
         <div class="mission-meta">
           <span class="tag ${prioCls}">Prio ${q.priority}</span>
           <span class="tag ${diffCls}">${q.difficulty}</span>
-          <span class="tag" style="background:rgba(80,80,100,0.1);color:var(--text2);border:1px solid var(--border);">${q.type === 'daily' ? 'Diaria' : 'Objetivo'}</span>
+          <span class="tag" style="background:rgba(80,80,100,0.1);color:var(--text2);border:1px solid var(--border);">${typeLabel}</span>
           ${q.stat ? `<span class="tag stat">${q.stat}</span>` : ''}
+          ${isHabit && streak > 0 ? `<span class="tag" style="background:rgba(212,160,23,0.1);color:var(--gold);border:1px solid rgba(212,160,23,0.2);">🔥 ${streak} días</span>` : ''}
         </div>
-        <div class="mission-dates">${q.start} → ${q.end}</div>
-        ${!q.done ? `<div class="mission-progress-wrap" style="margin-top:10px;">
-          <button class="btn-secondary" style="padding:5px 12px;font-size:11px;" onclick="toggleQuest('${q.id}')">Completar</button>
-          <button class="remove-btn" onclick="deleteQuest('${q.id}')">🗑</button>
-        </div>` : ''}
+        <div class="mission-dates">${q.start} → ${q.end} ${isHabit && q.freq ? '· ' + freqLabel(q.freq) : ''}</div>
+        <div class="mission-progress-wrap" style="margin-top:10px;">
+          ${isHabit
+            ? `<button class="btn-secondary" style="padding:5px 12px;font-size:11px;${habitDoneToday ? 'color:var(--green);border-color:var(--green);' : ''}" onclick="toggleHabitToday('${q.id}')">${habitDoneToday ? '✓ Hecho hoy' : 'Marcar hoy'}</button>`
+            : (!q.done ? `<button class="btn-secondary" style="padding:5px 12px;font-size:11px;" onclick="toggleQuest('${q.id}')">Completar</button>` : `<span style="font-size:11px;color:var(--green);">✓ Completada</span>`)
+          }
+          <button class="remove-btn" onclick="deleteQuest('${q.id}')" style="margin-left:auto;">🗑</button>
+        </div>
       </div>`;
     }).join('') + '</div>';
 }
 
+function freqLabel(freq) {
+  return { daily: 'Diario', weekdays: 'L–V', weekends: 'S–D', custom: 'Custom' }[freq] || freq;
+}
+
 function deleteQuest(id) {
-  if (!confirm('¿Eliminar esta misión?')) return;
+  if (!confirm('¿Eliminar?')) return;
   state.quests = state.quests.filter(q => q.id !== id);
+  state.habits = state.habits.filter(h => h.questId !== id);
   saveState(); renderAll();
+}
+
+function toggleHabitToday(questId) {
+  const today = new Date().toISOString().split('T')[0];
+  const existing = state.habits.find(h => h.questId === questId && h.date === today);
+  if (existing) {
+    existing.done = !existing.done;
+  } else {
+    state.habits.push({ questId, date: today, done: true });
+  }
+  const q = state.quests.find(x => x.id === questId);
+  const entry = state.habits.find(h => h.questId === questId && h.date === today);
+  if (entry?.done && q) {
+    addXP(q.xp);
+    if (q.stat) {
+      const stat = state.stats.find(s => s.name === q.stat);
+      if (stat) {
+        const prev = statLevel(stat.val);
+        stat.val += 1;
+        if (statLevel(stat.val) > prev) showNotification('📈', `¡${stat.name} subió a nivel ${statLevel(stat.val)}!`);
+      }
+    }
+    showNotification('✅', `Hábito completado: "${q.name}"`);
+    checkAchievements();
+  }
+  saveState(); renderAll();
+}
+
+function getHabitStreak(questId) {
+  const sorted = state.habits
+    .filter(h => h.questId === questId && h.done)
+    .map(h => h.date)
+    .sort()
+    .reverse();
+  if (!sorted.length) return 0;
+  let streak = 0;
+  let d = new Date();
+  for (let i = 0; i < 365; i++) {
+    const ds = d.toISOString().split('T')[0];
+    if (sorted.includes(ds)) { streak++; d.setDate(d.getDate() - 1); }
+    else if (i === 0) { d.setDate(d.getDate() - 1); } // allow today to not be done yet
+    else break;
+  }
+  return streak;
 }
 
 // ============================================================
@@ -1873,7 +2304,11 @@ let questModalType = 'daily';
 function openQuestModal(type) {
   questModalType = type || 'daily';
   document.getElementById('q-type').value = questModalType;
+  const isHabit = questModalType === 'habit';
+  document.getElementById('q-freq-row').style.display = isHabit ? 'flex' : 'none';
+  document.getElementById('q-freq-days-row').style.display = 'none';
   document.getElementById('modal-quest-title').textContent =
+    isHabit ? 'Nuevo Hábito' :
     questModalType === 'objective' ? 'Nuevo Objetivo' : 'Nueva Misión Diaria';
 
   // Fill stat options
@@ -1892,7 +2327,18 @@ function closeQuestModal() {
 
 function updateQuestType() {
   questModalType = document.getElementById('q-type').value;
+  const isHabit = questModalType === 'habit';
+  document.getElementById('q-freq-row').style.display = isHabit ? 'flex' : 'none';
+  document.getElementById('q-freq-days-row').style.display = 'none';
+  document.getElementById('modal-quest-title').textContent =
+    isHabit ? 'Nuevo Hábito' :
+    questModalType === 'objective' ? 'Nuevo Objetivo' : 'Nueva Misión Diaria';
 }
+
+document.getElementById('q-freq')?.addEventListener('change', function() {
+  document.getElementById('q-freq-days-row').style.display =
+    this.value === 'custom' ? 'flex' : 'none';
+});
 
 function calcXP() {
   const prio = document.getElementById('q-prio').value;
@@ -1907,17 +2353,27 @@ function calcXP() {
 
 function saveQuest() {
   const name = document.getElementById('q-name').value.trim();
-  if (!name) { alert('Ponle un nombre a la misión!'); return; }
+  if (!name) { alert('Ponle un nombre!'); return; }
   const xp = calcXP();
+  const type = document.getElementById('q-type').value;
+  const freq = type === 'habit' ? document.getElementById('q-freq').value : null;
+  const customDays = type === 'habit' && freq === 'custom'
+    ? [...document.querySelectorAll('.freq-day:checked')].map(c => parseInt(c.value))
+    : null;
+
   const quest = {
     id: Date.now().toString(),
     name,
-    type: document.getElementById('q-type').value,
+    type,
     priority: document.getElementById('q-prio').value,
     difficulty: document.getElementById('q-diff').value,
     start: document.getElementById('q-start').value,
     end: document.getElementById('q-end').value,
+    startTime: document.getElementById('q-time-start').value,
+    endTime: document.getElementById('q-time-end').value,
     stat: document.getElementById('q-stat').value,
+    freq,
+    customDays,
     xp,
     done: false,
     doneDate: null,
@@ -1926,7 +2382,7 @@ function saveQuest() {
   saveState();
   closeQuestModal();
   renderAll();
-  showNotification('📋', `Misión creada: "${name}"`);
+  showNotification('📋', `"${name}" creado`);
 }
 
 // ============================================================
@@ -2239,6 +2695,443 @@ function showNotification(icon, text) {
 }
 
 // ============================================================
+// CALENDAR
+// ============================================================
+let calView = 'day';
+let calDate = new Date();
+let miniCalDate = new Date();
+let blockColor = '#304080';
+let calDragStart = null;
+
+const BLOCK_COLORS = ['#304080','#4050a0','#a04080','#208060','#806020','#603080'];
+const MONTH_NAMES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const DAY_SHORT = ['D','L','M','X','J','V','S'];
+
+function setCalView(view, btn) {
+  calView = view;
+  document.querySelectorAll('.cal-view-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCalendar();
+}
+
+function calNav(dir) {
+  if (calView === 'day') calDate.setDate(calDate.getDate() + dir);
+  else calDate.setDate(calDate.getDate() + dir * 7);
+  renderCalendar();
+}
+
+function calGoToday() {
+  calDate = new Date();
+  renderCalendar();
+}
+
+function miniCalPrev() { miniCalDate.setMonth(miniCalDate.getMonth() - 1); renderMiniCal(); }
+function miniCalNext() { miniCalDate.setMonth(miniCalDate.getMonth() + 1); renderMiniCal(); }
+
+function renderCalendar() {
+  renderMiniCal();
+  renderCalMain();
+  renderCalHabits();
+}
+
+function renderMiniCal() {
+  const el = document.getElementById('mini-cal-title');
+  const grid = document.getElementById('mini-cal-grid');
+  if (!el || !grid) return;
+
+  el.textContent = `${MONTH_NAMES[miniCalDate.getMonth()]} ${miniCalDate.getFullYear()}`;
+
+  const today = new Date().toISOString().split('T')[0];
+  const selDate = calDate.toISOString().split('T')[0];
+
+  // Day labels
+  let html = DAY_SHORT.map(d => `<div class="cal-mini-day-label">${d}</div>`).join('');
+
+  const first = new Date(miniCalDate.getFullYear(), miniCalDate.getMonth(), 1);
+  const startPad = first.getDay(); // 0=Sun
+  const daysInMonth = new Date(miniCalDate.getFullYear(), miniCalDate.getMonth() + 1, 0).getDate();
+  const prevDays = new Date(miniCalDate.getFullYear(), miniCalDate.getMonth(), 0).getDate();
+
+  // Prev month padding
+  for (let i = startPad - 1; i >= 0; i--) {
+    html += `<div class="cal-mini-day other-month">${prevDays - i}</div>`;
+  }
+
+  // Days
+  for (let d = 1; d <= daysInMonth; d++) {
+    const ds = `${miniCalDate.getFullYear()}-${String(miniCalDate.getMonth()+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const hasEvents = getEventsForDate(ds).length > 0;
+    const cls = [
+      'cal-mini-day',
+      ds === today ? 'today' : '',
+      ds === selDate ? 'selected' : '',
+      hasEvents ? 'has-events' : '',
+    ].filter(Boolean).join(' ');
+    html += `<div class="${cls}" onclick="calGoDate('${ds}')">${d}</div>`;
+  }
+
+  grid.innerHTML = html;
+}
+
+function calGoDate(ds) {
+  calDate = new Date(ds + 'T12:00:00');
+  renderCalendar();
+}
+
+function renderCalMain() {
+  const body = document.getElementById('cal-body');
+  const title = document.getElementById('cal-main-title');
+  if (!body || !title) return;
+
+  if (calView === 'day') {
+    const ds = calDate.toISOString().split('T')[0];
+    const opts = { weekday:'long', year:'numeric', month:'long', day:'numeric' };
+    title.textContent = calDate.toLocaleDateString('es-ES', opts);
+    body.innerHTML = '';
+    body.appendChild(buildDayView(ds));
+  } else {
+    // week
+    const monday = getMonday(calDate);
+    const sunday = new Date(monday); sunday.setDate(monday.getDate() + 6);
+    const fmtOpts = { month:'short', day:'numeric' };
+    title.textContent = `${monday.toLocaleDateString('es-ES', fmtOpts)} – ${sunday.toLocaleDateString('es-ES', fmtOpts)} ${sunday.getFullYear()}`;
+    body.innerHTML = '';
+    body.appendChild(buildWeekView(monday));
+  }
+}
+
+function getMonday(d) {
+  const day = d.getDay();
+  const diff = (day === 0 ? -6 : 1 - day);
+  const m = new Date(d);
+  m.setDate(d.getDate() + diff);
+  return m;
+}
+
+function buildDayView(dateStr) {
+  const wrap = document.createElement('div');
+  wrap.className = 'cal-day-view';
+
+  // Time column
+  const timeCol = document.createElement('div');
+  timeCol.className = 'cal-time-col';
+  for (let h = 0; h < 24; h++) {
+    const label = document.createElement('div');
+    label.className = 'cal-time-label';
+    label.textContent = `${String(h).padStart(2,'0')}:00`;
+    timeCol.appendChild(label);
+  }
+
+  // Events column
+  const eventsCol = document.createElement('div');
+  eventsCol.className = 'cal-events-col';
+  eventsCol.style.position = 'relative';
+
+  // Hour rows
+  for (let h = 0; h < 24; h++) {
+    const row = document.createElement('div');
+    row.className = 'cal-hour-row';
+    const half = document.createElement('div');
+    half.className = 'cal-half-line';
+    row.appendChild(half);
+    eventsCol.appendChild(row);
+  }
+
+  // Now line
+  const nowLine = buildNowLine();
+  if (nowLine && dateStr === new Date().toISOString().split('T')[0]) {
+    eventsCol.appendChild(nowLine);
+  }
+
+  // Place events
+  const events = getEventsForDate(dateStr);
+  events.forEach(ev => {
+    const el = buildEventEl(ev);
+    if (el) eventsCol.appendChild(el);
+  });
+
+  // Double-click to create block
+  eventsCol.addEventListener('dblclick', (e) => {
+    const rect = eventsCol.getBoundingClientRect();
+    const y = e.clientY - rect.top + eventsCol.scrollTop;
+    const totalH = 24 * 60;
+    const minutes = Math.floor((y / (24 * 60)) * totalH);
+    const h = Math.floor(minutes / 60);
+    const m = Math.round((minutes % 60) / 15) * 15;
+    const startTime = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+    const endH = h + 1 >= 24 ? 23 : h + 1;
+    const endTime = `${String(endH).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+    openBlockModal(dateStr, startTime, endTime);
+  });
+
+  wrap.appendChild(timeCol);
+  wrap.appendChild(eventsCol);
+
+  // Sync scroll
+  setTimeout(() => {
+    const now = new Date();
+    const scrollTo = (now.getHours() * 60 - 60) / (24 * 60) * (24 * 60);
+    eventsCol.scrollTop = Math.max(0, scrollTo);
+    timeCol.scrollTop = eventsCol.scrollTop;
+  }, 50);
+
+  eventsCol.addEventListener('scroll', () => { timeCol.scrollTop = eventsCol.scrollTop; });
+
+  return wrap;
+}
+
+function buildWeekView(monday) {
+  const wrap = document.createElement('div');
+  wrap.className = 'cal-week-view';
+
+  // Header row
+  const header = document.createElement('div');
+  header.className = 'cal-week-header';
+  header.innerHTML = '<div></div>'; // empty corner
+  const today = new Date().toISOString().split('T')[0];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday); d.setDate(monday.getDate() + i);
+    const ds = d.toISOString().split('T')[0];
+    const isToday = ds === today;
+    header.innerHTML += `<div class="cal-week-day-header ${isToday ? 'today-col' : ''}">
+      ${DAY_SHORT[(d.getDay())]} ${d.getDate()}
+    </div>`;
+  }
+  wrap.appendChild(header);
+
+  // Body
+  const body = document.createElement('div');
+  body.className = 'cal-week-body';
+
+  // Time column
+  const timeCol = document.createElement('div');
+  timeCol.style.cssText = 'width:52px;flex-shrink:0;';
+  for (let h = 0; h < 24; h++) {
+    const l = document.createElement('div');
+    l.className = 'cal-time-label';
+    l.textContent = `${String(h).padStart(2,'0')}:00`;
+    timeCol.appendChild(l);
+  }
+  body.appendChild(timeCol);
+
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday); d.setDate(monday.getDate() + i);
+    const ds = d.toISOString().split('T')[0];
+    const col = document.createElement('div');
+    col.className = 'cal-week-col';
+
+    for (let h = 0; h < 24; h++) {
+      const row = document.createElement('div');
+      row.className = 'cal-hour-row';
+      const half = document.createElement('div');
+      half.className = 'cal-half-line';
+      row.appendChild(half);
+      col.appendChild(row);
+    }
+
+    // Now line
+    if (ds === today) {
+      const nl = buildNowLine();
+      if (nl) col.appendChild(nl);
+    }
+
+    // Events
+    getEventsForDate(ds).forEach(ev => {
+      const el = buildEventEl(ev);
+      if (el) col.appendChild(el);
+    });
+
+    col.addEventListener('dblclick', (e) => {
+      const rect = col.getBoundingClientRect();
+      const y = e.clientY - rect.top + body.scrollTop;
+      const h = Math.floor(y / 60);
+      const m = Math.round(((y % 60) / 60 * 60) / 15) * 15;
+      const startTime = `${String(Math.min(h,23)).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+      const endH = Math.min(h + 1, 23);
+      const endTime = `${String(endH).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+      openBlockModal(ds, startTime, endTime);
+    });
+
+    body.appendChild(col);
+  }
+
+  // Sync scroll on body
+  setTimeout(() => {
+    const now = new Date();
+    body.scrollTop = Math.max(0, (now.getHours() - 1) * 60);
+  }, 50);
+
+  wrap.appendChild(body);
+  return wrap;
+}
+
+function buildNowLine() {
+  const now = new Date();
+  const pct = (now.getHours() * 60 + now.getMinutes()) / (24 * 60);
+  const top = pct * 24 * 60;
+  const line = document.createElement('div');
+  line.className = 'cal-now-line';
+  line.style.top = top + 'px';
+  const dot = document.createElement('div');
+  dot.className = 'cal-now-dot';
+  line.appendChild(dot);
+  return line;
+}
+
+function timeToMinutes(t) {
+  if (!t) return 0;
+  const [h, m] = t.split(':').map(Number);
+  return h * 60 + m;
+}
+
+function buildEventEl(ev) {
+  const startM = timeToMinutes(ev.startTime);
+  const endM = timeToMinutes(ev.endTime);
+  if (endM <= startM) return null;
+  const top = startM; // 1px = 1min since 60px/hour
+  const height = Math.max(endM - startM, 20);
+
+  const el = document.createElement('div');
+  el.className = `cal-event type-${ev.type}`;
+  el.style.top = top + 'px';
+  el.style.height = height + 'px';
+
+  if (ev.type === 'block') {
+    el.style.background = ev.color ? ev.color + '55' : 'rgba(64,80,160,0.35)';
+    el.style.borderColor = ev.color || 'var(--blue)';
+  }
+
+  el.innerHTML = `<div class="cal-event-title">${ev.name}</div>
+    <div class="cal-event-time">${ev.startTime}–${ev.endTime}</div>`;
+
+  if (ev.type === 'block') {
+    el.addEventListener('dblclick', (e) => {
+      e.stopPropagation();
+      openBlockModal(ev.date, ev.startTime, ev.endTime, ev);
+    });
+  } else {
+    el.addEventListener('click', () => {
+      if (ev.type === 'habit') toggleHabitToday(ev.id);
+      else if (!ev.done) toggleQuest(ev.id);
+    });
+  }
+  return el;
+}
+
+function getEventsForDate(dateStr) {
+  const events = [];
+  const d = new Date(dateStr + 'T12:00:00');
+  const dayOfWeek = d.getDay(); // 0=Sun
+
+  // Quests and habits active on this date
+  state.quests.forEach(q => {
+    if (q.start > dateStr || q.end < dateStr) return;
+    if (!q.startTime || !q.endTime) return;
+
+    if (q.type === 'habit') {
+      // Check frequency
+      if (q.freq === 'weekdays' && (dayOfWeek === 0 || dayOfWeek === 6)) return;
+      if (q.freq === 'weekends' && dayOfWeek !== 0 && dayOfWeek !== 6) return;
+      if (q.freq === 'custom' && q.customDays && !q.customDays.includes(dayOfWeek)) return;
+      events.push({ ...q, type: 'habit', date: dateStr });
+    } else {
+      events.push({ ...q, date: dateStr });
+    }
+  });
+
+  // Free blocks
+  state.timeBlocks
+    .filter(b => b.date === dateStr)
+    .forEach(b => events.push({ ...b, type: 'block' }));
+
+  return events;
+}
+
+function renderCalHabits() {
+  const el = document.getElementById('cal-habits-today');
+  const empty = document.getElementById('cal-habits-empty');
+  if (!el) return;
+
+  const today = new Date().toISOString().split('T')[0];
+  const todayDow = new Date().getDay();
+  const habits = state.quests.filter(q => {
+    if (q.type !== 'habit') return false;
+    if (q.start > today || q.end < today) return false;
+    if (q.freq === 'weekdays' && (todayDow === 0 || todayDow === 6)) return false;
+    if (q.freq === 'weekends' && todayDow !== 0 && todayDow !== 6) return false;
+    if (q.freq === 'custom' && q.customDays && !q.customDays.includes(todayDow)) return false;
+    return true;
+  });
+
+  if (habits.length === 0) {
+    el.innerHTML = '';
+    if (empty) empty.style.display = 'block';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+
+  el.innerHTML = habits.map(h => {
+    const done = state.habits.some(x => x.questId === h.id && x.date === today && x.done);
+    const streak = getHabitStreak(h.id);
+    return `<div class="habit-day-row">
+      <div class="habit-check-dot ${done ? 'done' : ''}" onclick="toggleHabitToday('${h.id}')"></div>
+      <span class="habit-name">${h.name}</span>
+      ${streak > 0 ? `<span class="habit-streak">🔥${streak}</span>` : ''}
+    </div>`;
+  }).join('');
+}
+
+// Block modal
+function openBlockModal(date, startTime, endTime, existingBlock) {
+  document.getElementById('block-name').value = existingBlock?.name || '';
+  document.getElementById('block-start-time').value = startTime || '09:00';
+  document.getElementById('block-end-time').value = endTime || '10:00';
+  document.getElementById('block-date').value = date;
+  document.getElementById('block-edit-id').value = existingBlock?.id || '';
+  blockColor = existingBlock?.color || '#304080';
+
+  const picker = document.getElementById('block-color-picker');
+  picker.innerHTML = BLOCK_COLORS.map(c =>
+    `<div class="block-color-opt ${c === blockColor ? 'selected' : ''}" style="background:${c};" onclick="selectBlockColor('${c}',this)"></div>`
+  ).join('');
+
+  document.getElementById('block-modal').classList.add('open');
+}
+
+function closeBlockModal() {
+  document.getElementById('block-modal').classList.remove('open');
+}
+
+function selectBlockColor(color, el) {
+  blockColor = color;
+  document.querySelectorAll('.block-color-opt').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function saveBlock() {
+  const name = document.getElementById('block-name').value.trim();
+  if (!name) { alert('Ponle un nombre al bloque'); return; }
+  const editId = document.getElementById('block-edit-id').value;
+  const block = {
+    id: editId || Date.now().toString(),
+    name,
+    date: document.getElementById('block-date').value,
+    startTime: document.getElementById('block-start-time').value,
+    endTime: document.getElementById('block-end-time').value,
+    color: blockColor,
+  };
+  if (editId) {
+    const i = state.timeBlocks.findIndex(b => b.id === editId);
+    if (i >= 0) state.timeBlocks[i] = block;
+  } else {
+    state.timeBlocks.push(block);
+  }
+  saveState();
+  closeBlockModal();
+  renderCalendar();
+}
+
+// ============================================================
 // NAVIGATION
 // ============================================================
 function showSection(id) {
@@ -2246,12 +3139,14 @@ function showSection(id) {
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('section-' + id).classList.add('active');
   const btns = document.querySelectorAll('.nav-btn');
-  const sections = ['dashboard', 'profile', 'missions', 'config'];
-  btns[sections.indexOf(id)].classList.add('active');
+  const sections = ['dashboard', 'profile', 'missions', 'calendar', 'config'];
+  const idx = sections.indexOf(id);
+  if (idx >= 0) btns[idx].classList.add('active');
 
   if (id === 'missions') renderMissions();
   if (id === 'profile') renderProfile();
   if (id === 'config') renderConfig();
+  if (id === 'calendar') renderCalendar();
 }
 
 // ============================================================
