@@ -1116,7 +1116,54 @@
   .cal-event.type-daily     { background: rgba(200,16,46,0.3);   border-color: #e8263d; color: #ffd0d6; }
   .cal-event.type-habit     { background: rgba(40,180,100,0.28); border-color: #40c880; color: #a0f0c0; }
   .cal-event.type-objective { background: rgba(212,160,23,0.28); border-color: #d4a017; color: #f0d070; }
+  .cal-event.type-sidequest { background: rgba(160,80,220,0.28); border-color: #b060f0; color: #e0b0ff; }
   .cal-event.type-block     { color: #c0d0ff; }
+  .cal-event.overdue        { opacity: 0.5; border-style: dashed; }
+
+  /* Penalty banner */
+  .penalty-banner {
+    background: rgba(200,16,46,0.12);
+    border: 1px solid rgba(200,16,46,0.35);
+    border-radius: 8px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 12px;
+    color: var(--text2);
+  }
+  .penalty-banner .penalty-icon { font-size: 18px; flex-shrink: 0; }
+  .penalty-banner .penalty-text { flex: 1; line-height: 1.4; }
+  .penalty-banner .penalty-xp   { font-family: 'Share Tech Mono', monospace; color: var(--accent); font-weight: 700; white-space: nowrap; }
+  .penalty-forgive-btn {
+    background: none;
+    border: 1px solid rgba(212,160,23,0.4);
+    border-radius: 4px;
+    color: var(--gold);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .penalty-forgive-btn:hover { background: rgba(212,160,23,0.1); }
+
+  /* Side quest streak badge */
+  .sq-streak-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(160,80,220,0.15);
+    border: 1px solid rgba(160,80,220,0.3);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 11px;
+    color: #c080ff;
+    font-family: 'Share Tech Mono', monospace;
+  }
 
   .cal-event-title {
     white-space: nowrap;
@@ -1293,9 +1340,10 @@
     padding: 2px 7px; border-radius: 3px;
   }
 
-  .automation-type-badge.task  { background: rgba(200,16,46,0.15);  color: var(--accent2); }
-  .automation-type-badge.habit { background: rgba(64,200,128,0.15); color: var(--green); }
-  .automation-type-badge.block { background: rgba(64,80,160,0.15);  color: #80a0ff; }
+  .automation-type-badge.task       { background: rgba(200,16,46,0.15);  color: var(--accent2); }
+  .automation-type-badge.habit      { background: rgba(64,200,128,0.15); color: var(--green); }
+  .automation-type-badge.block      { background: rgba(64,80,160,0.15);  color: #80a0ff; }
+  .automation-type-badge.sidequest  { background: rgba(160,80,220,0.15); color: #c080ff; }
 
   .automation-item-meta {
     font-size: 11px; color: var(--text3);
@@ -1550,6 +1598,11 @@
         </div>
       </div>
       <div class="card">
+        <div class="card-header"><span class="dot" style="background:var(--accent)"></span> Historial de Penalizaciones</div>
+        <div id="penalty-history-list" style="padding:8px 0;max-height:280px;overflow-y:auto;"></div>
+        <div id="penalty-history-empty" class="empty-state">Sin penalizaciones registradas</div>
+      </div>
+      <div class="card">
         <div class="card-header"><span class="dot"></span> Historial de Misiones</div>
         <div id="history-list" style="padding:10px 0;"></div>
         <div id="history-empty" class="empty-state">Completa misiones para ver el historial</div>
@@ -1568,6 +1621,7 @@
     <div style="display:flex;gap:8px;">
       <button class="btn-secondary" onclick="openQuestModal('habit')">+ Hábito</button>
       <button class="btn-secondary" onclick="openQuestModal('daily')">+ Misión</button>
+      <button class="btn-secondary" style="color:#c080ff;border-color:rgba(160,80,220,0.4);" onclick="openQuestModal('sidequest')">+ Side Quest 🎮</button>
       <button class="btn-primary" onclick="openQuestModal('objective')">+ Objetivo</button>
     </div>
   </div>
@@ -1575,6 +1629,7 @@
   <div class="tab-row">
     <button class="tab-btn active" onclick="switchMissionsTab('all',this)">Todas</button>
     <button class="tab-btn" onclick="switchMissionsTab('daily',this)">Diarias</button>
+    <button class="tab-btn" onclick="switchMissionsTab('sidequest',this)">Side Quests 🎮</button>
     <button class="tab-btn" onclick="switchMissionsTab('habit',this)">Hábitos</button>
     <button class="tab-btn" onclick="switchMissionsTab('objective',this)">Objetivos</button>
     <button class="tab-btn" onclick="switchMissionsTab('done',this)">Completadas</button>
@@ -1797,6 +1852,7 @@
             <label class="form-label">Tipo</label>
             <select class="form-select" id="auto-type" onchange="updateAutoType()">
               <option value="task">Tarea (Misión Diaria)</option>
+              <option value="sidequest">Side Quest 🎮</option>
               <option value="habit">Hábito</option>
               <option value="block">Bloque de Tiempo</option>
             </select>
@@ -1913,6 +1969,7 @@
         <div class="card-header"><span class="dot"></span> Leyenda</div>
         <div style="padding:10px 16px;display:flex;flex-direction:column;gap:8px;">
           <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);"><span style="width:12px;height:12px;border-radius:3px;background:rgba(200,16,46,0.4);border-left:3px solid var(--accent);display:inline-block;flex-shrink:0;"></span> Misión Diaria</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);"><span style="width:12px;height:12px;border-radius:3px;background:rgba(160,80,220,0.35);border-left:3px solid #b060f0;display:inline-block;flex-shrink:0;"></span> Side Quest</div>
           <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);"><span style="width:12px;height:12px;border-radius:3px;background:rgba(64,200,128,0.3);border-left:3px solid var(--green);display:inline-block;flex-shrink:0;"></span> Hábito</div>
           <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);"><span style="width:12px;height:12px;border-radius:3px;background:rgba(212,160,23,0.3);border-left:3px solid var(--gold);display:inline-block;flex-shrink:0;"></span> Objetivo</div>
           <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);"><span style="width:12px;height:12px;border-radius:3px;background:rgba(64,80,160,0.35);border-left:3px solid var(--blue);display:inline-block;flex-shrink:0;"></span> Bloque libre</div>
@@ -1989,6 +2046,7 @@
         <label class="form-label">Tipo</label>
         <select class="form-select" id="q-type" onchange="updateQuestType()">
           <option value="daily">Misión Diaria</option>
+          <option value="sidequest">Side Quest 🎮</option>
           <option value="habit">Hábito</option>
           <option value="objective">Objetivo</option>
         </select>
@@ -2074,6 +2132,12 @@
           <!-- filled by JS -->
         </select>
       </div>
+      <div class="form-group" style="display:flex;align-items:center;gap:10px;">
+        <label class="auto-day-label" style="width:auto;padding:6px 12px;display:flex;align-items:center;gap:6px;">
+          <input type="checkbox" id="q-penalty-enabled" style="display:inline;width:auto;margin:0;">
+          <span style="font-size:12px;color:var(--text2);">⚠️ Activar penalización por incumplimiento</span>
+        </label>
+      </div>
       <div class="xp-preview">
         <span class="xp-preview-label">XP a ganar</span>
         <span class="xp-preview-val" id="xp-preview-val">50 XP</span>
@@ -2140,6 +2204,9 @@ let state = {
   timeBlocks: [],    // free blocks: { id, date, name, startTime, endTime, color }
   kaizenEntries: [], // { id, date, summary, good, bad, improve, tasks:[{id,text,done}] }
   automations: [],   // { id, name, type:'task'|'habit'|'block', priority, difficulty, stat, startDate, endDate, startTime, endTime, weekDays:[0-6], color, lastRun }
+  penalties: [],     // { id, questId, questName, type, date, xp, forgiven, reason }
+  sideQuestStreak: 0,  // consecutive days with required side quests done
+  sideQuestStreakDate: null, // last date streak was updated
   achievements: [
     { name: 'Primera Misión', icon: '⚔️', unlocked: false, key: 'first_quest' },
     { name: 'Rayo Veloz',     icon: '⚡', unlocked: false, key: '5_quests' },
@@ -2217,6 +2284,9 @@ function loadState() {
       if (!state.timeBlocks) state.timeBlocks = [];
       if (!state.kaizenEntries) state.kaizenEntries = [];
       if (!state.automations) state.automations = [];
+      if (!state.penalties) state.penalties = [];
+      if (state.sideQuestStreak === undefined) state.sideQuestStreak = 0;
+      if (state.sideQuestStreakDate === undefined) state.sideQuestStreakDate = null;
 
       // Migrate quests missing time fields
       state.quests = state.quests.map(q => ({
@@ -2251,6 +2321,9 @@ function init() {
 
   // Run automations on load
   runAutomations();
+
+  // Check for overdue tasks / missed side quests and apply penalties
+  checkPenalties();
 
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('q-start').value = today;
@@ -2463,7 +2536,7 @@ function renderTodayQuests() {
   const todayDow = new Date().getDay();
 
   const todayQuests = state.quests.filter(q =>
-    q.type === 'daily' && q.start <= today && q.end >= today
+    (q.type === 'daily' || q.type === 'sidequest') && q.start <= today && q.end >= today
   );
 
   const todayHabits = state.quests.filter(q => {
@@ -2476,59 +2549,162 @@ function renderTodayQuests() {
 
   const all = [...todayQuests, ...todayHabits];
 
-  if (all.length === 0) {
-    el.innerHTML = '<div class="empty-state">No hay misiones para hoy. ¡Crea una!</div>';
+  // Pending penalties waiting for forgive/apply decision
+  const pendingPenalties = state.penalties.filter(p => p.status === 'pending');
+
+  let html = '';
+
+  // Side quest status bar
+  const todaySideQuests = todayQuests.filter(q => q.type === 'sidequest');
+  const doneSideQuests  = todaySideQuests.filter(q => q.done && q.doneDate === today);
+  const requiredSQ = Math.min(2, todaySideQuests.length > 0 ? 2 : 0);
+  if (todaySideQuests.length > 0) {
+    const sqDone = doneSideQuests.length;
+    const sqOk   = sqDone >= requiredSQ;
+    const streak = state.sideQuestStreak || 0;
+    html += `
+    <div style="background:rgba(160,80,220,0.08);border:1px solid rgba(160,80,220,0.25);border-radius:8px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:12px;">
+      <span style="font-size:20px;">🎮</span>
+      <div style="flex:1;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#c080ff;margin-bottom:3px;">Side Quests del día</div>
+        <div style="font-size:12px;color:var(--text2);">${sqDone} / ${requiredSQ} completadas ${sqOk ? '<span style="color:var(--green);">✓</span>' : '<span style="color:var(--accent);">— obligatorio</span>'}</div>
+      </div>
+      ${streak > 0 ? `<div class="sq-streak-badge">🔥 ${streak} días</div>` : ''}
+    </div>`;
+  }
+
+  // Pending penalty alerts
+  pendingPenalties.forEach(p => {
+    const timeLeft = getPenaltyForgiveWindow(p);
+    html += `
+    <div class="penalty-banner">
+      <span class="penalty-icon">⚠️</span>
+      <div class="penalty-text">
+        <strong style="color:var(--accent);">${p.questName}</strong> no completada a tiempo<br>
+        <span style="font-size:11px;color:var(--text3);">${p.date} · plazo vencido</span>
+        ${timeLeft > 0 ? `<span style="font-size:11px;color:var(--gold);"> · ${timeLeft}h para decidir</span>` : ''}
+      </div>
+      <span class="penalty-xp">−${p.xp} XP</span>
+      <button class="penalty-forgive-btn" onclick="openForgiveModal('${p.id}')">⚖️ Perdonar</button>
+      <button class="btn-secondary" style="padding:3px 8px;font-size:11px;color:var(--accent);border-color:var(--accent);" onclick="applyPenalty('${p.id}')">Aplicar</button>
+    </div>`;
+  });
+
+  if (all.length === 0 && pendingPenalties.length === 0) {
+    el.innerHTML = html + '<div class="empty-state">No hay misiones para hoy. ¡Crea una!</div>';
     return;
   }
 
-  el.innerHTML = all.map(q => {
-    const isHabit = q.type === 'habit';
+  html += all.map(q => {
+    const isHabit    = q.type === 'habit';
+    const isSideQuest = q.type === 'sidequest';
     const done = isHabit
       ? state.habits.some(h => h.questId === q.id && h.date === today && h.done)
-      : q.done;
-    const diffCls = `diff-${q.difficulty}`;
-    const prioCls = `prio-${q.priority.toLowerCase()}`;
-    const onclick = isHabit ? `toggleHabitToday('${q.id}')` : `toggleQuest('${q.id}')`;
+      : q.done && q.doneDate === today;
+
+    // Check if this quest is currently overdue (time passed, not done yet)
+    const nowTime     = new Date().toTimeString().slice(0, 5);
+    const isOverdue   = !done && !isHabit && q.endTime && nowTime > q.endTime;
+    const isLate      = q.lateCompletion; // completed after deadline
+
+    const diffCls  = `diff-${q.difficulty}`;
+    const prioCls  = `prio-${(q.priority||'b').toLowerCase()}`;
+    const onclick  = isHabit ? `toggleHabitToday('${q.id}')` : `toggleQuest('${q.id}')`;
+    const sqStyle  = isSideQuest ? 'border-left:2px solid #b060f0;' : '';
+    const overdueStyle = isOverdue ? 'opacity:0.7;border-left:2px solid var(--accent);' : '';
+    const sqBadge  = isSideQuest ? `<span style="font-size:10px;background:rgba(160,80,220,0.15);color:#c080ff;border:1px solid rgba(160,80,220,0.25);border-radius:3px;padding:1px 5px;">🎮 SIDE</span>` : '';
+    const overdueBadge = isOverdue ? `<span style="font-size:10px;background:rgba(200,16,46,0.15);color:var(--accent);border:1px solid rgba(200,16,46,0.3);border-radius:3px;padding:1px 5px;">⏰ VENCIDA</span>` : '';
+    const lateBadge    = isLate    ? `<span style="font-size:10px;background:rgba(212,160,23,0.1);color:var(--gold);border:1px solid rgba(212,160,23,0.2);border-radius:3px;padding:1px 5px;">⚠️ Tarde</span>` : '';
+
     return `
-    <div class="quest-item">
-      <div class="quest-check ${done ? 'done' : ''}" onclick="${onclick}">
+    <div class="quest-item" style="${sqStyle}${overdueStyle}">
+      <div class="quest-check ${done ? 'done' : ''}" onclick="${onclick}" ${isOverdue ? 'title="Completar fuera de plazo genera penalización"' : ''}>
         ${done ? '✓' : ''}
       </div>
       <div class="quest-info">
         <div class="quest-name ${done ? 'done-text' : ''}">${q.name}${isHabit ? ' 🔄' : ''}</div>
         <div class="quest-tags">
+          ${sqBadge}${overdueBadge}${lateBadge}
           <span class="tag ${prioCls}">${q.priority}</span>
           <span class="tag ${diffCls}">${q.difficulty}</span>
           ${q.stat ? `<span class="tag stat">+${q.stat}</span>` : ''}
+          ${q.endTime ? `<span class="tag" style="color:${isOverdue ? 'var(--accent)' : 'var(--text3)'};border-color:${isOverdue ? 'rgba(200,16,46,0.3)' : 'var(--border)'};">🕐 ${q.startTime ? q.startTime+'–' : ''}${q.endTime}</span>` : ''}
         </div>
       </div>
-      <div class="quest-xp">+${q.xp} XP</div>
+      <div class="quest-xp" style="${isOverdue||isLate ? 'color:var(--accent);' : ''}">${isLate ? '±0' : '+'+q.xp} XP</div>
     </div>`;
   }).join('');
+
+  el.innerHTML = html;
 }
 
 function toggleQuest(id) {
   const q = state.quests.find(x => x.id === id);
   if (!q) return;
-  if (!q.done) {
-    q.done = true;
-    q.doneDate = new Date().toISOString().split('T')[0];
-    addXP(q.xp);
-    // +1 stat point only
-    if (q.stat) {
-      const stat = state.stats.find(s => s.name === q.stat);
-      if (stat) {
-        const prevLvl = statLevel(stat.val);
-        stat.val += 1;
-        const newLvl = statLevel(stat.val);
-        if (newLvl > prevLvl) {
-          showNotification('📈', `¡${stat.name} subió a nivel ${newLvl}!`);
-        }
+  if (q.done) return; // already done, nothing to do
+
+  const now     = new Date();
+  const today   = now.toISOString().split('T')[0];
+  const nowTime = now.toTimeString().slice(0, 5); // 'HH:MM'
+
+  // Check if deadline has passed
+  const dateExpired = q.end < today;
+  const timeExpired = q.end === today && q.endTime && nowTime > q.endTime;
+  const isOverdue   = dateExpired || timeExpired;
+
+  if (isOverdue) {
+    // Create penalty immediately if not already registered
+    const already = state.penalties.some(p => p.questId === q.id);
+    if (!already) {
+      const rate   = PENALTY_RATE[q.type] || 0.5;
+      const xpLoss = Math.round((q.xp || 0) * rate);
+      if (xpLoss > 0) {
+        state.penalties.push({
+          id:        'pen_' + q.id + '_' + q.end,
+          questId:   q.id,
+          questName: q.name,
+          type:      q.type,
+          date:      q.end,
+          xp:        xpLoss,
+          status:    'pending',
+          reason:    '',
+          createdAt: now.toISOString(),
+        });
       }
     }
-    showNotification('⚡', `+${q.xp} XP — "${q.name}" completada`);
-    checkAchievements();
+    // Mark as done but give NO XP — penalización ya registrada
+    q.done     = true;
+    q.doneDate = today;
+    q.lateCompletion = true;
+    saveState();
+    renderAll();
+    showNotification('⚠️', `"${q.name}" completada fuera de plazo — penalización registrada`);
+    return;
   }
+
+  // ---- On time ----
+  q.done     = true;
+  q.doneDate = today;
+
+  let xpGain = q.xp;
+  if (q.type === 'sidequest') {
+    const bonus = getSideQuestStreakBonus();
+    if (bonus > 0) xpGain = Math.round(xpGain * (1 + bonus));
+    showNotification('🎮', `+${xpGain} XP — Side Quest completada${bonus > 0 ? ` (×${(1+bonus).toFixed(1)})` : ''}`);
+  } else {
+    showNotification('⚡', `+${xpGain} XP — "${q.name}" completada`);
+  }
+
+  addXP(xpGain);
+  if (q.stat) {
+    const stat = state.stats.find(s => s.name === q.stat);
+    if (stat) {
+      const prev = statLevel(stat.val);
+      stat.val += 1;
+      if (statLevel(stat.val) > prev) showNotification('📈', `¡${stat.name} subió a nivel ${statLevel(stat.val)}!`);
+    }
+  }
+  checkAchievements();
   saveState();
   renderAll();
 }
@@ -2576,6 +2752,7 @@ function renderMissions() {
 
   let quests = state.quests;
   if (currentMissionsTab === 'daily') quests = quests.filter(q => q.type === 'daily');
+  else if (currentMissionsTab === 'sidequest') quests = quests.filter(q => q.type === 'sidequest');
   else if (currentMissionsTab === 'habit') quests = quests.filter(q => q.type === 'habit');
   else if (currentMissionsTab === 'objective') quests = quests.filter(q => q.type === 'objective');
   else if (currentMissionsTab === 'done') quests = quests.filter(q => q.done && q.type !== 'habit');
@@ -2586,7 +2763,8 @@ function renderMissions() {
     return;
   }
 
-  const today = new Date().toISOString().split('T')[0];
+  const today   = new Date().toISOString().split('T')[0];
+  const nowTime = new Date().toTimeString().slice(0, 5);
 
   container.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px;">` +
     quests.map(q => {
@@ -2594,19 +2772,35 @@ function renderMissions() {
       const prioCls = `prio-${q.priority.toLowerCase()}`;
       const isHabit = q.type === 'habit';
       const habitDoneToday = isHabit && state.habits.some(h => h.questId === q.id && h.date === today && h.done);
-      const streak = isHabit ? getHabitStreak(q.id) : 0;
-      const typeLabel = isHabit ? 'Hábito' : q.type === 'daily' ? 'Diaria' : 'Objetivo';
-      const typeCls = isHabit ? 'diff-easy' : '';
+      const streak  = isHabit ? getHabitStreak(q.id) : 0;
+      const typeLabel = isHabit ? 'Hábito' : q.type === 'daily' ? 'Diaria' : q.type === 'sidequest' ? '🎮 Side Quest' : 'Objetivo';
       const timeStr = q.startTime ? `${q.startTime}–${q.endTime}` : '';
 
+      // Overdue / late detection
+      const dateExpired = !isHabit && q.end < today;
+      const timeExpired = !isHabit && q.end === today && q.endTime && nowTime > q.endTime;
+      const isOverdue   = !q.done && (dateExpired || timeExpired);
+      const isLate      = q.lateCompletion;
+
+      const cardBorder  = isOverdue ? 'border-color:rgba(200,16,46,0.4);' : isLate ? 'border-color:rgba(212,160,23,0.3);' : '';
+      const xpDisplay   = isLate ? '±0 XP' : `${q.xp} XP`;
+      const xpColor     = isOverdue || isLate ? 'color:var(--accent);' : '';
+
+      const overdueBadge = isOverdue ? `<span class="tag" style="background:rgba(200,16,46,0.15);color:var(--accent);border-color:rgba(200,16,46,0.3);">⏰ VENCIDA</span>` : '';
+      const lateBadge    = isLate    ? `<span class="tag" style="background:rgba(212,160,23,0.1);color:var(--gold);border-color:rgba(212,160,23,0.2);">⚠️ Tarde</span>` : '';
+
+      const completeBtn = isOverdue
+        ? `<button class="btn-secondary" style="padding:5px 12px;font-size:11px;color:var(--accent);border-color:rgba(200,16,46,0.4);" onclick="toggleQuest('${q.id}')" title="Completar fuera de plazo — generará penalización">⚠️ Completar tarde</button>`
+        : `<button class="btn-secondary" style="padding:5px 12px;font-size:11px;" onclick="toggleQuest('${q.id}')">Completar</button>`;
+
       return `
-      <div class="mission-item">
+      <div class="mission-item" style="${cardBorder}">
         <div class="mission-header">
           <div>
             <div class="mission-name">${isHabit && habitDoneToday ? '✓ ' : ''}${q.name}</div>
-            ${timeStr ? `<div style="font-size:10px;color:var(--text3);font-family:'Share Tech Mono',monospace;margin-top:2px;">🕐 ${timeStr}</div>` : ''}
+            ${timeStr ? `<div style="font-size:10px;color:${isOverdue ? 'var(--accent)' : 'var(--text3)'};font-family:'Share Tech Mono',monospace;margin-top:2px;">🕐 ${timeStr}</div>` : ''}
           </div>
-          <span class="mission-xp-reward">${q.xp} XP</span>
+          <span class="mission-xp-reward" style="${xpColor}">${xpDisplay}</span>
         </div>
         <div class="mission-meta">
           <span class="tag ${prioCls}">Prio ${q.priority}</span>
@@ -2614,12 +2808,15 @@ function renderMissions() {
           <span class="tag" style="background:rgba(80,80,100,0.1);color:var(--text2);border:1px solid var(--border);">${typeLabel}</span>
           ${q.stat ? `<span class="tag stat">${q.stat}</span>` : ''}
           ${isHabit && streak > 0 ? `<span class="tag" style="background:rgba(212,160,23,0.1);color:var(--gold);border:1px solid rgba(212,160,23,0.2);">🔥 ${streak} días</span>` : ''}
+          ${overdueBadge}${lateBadge}
         </div>
         <div class="mission-dates">${q.start} → ${q.end} ${isHabit && q.freq ? '· ' + freqLabel(q.freq) : ''}</div>
         <div class="mission-progress-wrap" style="margin-top:10px;">
           ${isHabit
             ? `<button class="btn-secondary" style="padding:5px 12px;font-size:11px;${habitDoneToday ? 'color:var(--green);border-color:var(--green);' : ''}" onclick="toggleHabitToday('${q.id}')">${habitDoneToday ? '✓ Hecho hoy' : 'Marcar hoy'}</button>`
-            : (!q.done ? `<button class="btn-secondary" style="padding:5px 12px;font-size:11px;" onclick="toggleQuest('${q.id}')">Completar</button>` : `<span style="font-size:11px;color:var(--green);">✓ Completada</span>`)
+            : (!q.done
+                ? completeBtn
+                : `<span style="font-size:11px;color:${isLate ? 'var(--gold)' : 'var(--green)'};">${isLate ? '⚠️ Completada tarde' : '✓ Completada'}</span>`)
           }
           <button class="remove-btn" onclick="deleteQuest('${q.id}')" style="margin-left:auto;">🗑</button>
         </div>
@@ -2695,7 +2892,8 @@ function openQuestModal(type) {
   document.getElementById('q-freq-days-row').style.display = 'none';
   document.getElementById('modal-quest-title').textContent =
     isHabit ? 'Nuevo Hábito' :
-    questModalType === 'objective' ? 'Nuevo Objetivo' : 'Nueva Misión Diaria';
+    questModalType === 'objective' ? 'Nuevo Objetivo' :
+    questModalType === 'sidequest' ? 'Nueva Side Quest 🎮' : 'Nueva Misión Diaria';
 
   // Fill stat options
   const statSel = document.getElementById('q-stat');
@@ -2718,7 +2916,8 @@ function updateQuestType() {
   document.getElementById('q-freq-days-row').style.display = 'none';
   document.getElementById('modal-quest-title').textContent =
     isHabit ? 'Nuevo Hábito' :
-    questModalType === 'objective' ? 'Nuevo Objetivo' : 'Nueva Misión Diaria';
+    questModalType === 'objective' ? 'Nuevo Objetivo' :
+    questModalType === 'sidequest' ? 'Nueva Side Quest 🎮' : 'Nueva Misión Diaria';
 }
 
 document.getElementById('q-freq')?.addEventListener('change', function() {
@@ -2763,6 +2962,7 @@ function saveQuest() {
     xp,
     done: false,
     doneDate: null,
+    penaltyEnabled: document.getElementById('q-penalty-enabled')?.checked || false,
   };
   state.quests.push(quest);
   saveState();
@@ -2783,6 +2983,38 @@ function renderProfile() {
         <div class="achievement-icon">${a.icon}</div>
         <div class="achievement-name">${a.name}</div>
       </div>`).join('');
+  }
+
+  // Penalty history
+  const penEl    = document.getElementById('penalty-history-list');
+  const penEmpty = document.getElementById('penalty-history-empty');
+  if (penEl) {
+    const applied  = state.penalties.filter(p => p.status !== 'pending');
+    if (applied.length > 0) {
+      penEmpty && (penEmpty.style.display = 'none');
+      penEl.innerHTML = applied.slice().reverse().slice(0, 20).map(p => {
+        const icon   = p.status === 'forgiven' ? '⚖️' : '💀';
+        const color  = p.status === 'forgiven' ? 'var(--gold)' : 'var(--accent)';
+        const label  = p.status === 'forgiven' ? 'Perdonada' : 'Aplicada';
+        const typeEmoji = { sidequest:'🎮', daily:'⚔️', habit:'🔄', objective:'🎯' }[p.type] || '⚠️';
+        return `
+        <div style="display:flex;align-items:flex-start;gap:10px;padding:8px 14px;border-bottom:1px solid var(--border);">
+          <span style="font-size:16px;flex-shrink:0;">${icon}</span>
+          <div style="flex:1;">
+            <div style="font-size:12px;color:var(--text);">${typeEmoji} ${p.questName}</div>
+            <div style="font-size:10px;color:var(--text3);margin-top:2px;">${p.date} · ${label}
+              ${p.reason ? `· <em style="color:var(--gold);">${p.reason.slice(0,50)}${p.reason.length>50?'…':''}</em>` : ''}
+            </div>
+          </div>
+          <span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:${color};white-space:nowrap;">
+            ${p.status === 'forgiven' ? '±0' : '−'+p.xp} XP
+          </span>
+        </div>`;
+      }).join('');
+    } else {
+      penEmpty && (penEmpty.style.display = 'block');
+      penEl.innerHTML = '';
+    }
   }
 
   // History
@@ -4253,7 +4485,7 @@ function runSingleAutomation(auto) {
       const prioMult  = { SSS: 3, A: 2, B: 1.5, C: 1 };
       const diffMult  = { hard: 3, medium: 2, easy: 1 };
       const xp        = Math.round(20 * (prioMult[auto.priority] || 1.5) * (diffMult[auto.difficulty] || 2));
-      const qType     = auto.type === 'habit' ? 'habit' : 'daily';
+      const qType     = auto.type === 'habit' ? 'habit' : auto.type === 'sidequest' ? 'sidequest' : 'daily';
 
       state.quests.push({
         id:         questId,
@@ -4276,7 +4508,7 @@ function runSingleAutomation(auto) {
       created = true;
     } else {
       // Update existing quest if automation parameters changed
-      const qType = auto.type === 'habit' ? 'habit' : 'daily';
+      const qType = auto.type === 'habit' ? 'habit' : auto.type === 'sidequest' ? 'sidequest' : 'daily';
       const prioMult = { SSS: 3, A: 2, B: 1.5, C: 1 };
       const diffMult = { hard: 3, medium: 2, easy: 1 };
       const xp = Math.round(20 * (prioMult[auto.priority] || 1.5) * (diffMult[auto.difficulty] || 2));
@@ -4332,7 +4564,7 @@ function renderAutomationsList() {
   const DAY_DISPLAY = ['D','L','M','X','J','V','S'];
 
   el.innerHTML = state.automations.map(auto => {
-    const typeLabelMap = { task: 'TAREA', habit: 'HÁBITO', block: 'BLOQUE' };
+    const typeLabelMap = { task: 'TAREA', habit: 'HÁBITO', block: 'BLOQUE', sidequest: 'SIDE QUEST' };
     const typeLabel    = typeLabelMap[auto.type] || auto.type.toUpperCase();
     const isActive     = auto.startDate <= today && auto.endDate >= today;
     const isEditing    = editingAutoId === auto.id;
@@ -4374,6 +4606,202 @@ function renderAutomationsList() {
   }).join('');
 }
 
+// ============================================================
+// PENALTY & SIDE QUEST SYSTEM
+// ============================================================
+
+// Streak bonus: +10% per day, capped at +100%
+function getSideQuestStreakBonus() {
+  const streak = state.sideQuestStreak || 0;
+  return Math.min(streak * 0.10, 1.0);
+}
+
+// XP penalty multipliers per quest type
+const PENALTY_RATE = {
+  sidequest:  1.0,   // lose ALL the XP (full penalty)
+  daily:      0.5,   // lose 50%
+  habit:      0.3,   // lose 30%
+  objective:  0.2,   // lose 20%
+};
+
+// Hours after deadline to allow forgiveness window
+const FORGIVE_WINDOW_HOURS = 12;
+
+function getPenaltyForgiveWindow(p) {
+  const created = new Date(p.createdAt);
+  const hoursLeft = Math.max(0, Math.round(
+    (created.getTime() + FORGIVE_WINDOW_HOURS * 3600000 - Date.now()) / 3600000
+  ));
+  return hoursLeft;
+}
+
+// Called on app load — only for quests that were NEVER completed (not even late)
+function checkPenalties() {
+  const now     = new Date();
+  const today   = now.toISOString().split('T')[0];
+  const nowTime = now.toTimeString().slice(0, 5);
+  let changed   = false;
+
+  // Check quests (daily, sidequest, objective) that are truly abandoned (not done at all)
+  state.quests.forEach(q => {
+    if (q.type === 'habit') return;
+    if (q.done) return;  // done (even late) = toggleQuest already handled it
+
+    // Has the deadline passed?
+    const dateExpired = q.end < today;
+    const timeExpired = q.end === today && q.endTime && nowTime > q.endTime;
+    if (!dateExpired && !timeExpired) return;
+
+    // No penalty already registered for this quest
+    const already = state.penalties.some(p => p.questId === q.id);
+    if (already) return;
+
+    const rate   = PENALTY_RATE[q.type] || 0.5;
+    const xpLoss = Math.round((q.xp || 0) * rate);
+    if (xpLoss <= 0) return;
+
+    state.penalties.push({
+      id:        'pen_' + q.id + '_' + q.end,
+      questId:   q.id,
+      questName: q.name,
+      type:      q.type,
+      date:      q.end,
+      xp:        xpLoss,
+      status:    'pending',
+      reason:    '',
+      createdAt: now.toISOString(),
+    });
+    changed = true;
+  });
+
+  // Check habits (only those with penaltyEnabled) — check yesterday's missed habits
+  const yesterday = new Date(now);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yd    = yesterday.toISOString().split('T')[0];
+  const ydDow = yesterday.getDay();
+
+  state.quests.filter(q => q.type === 'habit' && q.penaltyEnabled).forEach(q => {
+    if (yd < q.start || yd > q.end) return;
+    if (q.freq === 'weekdays' && (ydDow === 0 || ydDow === 6)) return;
+    if (q.freq === 'weekends' && ydDow !== 0 && ydDow !== 6) return;
+    if (q.freq === 'custom' && q.customDays && !q.customDays.includes(ydDow)) return;
+    const done    = state.habits.some(h => h.questId === q.id && h.date === yd && h.done);
+    if (done) return;
+    const already = state.penalties.some(p => p.questId === q.id && p.date === yd);
+    if (already) return;
+    const xpLoss  = Math.round((q.xp || 0) * PENALTY_RATE.habit);
+    if (xpLoss <= 0) return;
+    state.penalties.push({
+      id:        'pen_' + q.id + '_' + yd,
+      questId:   q.id,
+      questName: q.name,
+      type:      'habit',
+      date:      yd,
+      xp:        xpLoss,
+      status:    'pending',
+      reason:    '',
+      createdAt: now.toISOString(),
+    });
+    changed = true;
+  });
+
+  // Auto-apply expired pending penalties (forgive window passed)
+  state.penalties.filter(p => p.status === 'pending').forEach(p => {
+    if (getPenaltyForgiveWindow(p) === 0) {
+      applyPenaltyById(p.id, false);
+      changed = true;
+    }
+  });
+
+  updateSideQuestStreak(today);
+  if (changed) saveState();
+}
+
+function applyPenaltyById(penaltyId, notify) {
+  const p = state.penalties.find(x => x.id === penaltyId);
+  if (!p || p.status !== 'pending') return;
+  p.status = 'applied';
+
+  // Deduct XP (can go below 0 on current bar, level down if needed)
+  state.xp -= p.xp;
+  state.totalXP = Math.max(0, state.totalXP - p.xp);
+  while (state.xp < 0 && state.level > 1) {
+    state.level--;
+    state.xp += XP_PER_LEVEL(state.level);
+  }
+  state.xp = Math.max(0, state.xp);
+
+  if (notify !== false) {
+    showNotification('💀', '−' + p.xp + ' XP — penalización: "' + p.questName + '"');
+  }
+}
+
+function applyPenalty(penaltyId) {
+  applyPenaltyById(penaltyId, true);
+  saveState();
+  renderAll();
+}
+
+let forgiveTargetId = null;
+
+function openForgiveModal(penaltyId) {
+  forgiveTargetId = penaltyId;
+  const p = state.penalties.find(x => x.id === penaltyId);
+  if (!p) return;
+  document.getElementById('forgive-quest-name').textContent = p.questName + ' · ' + p.date;
+  document.getElementById('forgive-xp-amount').textContent  = '−' + p.xp + ' XP';
+  document.getElementById('forgive-reason').value           = '';
+  document.getElementById('forgive-modal').classList.add('open');
+}
+
+function closeForgiveModal() {
+  document.getElementById('forgive-modal').classList.remove('open');
+  forgiveTargetId = null;
+}
+
+function confirmForgive() {
+  const p = state.penalties.find(x => x.id === forgiveTargetId);
+  if (!p) return;
+  const reason = document.getElementById('forgive-reason').value.trim();
+  if (!reason) { showNotification('⚠️', 'Escribe un motivo justificado'); return; }
+  p.status = 'forgiven';
+  p.reason = reason;
+  saveState();
+  closeForgiveModal();
+  showNotification('⚖️', 'Perdonada — "' + p.questName + '"');
+  renderAll();
+}
+
+function updateSideQuestStreak(today) {
+  if (state.sideQuestStreakDate === today) return;
+
+  const d = new Date(today);
+  d.setDate(d.getDate() - 1);
+  const yesterday = d.toISOString().split('T')[0];
+
+  const ydSQs = state.quests.filter(q =>
+    q.type === 'sidequest' && q.start <= yesterday && q.end >= yesterday
+  );
+  if (ydSQs.length === 0) { state.sideQuestStreakDate = today; return; }
+
+  const ydDone     = ydSQs.filter(q => q.done && q.doneDate === yesterday).length;
+  const ydRequired = Math.min(2, ydSQs.length);
+
+  if (ydDone >= ydRequired) {
+    state.sideQuestStreak = (state.sideQuestStreak || 0) + 1;
+    if (state.sideQuestStreak > 1) {
+      const bonus = Math.round(getSideQuestStreakBonus() * 100);
+      showNotification('🎮', 'Racha de Side Quests: ' + state.sideQuestStreak + ' días 🔥 (+' + bonus + '% XP)');
+    }
+  } else {
+    if ((state.sideQuestStreak || 0) > 0) {
+      showNotification('💔', 'Racha de Side Quests rota (' + state.sideQuestStreak + ' días)');
+    }
+    state.sideQuestStreak = 0;
+  }
+  state.sideQuestStreakDate = today;
+}
+
 function exportData() {
   const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
@@ -4408,5 +4836,33 @@ function resetData() {
 // ============================================================
 init();
 </script>
+<!-- FORGIVE PENALTY MODAL -->
+<div class="modal-overlay" id="forgive-modal">
+  <div class="modal" style="width:420px;">
+    <div class="modal-header">
+      <div class="modal-title" style="color:var(--gold);">⚖️ Solicitar Perdón</div>
+      <button class="modal-close" onclick="closeForgiveModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="background:rgba(200,16,46,0.08);border:1px solid rgba(200,16,46,0.2);border-radius:6px;padding:12px;margin-bottom:14px;">
+        <div style="font-size:11px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">Penalización pendiente</div>
+        <div style="font-size:14px;color:var(--text);" id="forgive-quest-name">—</div>
+        <div style="font-size:12px;color:var(--accent);font-family:'Share Tech Mono',monospace;margin-top:4px;" id="forgive-xp-amount">-0 XP</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Motivo justificado</label>
+        <textarea class="form-textarea" id="forgive-reason" placeholder="Explica por qué no pudiste completarlo. Solo usa esto en casos realmente justificados..." style="min-height:90px;"></textarea>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:14px;line-height:1.5;">
+        ⚠️ El perdón debe usarse con honestidad. Abusar de él elimina el propósito del sistema.
+      </div>
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="closeForgiveModal()">Cancelar — aplicar penalización</button>
+        <button class="btn-primary" style="background:rgba(212,160,23,0.2);border:1px solid var(--gold);color:var(--gold);" onclick="confirmForgive()">⚖️ Perdonar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
