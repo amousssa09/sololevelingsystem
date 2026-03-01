@@ -1436,11 +1436,10 @@
         </div>
       </div>
 
-      <!-- ARC CARD -->
-      <div class="card arc-card" style="margin-top:16px;">
-        <div class="card-header"><span class="dot"></span> Arco Activo</div>
-        <div class="arc-name">💰 <span id="arc-name-text">Sin arco activo</span></div>
-        <div class="arc-mantras" id="arc-mantras"></div>
+      <!-- STATS (moved left) -->
+      <div class="card" style="margin-top:16px;">
+        <div class="card-header"><span class="dot"></span> Stats</div>
+        <div id="stats-list-dash"></div>
       </div>
     </div>
 
@@ -1456,40 +1455,20 @@
         </div>
       </div>
 
-      <!-- TODAY'S QUESTS -->
-      <div class="card">
-        <div class="card-header"><span class="dot"></span> Misiones de Hoy</div>
-        <div id="today-quests-list"></div>
-        <button class="add-quest-btn" onclick="openQuestModal()">+ Nueva misión rápida</button>
+      <!-- ARC CARD (moved to center) -->
+      <div class="card arc-card">
+        <div class="card-header"><span class="dot"></span> Arco Activo</div>
+        <div class="arc-name">💰 <span id="arc-name-text">Sin arco activo</span></div>
+        <div class="arc-mantras" id="arc-mantras"></div>
       </div>
     </div>
 
-    <!-- RIGHT: STATS + SUMMARY -->
+    <!-- RIGHT: LOGS -->
     <div class="right-panel">
       <div class="card">
-        <div class="card-header"><span class="dot"></span> Stats</div>
-        <div id="stats-list-dash"></div>
-      </div>
-
-      <div class="card">
-        <div class="card-header"><span class="dot"></span> Resumen</div>
-        <div style="padding:14px 16px;display:flex;flex-direction:column;gap:10px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span style="font-size:12px;color:var(--text2);font-weight:600;letter-spacing:1px;">COMPLETADAS HOY</span>
-            <span style="font-family:'Share Tech Mono',monospace;font-size:14px;" id="completed-today">0</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span style="font-size:12px;color:var(--text2);font-weight:600;letter-spacing:1px;">MISIONES TOTALES</span>
-            <span style="font-family:'Share Tech Mono',monospace;font-size:14px;" id="total-missions-count">0</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span style="font-size:12px;color:var(--text2);font-weight:600;letter-spacing:1px;">RANGO ACTUAL</span>
-            <span class="rank-badge rank-C" id="rank-badge">◈ C</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span style="font-size:12px;color:var(--text2);font-weight:600;letter-spacing:1px;">XP TOTAL</span>
-            <span style="font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--gold);" id="total-xp-earned">0</span>
-          </div>
+        <div class="card-header"><span class="dot"></span> LOGS</div>
+        <div id="logs-box" style="padding:14px 16px;display:flex;flex-direction:column;gap:10px;max-height:560px;overflow:auto;">
+          <!-- Filled by renderLogs() -->
         </div>
       </div>
     </div>
@@ -2276,6 +2255,7 @@ function renderAll() {
   renderProfile();
   renderConfig();
   renderSummary();
+  renderLogs();
   updateTopbar();
 }
 
@@ -2849,9 +2829,12 @@ function checkAchievements() {
 function renderSummary() {
   const today = new Date().toISOString().split('T')[0];
   const completedToday = state.quests.filter(q => q.done && q.doneDate === today).length;
-  document.getElementById('completed-today').textContent = completedToday;
-  document.getElementById('total-missions-count').textContent = state.quests.length;
-  document.getElementById('total-xp-earned').textContent = state.totalXP + ' XP';
+  const completedEl = document.getElementById('completed-today');
+  const totalMissionsEl = document.getElementById('total-missions-count');
+  const totalXpEl = document.getElementById('total-xp-earned');
+  if (completedEl) completedEl.textContent = completedToday;
+  if (totalMissionsEl) totalMissionsEl.textContent = state.quests.length;
+  if (totalXpEl) totalXpEl.textContent = state.totalXP + ' XP';
 
   // Rank
   const rank = getCurrentRank();
@@ -2861,6 +2844,176 @@ function renderSummary() {
     rankEl.style.color = getRankColor(rank.label);
     rankEl.textContent = `${rank.icon} ${rank.label}`;
   }
+}
+
+// ============================================================
+// LOGS (right panel) - RPG Style
+// ============================================================
+function renderLogs() {
+  const container = document.getElementById('logs-box');
+  if (!container) return;
+  container.innerHTML = '';
+
+  const today = new Date().toISOString().split('T')[0];
+  const completedToday = state.quests.filter(q => q.done && q.doneDate === today).length;
+  const totalXP = state.totalXP || 0;
+  const levelUps = Math.max(0, (state.level || 1) - 1);
+  const currentLevel = state.level || 1;
+
+  // ====== HEADER DECORATION ======
+  const headerDecor = document.createElement('div');
+  headerDecor.style.cssText = 'text-align:center;margin-bottom:12px;color:var(--gold);font-size:16px;letter-spacing:2px;';
+  headerDecor.textContent = '✦ ✦ ✦';
+  container.appendChild(headerDecor);
+
+  // ====== PLAYER STATUS SECTION ======
+  const statusSec = document.createElement('div');
+  statusSec.style.cssText = 'margin-bottom:14px;padding:10px;border:1px solid rgba(212,160,23,0.3);border-radius:6px;background:linear-gradient(135deg, rgba(212,160,23,0.04), rgba(232,40,61,0.02));';
+  statusSec.innerHTML = `
+    <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:3px;color:var(--gold2);font-weight:700;margin-bottom:10px;text-transform:uppercase;text-align:center;text-shadow:0 0 8px rgba(212,160,23,0.3);">⚔️ ESTADO DEL GUERRERO ⚔️</div>
+    <div style="font-size:12px;color:var(--text);line-height:1.8;display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:4px;border-bottom:1px solid rgba(212,160,23,0.1);">
+        <span style="color:var(--gold);">⭐ NIVEL</span>
+        <span style="color:var(--gold2);font-weight:700;font-family:'Share Tech Mono',monospace;font-size:14px;">${currentLevel}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:4px;border-bottom:1px solid rgba(212,160,23,0.1);">
+        <span style="color:var(--gold);">✨ EXPERIENCIA</span>
+        <span style="color:var(--gold2);font-weight:700;font-family:'Share Tech Mono',monospace;">${totalXP}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:4px;border-bottom:1px solid rgba(64,200,128,0.1);">
+        <span style="color:var(--green);">✓ HOY</span>
+        <span style="color:var(--green);font-weight:700;font-family:'Share Tech Mono',monospace;font-size:14px;">${completedToday}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:4px;">
+        <span style="color:#e8263d;">🆙 ASCENSOS</span>
+        <span style="color:#e8263d;font-weight:700;font-family:'Share Tech Mono',monospace;font-size:14px;">${levelUps}</span>
+      </div>
+    </div>
+  `;
+  container.appendChild(statusSec);
+
+  // ====== MID DECORATION ======
+  const midDecor = document.createElement('div');
+  midDecor.style.cssText = 'text-align:center;margin:12px 0;color:var(--pink);font-size:14px;letter-spacing:2px;';
+  midDecor.textContent = '━━━━━';
+  container.appendChild(midDecor);
+
+  // ====== TODAY'S TASKS SECTION ======
+  const pendingQuests = state.quests.filter(q => {
+    if (q.type === 'habit') {
+      const doneToday = state.habits && state.habits.some(h => h.questId === q.id && h.date === today && h.done);
+      return !doneToday;
+    }
+    return !q.done;
+  });
+
+  const taskSec = document.createElement('div');
+  taskSec.style.cssText = 'margin-bottom:14px;padding:10px;border:1px solid rgba(224,64,160,0.3);border-radius:6px;background:linear-gradient(135deg, rgba(224,64,160,0.04), rgba(200,16,46,0.02));';
+  taskSec.innerHTML = `<div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:3px;color:var(--pink);font-weight:700;margin-bottom:8px;text-transform:uppercase;text-align:center;text-shadow:0 0 8px rgba(224,64,160,0.3);">📋 TRABAJO DEL DÍA 📋</div>`;
+
+  const taskList = document.createElement('div');
+  taskList.style.display = 'flex';
+  taskList.style.flexDirection = 'column';
+  taskList.style.gap = '7px';
+
+  if (pendingQuests.length === 0) {
+    const empty = document.createElement('div');
+    empty.style.cssText = 'padding:12px;background:linear-gradient(135deg, rgba(64,200,128,0.1), rgba(64,200,128,0.04));border:1px solid rgba(64,200,128,0.3);border-radius:4px;text-align:center;color:var(--green);font-size:12px;font-weight:600;text-shadow:0 0 6px rgba(64,200,128,0.2);';
+    empty.textContent = '🎉 ¡El jugador completó todas sus misiones!';
+    taskList.appendChild(empty);
+  } else {
+    pendingQuests.forEach(q => {
+      const typeIcon = q.type === 'habit' ? '🔄' : q.type === 'daily' ? '📅' : '🎯';
+      const diffColor = q.difficulty === 'easy' ? 'var(--green)' : q.difficulty === 'medium' ? 'var(--gold)' : 'var(--accent2)';
+      const diffBg = q.difficulty === 'easy' ? 'rgba(64,200,128,0.08)' : q.difficulty === 'medium' ? 'rgba(212,160,23,0.08)' : 'rgba(232,40,61,0.08)';
+      const prioEmoji = q.priority === 'Crítica' ? '🔴' : q.priority === 'Alta' ? '🟠' : '🟡';
+      const prioColor = q.priority === 'Crítica' ? '#e8263d' : q.priority === 'Alta' ? '#f0a040' : '#f0c040';
+
+      const taskItem = document.createElement('div');
+      taskItem.style.cssText = `
+        padding:8px;
+        background:${diffBg};
+        border-left:4px solid ${diffColor};
+        border-top:1px solid ${diffColor}44;
+        border-right:1px solid ${diffColor}22;
+        border-bottom:1px solid ${diffColor}22;
+        border-radius:4px;
+      `;
+      taskItem.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px;">
+          <div style="flex:1;">
+            <div style="font-size:12px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:5px;">
+              <span style="font-size:14px;">${typeIcon}</span>
+              <span>${q.name}</span>
+            </div>
+            <div style="font-size:10px;margin-top:3px;display:flex;gap:7px;align-items:center;">
+              <span style="color:${prioColor};font-weight:600;">${prioEmoji} ${q.priority}</span>
+              <span style="color:${diffColor};">⚔️ ${q.difficulty}</span>
+            </div>
+          </div>
+          <div style="text-align:right;white-space:nowrap;">
+            <div style="font-size:12px;font-weight:700;color:var(--gold2);font-family:'Share Tech Mono',monospace;text-shadow:0 0 4px rgba(212,160,23,0.3);">+${q.xp}⭐</div>
+          </div>
+        </div>
+      `;
+      taskList.appendChild(taskItem);
+    });
+  }
+
+  taskSec.appendChild(taskList);
+  container.appendChild(taskSec);
+
+  // ====== MID DECORATION ======
+  const midDecor2 = document.createElement('div');
+  midDecor2.style.cssText = 'text-align:center;margin:12px 0;color:var(--blue);font-size:14px;letter-spacing:2px;';
+  midDecor2.textContent = '━━━━━';
+  container.appendChild(midDecor2);
+
+  // ====== RPG ADVICE SECTION ======
+  const adviceSec = document.createElement('div');
+  adviceSec.style.cssText = 'padding:10px;background:linear-gradient(135deg, rgba(144,96,208,0.1), rgba(64,128,224,0.08));border:1px solid rgba(144,96,208,0.3);border-radius:6px;';
+
+  let adviceText = '';
+  let adviceEmoji = '';
+  let adviceColor = 'var(--purple)';
+  
+  if (completedToday === 0 && pendingQuests.length > 0) {
+    adviceEmoji = '⚡';
+    adviceText = 'El jugador aún no inició su jornada. Comienza con una tarea pequeña para ganar velocidad.';
+    adviceColor = 'var(--blue)';
+  } else if (pendingQuests.length === 0) {
+    adviceEmoji = '🏆';
+    adviceText = 'Misión cumplida. El jugador ha finalizado todo su trabajo. Merecido descanso.';
+    adviceColor = 'var(--gold)';
+  } else if (totalXP > 1000) {
+    adviceEmoji = '👑';
+    adviceText = 'El jugador es un veterano. Busca desafíos mayores para continuar su ascenso.';
+    adviceColor = '#e8263d';
+  } else if (pendingQuests.length >= 5) {
+    adviceEmoji = '🎯';
+    adviceText = 'Muchas tareas en cola. Prioriza las 3 más urgentes para mantener eficiencia.';
+    adviceColor = 'var(--accent2)';
+  } else if (completedToday > 2) {
+    adviceEmoji = '🌟';
+    adviceText = 'Buen ritmo. El jugador mantiene su consistencia. Mantén la cadena.';
+    adviceColor = 'var(--gold2)';
+  } else {
+    adviceEmoji = '💪';
+    adviceText = 'Avanza paso a paso. Cada tarea completada fortalece al jugador.';
+    adviceColor = 'var(--green)';
+  }
+
+  adviceSec.innerHTML = `
+    <div style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:${adviceColor};font-weight:700;margin-bottom:6px;text-transform:uppercase;text-align:center;text-shadow:0 0 6px ${adviceColor}40;">🔮 ${adviceEmoji} CONSEJO DEL ORÁCULO 🔮</div>
+    <div style="font-size:11px;color:var(--text2);line-height:1.4;font-style:italic;">"${adviceText}"</div>
+  `;
+  container.appendChild(adviceSec);
+
+  // ====== FOOTER DECORATION ======
+  const footerDecor = document.createElement('div');
+  footerDecor.style.cssText = 'text-align:center;margin-top:12px;color:var(--purple);font-size:14px;letter-spacing:2px;';
+  footerDecor.textContent = '✦ ✦ ✦';
+  container.appendChild(footerDecor);
 }
 
 function updateTopbar() {
