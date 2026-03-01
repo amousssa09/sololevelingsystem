@@ -616,98 +616,101 @@
   }
 
   /* ===================== MISSIONS SECTION ===================== */
-  .missions-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    align-items: start;
-  }
+  .missions-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
+  .section-title { font-family:'Cinzel',serif; font-size:14px; font-weight:600; color:var(--text); margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+  .section-title::after { content:''; flex:1; height:1px; background:var(--border); }
 
-  .section-title {
-    font-family: 'Cinzel', serif;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .section-title::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-
-  .mission-item {
+  /* ── MISSION CARD ───────────────────────────── */
+  .mc {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 14px 16px;
-    margin-bottom: 10px;
-    transition: border-color 0.2s;
-    cursor: pointer;
-  }
-
-  .mission-item:hover { border-color: var(--border2); }
-
-  .mission-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 8px;
-    margin-bottom: 8px;
-  }
-
-  .mission-name {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text);
-  }
-
-  .mission-meta {
-    display: flex;
-    gap: 4px;
-    flex-wrap: wrap;
-    margin-bottom: 8px;
-  }
-
-  .mission-progress-wrap {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 8px;
-  }
-
-  .mission-progress-bar {
-    flex: 1;
-    height: 4px;
-    background: var(--surface3);
-    border-radius: 2px;
+    border-radius: 12px;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: border-color .2s, transform .15s, box-shadow .2s;
+    position: relative;
+  }
+  .mc:hover { border-color: var(--border2); transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,0,0,.35); }
+  .mc.mc-done { opacity: .55; }
+
+  /* top accent stripe */
+  .mc-stripe { height: 3px; width: 100%; flex-shrink: 0; }
+  .mc-stripe-daily     { background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+  .mc-stripe-habit     { background: linear-gradient(90deg, var(--green), #20e090); }
+  .mc-stripe-objective { background: linear-gradient(90deg, var(--gold), var(--gold2)); }
+  .mc-stripe-done      { background: var(--border); }
+
+  /* cover */
+  .mc-cover { width:100%; height:120px; object-fit:cover; display:block; }
+  .mc-cover-placeholder {
+    width: 100%; height: 72px;
+    background: linear-gradient(135deg, var(--surface2), var(--surface3));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; color: var(--text3); letter-spacing: 8px;
   }
 
-  .mission-progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent), var(--gold));
-    border-radius: 2px;
-    transition: width 0.5s;
+  /* body */
+  .mc-body { padding: 14px 16px 10px; flex: 1; display: flex; flex-direction: column; gap: 10px; }
+
+  .mc-top { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+  .mc-name { font-size:14px; font-weight:700; color:var(--text); line-height:1.3; flex:1; }
+  .mc-name.mc-name-done { text-decoration:line-through; color:var(--text3); }
+
+  .mc-xp {
+    background: rgba(212,160,23,.12);
+    border: 1px solid rgba(212,160,23,.3);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px; color: var(--gold2);
+    white-space: nowrap; flex-shrink: 0;
   }
 
-  .mission-dates {
-    font-size: 11px;
-    color: var(--text3);
+  .mc-tags { display:flex; gap:4px; flex-wrap:wrap; }
+  .mc-tag {
+    border-radius: 5px; padding: 2px 8px;
+    font-size: 10px; font-weight: 700;
+    border: 1px solid; letter-spacing: .4px;
+    white-space: nowrap;
+  }
+
+  /* dates */
+  .mc-dates {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 10px; color: var(--text3);
     font-family: 'Share Tech Mono', monospace;
   }
-
-  .mission-xp-reward {
-    font-size: 12px;
-    color: var(--gold);
-    font-weight: 600;
-    font-family: 'Share Tech Mono', monospace;
+  .mc-date-chip {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 4px; padding: 2px 7px;
   }
+  .mc-date-chip.overdue { border-color: rgba(200,16,46,.45); color: var(--accent); }
+
+  /* footer */
+  .mc-footer {
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 14px;
+    border-top: 1px solid var(--border);
+    background: rgba(0,0,0,.15);
+  }
+
+  /* streak */
+  .mc-streak {
+    display: inline-flex; align-items: center; gap: 3px;
+    background: rgba(212,160,23,.08);
+    border: 1px solid rgba(212,160,23,.2);
+    border-radius: 20px; padding: 2px 8px;
+    font-size: 10px; color: var(--gold);
+  }
+
+  /* keep legacy names for other parts of codebase */
+  .mission-item { display:none; }
+  .mission-xp-reward { font-size:12px; color:var(--gold); font-weight:600; font-family:'Share Tech Mono',monospace; }
+  .mission-dates { font-size:11px; color:var(--text3); font-family:'Share Tech Mono',monospace; }
+  .mission-progress-wrap { display:flex; align-items:center; gap:8px; margin-top:8px; }
+  .mission-progress-bar { flex:1; height:4px; background:var(--surface3); border-radius:2px; overflow:hidden; }
+  .mission-progress-fill { height:100%; background:linear-gradient(90deg,var(--accent),var(--gold)); border-radius:2px; transition:width .5s; }
 
   /* MODAL */
   .modal-overlay {
@@ -1965,6 +1968,18 @@
         <input class="form-input" id="q-name" placeholder="¿Qué vas a conquistar?">
       </div>
       <div class="form-group">
+        <label class="form-label">Portada <span style="font-size:10px;color:var(--text3);font-weight:400;">imagen o GIF (opcional)</span></label>
+        <label id="q-cover-label" style="display:flex;align-items:center;gap:10px;cursor:pointer;">
+          <div id="q-cover-thumb" style="width:54px;height:54px;border-radius:8px;border:1px dashed var(--border2);background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;overflow:hidden;">🖼</div>
+          <div style="flex:1;">
+            <div style="font-size:11px;color:var(--text2);margin-bottom:4px;">Haz clic para subir</div>
+            <div style="font-size:10px;color:var(--text3);">PNG, JPG, GIF — máx. recomendado 2 MB</div>
+          </div>
+          <input type="file" id="q-cover" accept="image/*,image/gif" style="display:none" onchange="previewCover(this)">
+        </label>
+        <button id="q-cover-remove" onclick="removeCover()" style="display:none;margin-top:6px;font-size:10px;color:var(--accent);background:none;border:none;cursor:pointer;padding:0;">✕ Quitar portada</button>
+      </div>
+      <div class="form-group">
         <label class="form-label">Tipo</label>
         <select class="form-select" id="q-type" onchange="updateQuestType()">
           <option value="daily">Misión Diaria</option>
@@ -2555,10 +2570,10 @@ function renderMissions() {
   if (!container) return;
 
   let quests = state.quests;
-  if (currentMissionsTab === 'daily') quests = quests.filter(q => q.type === 'daily');
-  else if (currentMissionsTab === 'habit') quests = quests.filter(q => q.type === 'habit');
+  if (currentMissionsTab === 'daily')          quests = quests.filter(q => q.type === 'daily');
+  else if (currentMissionsTab === 'habit')     quests = quests.filter(q => q.type === 'habit');
   else if (currentMissionsTab === 'objective') quests = quests.filter(q => q.type === 'objective');
-  else if (currentMissionsTab === 'done') quests = quests.filter(q => q.done && q.type !== 'habit');
+  else if (currentMissionsTab === 'done')      quests = quests.filter(q => q.done && q.type !== 'habit');
   else quests = quests.filter(q => !q.done || q.type === 'habit');
 
   if (quests.length === 0) {
@@ -2566,45 +2581,105 @@ function renderMissions() {
     return;
   }
 
-  const today = new Date().toISOString().split('T')[0];
+  const today   = new Date().toISOString().split('T')[0];
+  const nowTime = new Date().toTimeString().slice(0,5);
 
-  container.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px;">` +
-    quests.map(q => {
-      const diffCls = `diff-${q.difficulty}`;
-      const prioCls = `prio-${q.priority.toLowerCase()}`;
-      const isHabit = q.type === 'habit';
-      const habitDoneToday = isHabit && state.habits.some(h => h.questId === q.id && h.date === today && h.done);
-      const streak = isHabit ? getHabitStreak(q.id) : 0;
-      const typeLabel = isHabit ? 'Hábito' : q.type === 'daily' ? 'Diaria' : 'Objetivo';
-      const typeCls = isHabit ? 'diff-easy' : '';
-      const timeStr = q.startTime ? `${q.startTime}–${q.endTime}` : '';
+  container.innerHTML =
+    '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;align-items:start;">' +
+    quests.map(q => missionCardHTML(q, today, nowTime)).join('') +
+    '</div>';
+}
 
-      return `
-      <div class="mission-item">
-        <div class="mission-header">
-          <div>
-            <div class="mission-name">${isHabit && habitDoneToday ? '✓ ' : ''}${q.name}</div>
-            ${timeStr ? `<div style="font-size:10px;color:var(--text3);font-family:'Share Tech Mono',monospace;margin-top:2px;">🕐 ${timeStr}</div>` : ''}
-          </div>
-          <span class="mission-xp-reward">${q.xp} XP</span>
-        </div>
-        <div class="mission-meta">
-          <span class="tag ${prioCls}">Prio ${q.priority}</span>
-          <span class="tag ${diffCls}">${q.difficulty}</span>
-          <span class="tag" style="background:rgba(80,80,100,0.1);color:var(--text2);border:1px solid var(--border);">${typeLabel}</span>
-          ${q.stat ? `<span class="tag stat">${q.stat}</span>` : ''}
-          ${isHabit && streak > 0 ? `<span class="tag" style="background:rgba(212,160,23,0.1);color:var(--gold);border:1px solid rgba(212,160,23,0.2);">🔥 ${streak} días</span>` : ''}
-        </div>
-        <div class="mission-dates">${q.start} → ${q.end} ${isHabit && q.freq ? '· ' + freqLabel(q.freq) : ''}</div>
-        <div class="mission-progress-wrap" style="margin-top:10px;">
-          ${isHabit
-            ? `<button class="btn-secondary" style="padding:5px 12px;font-size:11px;${habitDoneToday ? 'color:var(--green);border-color:var(--green);' : ''}" onclick="toggleHabitToday('${q.id}')">${habitDoneToday ? '✓ Hecho hoy' : 'Marcar hoy'}</button>`
-            : (!q.done ? `<button class="btn-secondary" style="padding:5px 12px;font-size:11px;" onclick="toggleQuest('${q.id}')">Completar</button>` : `<span style="font-size:11px;color:var(--green);">✓ Completada</span>`)
-          }
-          <button class="remove-btn" onclick="deleteQuest('${q.id}')" style="margin-left:auto;">🗑</button>
-        </div>
-      </div>`;
-    }).join('') + '</div>';
+/* ── shared lookup tables ────────────────────── */
+const TYPE_META = {
+  daily:     { label:'Misión Diaria', icon:'⚔',  stripe:'mc-stripe-daily',     color:'var(--accent)' },
+  habit:     { label:'Hábito',        icon:'🔄', stripe:'mc-stripe-habit',     color:'var(--green)'  },
+  objective: { label:'Objetivo',      icon:'🎯', stripe:'mc-stripe-objective', color:'var(--gold)'   },
+};
+const PRIO_META = {
+  SSS: { bg:'rgba(232,38,61,.13)',   border:'rgba(232,38,61,.45)',  color:'#e8263d', label:'⬛ SSS' },
+  A:   { bg:'rgba(240,192,64,.11)',  border:'rgba(240,192,64,.4)',  color:'#f0c040', label:'▲ A'   },
+  B:   { bg:'rgba(64,128,224,.10)',  border:'rgba(64,128,224,.35)', color:'#4080e0', label:'◆ B'   },
+  C:   { bg:'rgba(100,100,120,.10)', border:'rgba(100,100,120,.3)', color:'#808098', label:'◇ C'   },
+};
+const DIFF_META = {
+  hard:   { label:'Difícil', color:'#e05050', bg:'rgba(224,80,80,.1)'   },
+  medium: { label:'Media',   color:'#e09020', bg:'rgba(224,144,32,.1)'  },
+  easy:   { label:'Fácil',   color:'#40c880', bg:'rgba(64,200,128,.1)'  },
+};
+
+function missionCardHTML(q, today, nowTime) {
+  const isHabit     = q.type === 'habit';
+  const isObjective = q.type === 'objective';
+
+  const habitDoneToday = isHabit && state.habits.some(h => h.questId === q.id && h.date === today && h.done);
+  const effectiveDone  = isHabit ? habitDoneToday : q.done;
+  const streak         = isHabit ? getHabitStreak(q.id) : 0;
+
+  const isOverdue = !effectiveDone && !isHabit && q.end < today;
+  const isUrgent  = !effectiveDone && !isHabit && q.end === today && q.endTime && nowTime > q.endTime;
+
+  const td = TYPE_META[q.type] || TYPE_META.daily;
+  const pd = PRIO_META[q.priority] || PRIO_META.B;
+  const dd = DIFF_META[q.difficulty] || DIFF_META.medium;
+
+  /* stat colour */
+  const statObj   = q.stat ? state.stats.find(s => s.name === q.stat) : null;
+  const statColor = statObj?.color || '#9090a8';
+
+  /* cover */
+  const coverHTML = q.cover
+    ? `<img class="mc-cover" src="${q.cover}" alt="">`
+    : `<div class="mc-cover-placeholder">${td.icon}</div>`;
+
+  /* dates */
+  const dateHTML = isHabit
+    ? `<span class="mc-date-chip">${q.start}</span><span>→</span><span class="mc-date-chip">${q.end}</span><span style="color:var(--text3);margin-left:2px;">${freqLabel(q.freq)}</span>`
+    : q.start === q.end
+      ? `<span class="mc-date-chip ${isOverdue?'overdue':''}">${q.start}</span>${q.startTime?`<span>🕐 ${q.startTime}–${q.endTime}</span>`:''}`
+      : `<span class="mc-date-chip">${q.start}</span><span>→</span><span class="mc-date-chip ${isOverdue?'overdue':''}">${q.end}</span>`;
+
+  /* action button */
+  let actionHTML;
+  if (isHabit) {
+    actionHTML = habitDoneToday
+      ? `<button class="btn-secondary" style="font-size:11px;padding:4px 12px;color:var(--green);border-color:rgba(64,200,128,.4);" onclick="toggleHabitToday('${q.id}')">✓ Hecho hoy</button>`
+      : `<button class="btn-secondary" style="font-size:11px;padding:4px 12px;" onclick="toggleHabitToday('${q.id}')">Marcar hoy</button>`;
+  } else if (q.done) {
+    actionHTML = `<span style="font-size:11px;color:var(--green);display:flex;align-items:center;gap:4px;">✓ Completada <span style="font-size:10px;color:var(--text3);">${q.doneDate||''}</span></span>`;
+  } else {
+    actionHTML = `<button class="btn-secondary" style="font-size:11px;padding:4px 12px;${isOverdue?'color:var(--accent);border-color:rgba(200,16,46,.4);':''}" onclick="toggleQuest('${q.id}')">${isOverdue?'⚠ Completar tarde':'Completar'}</button>`;
+  }
+
+  const stripeClass = effectiveDone && !isHabit ? 'mc-stripe-done' : td.stripe;
+
+  return `
+  <div class="mc ${effectiveDone && !isHabit ? 'mc-done' : ''}">
+    <div class="mc-stripe ${stripeClass}"></div>
+    ${coverHTML}
+    <div class="mc-body">
+      <div class="mc-top">
+        <div class="mc-name ${effectiveDone&&!isHabit?'mc-name-done':''}">${q.name}</div>
+        <div class="mc-xp">+${q.xp} XP</div>
+      </div>
+      <div class="mc-tags">
+        <span class="mc-tag" style="background:${pd.bg};border-color:${pd.border};color:${pd.color};">${pd.label}</span>
+        <span class="mc-tag" style="background:${dd.bg};border-color:${dd.color}55;color:${dd.color};">${dd.label}</span>
+        <span class="mc-tag" style="background:rgba(80,80,100,.1);border-color:var(--border);color:var(--text2);">${td.icon} ${td.label}</span>
+        ${statObj ? `<span class="mc-tag" style="background:${statColor}18;border-color:${statColor}55;color:${statColor};">◈ ${q.stat}</span>` : ''}
+        ${streak > 0 ? `<span class="mc-streak">🔥 ${streak} d</span>` : ''}
+        ${isOverdue ? `<span class="mc-tag" style="background:rgba(200,16,46,.12);border-color:rgba(200,16,46,.4);color:var(--accent);">⏰ Vencida</span>` : ''}
+      </div>
+      <div class="mc-dates">${dateHTML}</div>
+    </div>
+    <div class="mc-footer">
+      ${actionHTML}
+      <div style="margin-left:auto;display:flex;gap:6px;">
+        <button class="remove-btn" onclick="openEditQuestModal('${q.id}')" title="Editar" style="font-size:13px;opacity:.8;">✎</button>
+        <button class="remove-btn" onclick="deleteQuest('${q.id}')" title="Eliminar">🗑</button>
+      </div>
+    </div>
+  </div>`;
 }
 
 function freqLabel(freq) {
@@ -2668,6 +2743,14 @@ function getHabitStreak(questId) {
 let questModalType = 'daily';
 
 function openQuestModal(type) {
+  window._editingQuestId = null;
+  // reset cover UI
+  const ci = document.getElementById('q-cover'); if (ci) ci.value = '';
+  const ct = document.getElementById('q-cover-thumb'); if (ct) ct.innerHTML = '🖼';
+  const cr = document.getElementById('q-cover-remove'); if (cr) cr.style.display = 'none';
+  // reset save button
+  const btn = document.querySelector('#quest-modal .btn-primary');
+  if (btn) { btn.textContent = 'Crear'; btn.onclick = saveQuest; }
   questModalType = type || 'daily';
   document.getElementById('q-type').value = questModalType;
   const isHabit = questModalType === 'habit';
@@ -2689,6 +2772,13 @@ function openQuestModal(type) {
 function closeQuestModal() {
   document.getElementById('quest-modal').classList.remove('open');
   document.getElementById('q-name').value = '';
+  // reset cover UI if elements exist
+  const coverInput = document.getElementById('q-cover');
+  const coverThumb = document.getElementById('q-cover-thumb');
+  const coverRemove = document.getElementById('q-cover-remove');
+  if (coverInput) coverInput.value = '';
+  if (coverThumb) coverThumb.innerHTML = '🖼';
+  if (coverRemove) coverRemove.style.display = 'none';
 }
 
 function updateQuestType() {
@@ -2717,38 +2807,140 @@ function calcXP() {
   return xp;
 }
 
+// ── cover helpers ──────────────────────────────
+function previewCover(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const thumb = document.getElementById('q-cover-thumb');
+    if (thumb) thumb.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">`;
+    const btn = document.getElementById('q-cover-remove');
+    if (btn) btn.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeCoverFromModal() {
+  const f = document.getElementById('q-cover');
+  const t = document.getElementById('q-cover-thumb');
+  const b = document.getElementById('q-cover-remove');
+  if (f) f.value = '';
+  if (t) t.innerHTML = '🖼';
+  if (b) b.style.display = 'none';
+  // if editing, clear cover from quest
+  if (window._editingQuestId) {
+    const q = state.quests.find(x => x.id === window._editingQuestId);
+    if (q) { q.cover = null; saveState(); renderAll(); }
+  }
+}
+
+// ── save new quest ──────────────────────────────
 function saveQuest() {
   const name = document.getElementById('q-name').value.trim();
   if (!name) { alert('Ponle un nombre!'); return; }
-  const xp = calcXP();
+  const xp   = calcXP();
   const type = document.getElementById('q-type').value;
   const freq = type === 'habit' ? document.getElementById('q-freq').value : null;
   const customDays = type === 'habit' && freq === 'custom'
     ? [...document.querySelectorAll('.freq-day:checked')].map(c => parseInt(c.value))
     : null;
 
-  const quest = {
-    id: Date.now().toString(),
-    name,
-    type,
-    priority: document.getElementById('q-prio').value,
-    difficulty: document.getElementById('q-diff').value,
-    start: document.getElementById('q-start').value,
-    end: document.getElementById('q-end').value,
-    startTime: document.getElementById('q-time-start').value,
-    endTime: document.getElementById('q-time-end').value,
-    stat: document.getElementById('q-stat').value,
-    freq,
-    customDays,
-    xp,
-    done: false,
-    doneDate: null,
+  const finish = (cover) => {
+    state.quests.push({
+      id: Date.now().toString(),
+      name, type,
+      priority:   document.getElementById('q-prio').value,
+      difficulty: document.getElementById('q-diff').value,
+      start:      document.getElementById('q-start').value,
+      end:        document.getElementById('q-end').value,
+      startTime:  document.getElementById('q-time-start').value,
+      endTime:    document.getElementById('q-time-end').value,
+      stat:       document.getElementById('q-stat').value,
+      freq, customDays, xp,
+      cover: cover || null,
+      done: false, doneDate: null,
+    });
+    saveState(); closeQuestModal(); renderAll();
+    showNotification('📋', `"${name}" creado`);
   };
-  state.quests.push(quest);
-  saveState();
-  closeQuestModal();
-  renderAll();
-  showNotification('📋', `"${name}" creado`);
+
+  const file = document.getElementById('q-cover') && document.getElementById('q-cover').files[0];
+  if (file) {
+    const r = new FileReader();
+    r.onload = e => finish(e.target.result);
+    r.readAsDataURL(file);
+  } else {
+    finish(null);
+  }
+}
+
+// ── edit quest ──────────────────────────────────
+function openEditQuestModal(id) {
+  const q = state.quests.find(x => x.id === id);
+  if (!q) return;
+  window._editingQuestId = id;
+
+  questModalType = q.type;
+  document.getElementById('modal-quest-title').textContent = '✎ Editar';
+  document.getElementById('q-type').value       = q.type;
+  document.getElementById('q-name').value       = q.name;
+  document.getElementById('q-prio').value       = q.priority;
+  document.getElementById('q-diff').value       = q.difficulty;
+  document.getElementById('q-start').value      = q.start;
+  document.getElementById('q-end').value        = q.end;
+  document.getElementById('q-time-start').value = q.startTime || '09:00';
+  document.getElementById('q-time-end').value   = q.endTime   || '10:00';
+
+  const isHabit = q.type === 'habit';
+  document.getElementById('q-freq-row').style.display      = isHabit ? 'flex' : 'none';
+  document.getElementById('q-freq-days-row').style.display = 'none';
+  if (isHabit && q.freq) document.getElementById('q-freq').value = q.freq;
+
+  const statSel = document.getElementById('q-stat');
+  statSel.innerHTML = '<option value="">Sin estadística</option>' +
+    state.stats.map(s => `<option value="${s.name}"${q.stat===s.name?' selected':''}>${s.name}</option>`).join('');
+
+  // cover
+  const coverInput  = document.getElementById('q-cover');
+  const coverThumb  = document.getElementById('q-cover-thumb');
+  const coverRemove = document.getElementById('q-cover-remove');
+  if (coverInput)  coverInput.value = '';
+  if (coverThumb)  coverThumb.innerHTML = q.cover ? `<img src="${q.cover}" style="width:100%;height:100%;object-fit:cover;">` : '🖼';
+  if (coverRemove) coverRemove.style.display = q.cover ? 'block' : 'none';
+
+  calcXP();
+  const btn = document.querySelector('#quest-modal .btn-primary');
+  if (btn) { btn.textContent = 'Guardar cambios'; btn.onclick = updateQuest; }
+  document.getElementById('quest-modal').classList.add('open');
+}
+
+function updateQuest() {
+  const id = window._editingQuestId;
+  if (!id) return;
+  const q = state.quests.find(x => x.id === id);
+  if (!q) return;
+
+  const apply = (cover) => {
+    q.name       = document.getElementById('q-name').value.trim() || q.name;
+    q.priority   = document.getElementById('q-prio').value;
+    q.difficulty = document.getElementById('q-diff').value;
+    q.start      = document.getElementById('q-start').value;
+    q.end        = document.getElementById('q-end').value;
+    q.startTime  = document.getElementById('q-time-start').value;
+    q.endTime    = document.getElementById('q-time-end').value;
+    q.stat       = document.getElementById('q-stat').value;
+    q.xp         = calcXP();
+    if (q.type === 'habit') q.freq = document.getElementById('q-freq').value;
+    if (cover !== undefined) q.cover = cover;
+    window._editingQuestId = null;
+    saveState(); closeQuestModal(); renderAll();
+    showNotification('✎', `"${q.name}" actualizada`);
+  };
+
+  const file = document.getElementById('q-cover') && document.getElementById('q-cover').files[0];
+  if (file) { const r = new FileReader(); r.onload = e => apply(e.target.result); r.readAsDataURL(file); }
+  else apply(undefined);
 }
 
 // ============================================================
