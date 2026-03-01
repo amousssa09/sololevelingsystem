@@ -459,7 +459,7 @@
     text-align: right;
   }
 
-  /* ARC CARD */
+  /* ARC SYSTEM */
   .arc-card { }
   .arc-name {
     padding: 12px 16px;
@@ -470,21 +470,22 @@
     align-items: center;
     gap: 8px;
   }
+  .arc-mantras { padding: 0 16px 14px; display: flex; flex-direction: column; gap: 5px; }
+  .arc-mantra { font-size: 12px; color: var(--text2); font-style: italic; padding-left: 10px; border-left: 2px solid var(--accent); }
 
-  .arc-mantras {
-    padding: 0 16px 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
-
-  .arc-mantra {
-    font-size: 12px;
-    color: var(--text2);
-    font-style: italic;
-    padding-left: 10px;
-    border-left: 2px solid var(--accent);
-  }
+  .arc-dashboard-card { border-left: 3px solid var(--gold); background: linear-gradient(135deg, rgba(212,160,23,0.05) 0%, transparent 60%); }
+  .arc-progress-bar-wrap { background: var(--surface3); border-radius: 4px; height: 6px; overflow: hidden; margin: 8px 0 4px; }
+  .arc-progress-bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
+  .arc-objective-item { display: flex; align-items: center; gap: 8px; padding: 5px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+  .arc-objective-item:last-child { border-bottom: none; }
+  .arc-obj-check { width: 16px; height: 16px; border: 1.5px solid var(--border2); border-radius: 3px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; font-size: 10px; transition: all 0.15s; }
+  .arc-obj-check.done { background: var(--green); border-color: var(--green); color: #000; }
+  .arc-obj-check:hover { border-color: var(--green); }
+  .arc-obj-text.done { text-decoration: line-through; color: var(--text3); }
+  .arc-feedback-msg { font-size: 11px; color: var(--text2); font-style: italic; margin-top: 8px; padding: 6px 10px; background: rgba(255,255,255,0.03); border-radius: 4px; border-left: 2px solid var(--gold); line-height: 1.5; }
+  .arc-list-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; transition: border-color 0.15s; }
+  .arc-list-item:hover { border-color: var(--border2); }
+  .arc-list-item.active-arc { border-color: var(--gold); background: rgba(212,160,23,0.04); }
 
   /* RANK BADGE */
   .rank-badge {
@@ -1404,6 +1405,7 @@
     <button class="nav-btn" onclick="showSection('missions')">Misiones</button>
     <button class="nav-btn" onclick="showSection('calendar')">Calendario</button>
     <button class="nav-btn" onclick="showSection('evals')">Evaluaciones</button>
+    <button class="nav-btn" onclick="showSection('arcs')" style="color:var(--gold);">⚔ Arcos</button>
     <button class="nav-btn" onclick="showSection('config')">Config</button>
   </div>
   <div class="topbar-xp">
@@ -1485,10 +1487,14 @@
       </div>
 
       <!-- ARC CARD -->
-      <div class="card arc-card" style="margin-top:16px;">
-        <div class="card-header"><span class="dot"></span> Arco Activo</div>
-        <div class="arc-name">💰 <span id="arc-name-text">Sin arco activo</span></div>
-        <div class="arc-mantras" id="arc-mantras"></div>
+      <div class="card arc-dashboard-card" style="margin-top:16px;" id="arc-dashboard-card">
+        <div class="card-header" style="justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:8px;"><span class="dot" style="background:var(--gold)"></span> Arco Activo</div>
+          <button class="btn-secondary" style="padding:2px 8px;font-size:10px;" onclick="showSection('arcs')">Ver todos</button>
+        </div>
+        <div id="arc-dashboard-content">
+          <!-- filled by renderArcDashboard() -->
+        </div>
       </div>
     </div>
 
@@ -1580,6 +1586,14 @@
         <div class="card-header"><span class="dot"></span> Logros</div>
         <div class="achievements-grid" id="achievements-grid">
           <!-- filled by JS -->
+        </div>
+      </div>
+      <div class="card" id="arc-profile-card">
+        <div class="card-header" style="justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:8px;"><span class="dot" style="background:var(--gold)"></span> Arco Activo</div>
+        </div>
+        <div id="arc-profile-content" style="padding:12px 16px;">
+          <!-- filled by renderArcDashboard() -->
         </div>
       </div>
     </div>
@@ -1761,12 +1775,9 @@
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label">Arco Activo</label>
-            <input class="form-input" id="config-arc-name" placeholder="Nombre del arco..." oninput="updateArc()">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Mantras del Arco (uno por línea)</label>
-            <textarea class="form-textarea" id="config-arc-mantras" placeholder="Ej: Prioriza tus necesidades&#10;Actúa sin dudar" oninput="updateArc()"></textarea>
+            <label class="form-label">Arcos de Campaña</label>
+            <div id="config-arc-preview" style="font-size:12px;color:var(--text3);margin-bottom:6px;">Cargando...</div>
+            <button class="btn-secondary" style="width:100%;" onclick="showSection('arcs')">⚔ Gestionar Arcos</button>
           </div>
         </div>
       </div>
@@ -1946,6 +1957,108 @@
   </div>
 
 
+</div>
+
+
+<!-- ======== ARCOS ======== -->
+<div class="section" id="section-arcs">
+  <div style="max-width:1100px;margin:0 auto;">
+
+    <!-- HEADER -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <div>
+        <div style="font-family:'Cinzel',serif;font-size:20px;color:var(--gold);margin-bottom:4px;">⚔ Arcos de Campaña</div>
+        <div style="font-size:13px;color:var(--text2);">Cada arco es un capítulo de tu vida. Define objetivos, mide el progreso, cierra victorioso.</div>
+      </div>
+      <button class="btn-primary" onclick="openArcModal()" style="padding:8px 18px;">+ Nuevo Arco</button>
+    </div>
+
+    <!-- ACTIVE ARC DETAIL -->
+    <div id="arc-active-detail" style="margin-bottom:16px;"></div>
+
+    <!-- ALL ARCS LIST -->
+    <div id="arc-all-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px;"></div>
+
+  </div>
+</div>
+
+<!-- ARC MODAL -->
+<div class="modal-overlay" id="arc-modal">
+  <div class="modal" style="width:560px;max-height:90vh;overflow-y:auto;">
+    <div class="modal-header">
+      <div class="modal-title" id="arc-modal-title">⚔ Nuevo Arco</div>
+      <button class="modal-close" onclick="closeArcModal()">✕</button>
+    </div>
+    <div class="modal-body" style="display:flex;flex-direction:column;gap:14px;">
+
+      <div class="form-row">
+        <div class="form-group" style="flex:2;">
+          <label class="form-label">Nombre del Arco</label>
+          <input class="form-input" id="arc-name-input" placeholder="Ej: El Ascenso del Guerrero...">
+        </div>
+        <div class="form-group" style="flex:0 0 60px;">
+          <label class="form-label">Color</label>
+          <input type="color" id="arc-color-input" value="#d4a017" style="width:100%;height:38px;border:none;background:none;cursor:pointer;border-radius:6px;padding:2px;">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Sinopsis</label>
+        <textarea class="form-textarea" id="arc-synopsis-input" placeholder="¿Qué representa este período? ¿Qué buscas transformar en ti?" style="min-height:70px;"></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Fecha de inicio</label>
+          <input class="form-input" type="date" id="arc-start-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Fecha límite</label>
+          <input class="form-input" type="date" id="arc-end-input">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Mantras (uno por línea)</label>
+        <textarea class="form-textarea" id="arc-mantras-input" placeholder="Actúa sin dudar&#10;La disciplina es libertad" style="min-height:60px;"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" style="display:flex;justify-content:space-between;align-items:center;">
+          Objetivos del Arco
+          <button class="btn-secondary" style="padding:2px 10px;font-size:11px;" onclick="addArcObjectiveRow()">+ Añadir</button>
+        </label>
+        <div id="arc-objectives-input-list" style="display:flex;flex-direction:column;gap:6px;margin-top:6px;"></div>
+      </div>
+
+      <input type="hidden" id="arc-edit-id">
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="closeArcModal()">Cancelar</button>
+        <button class="btn-primary" onclick="saveArc()">Guardar Arco</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ARC CLOSE MODAL -->
+<div class="modal-overlay" id="arc-close-modal">
+  <div class="modal" style="width:460px;">
+    <div class="modal-header">
+      <div class="modal-title" style="color:var(--gold);">📜 Cerrar Arco</div>
+      <button class="modal-close" onclick="document.getElementById('arc-close-modal').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="background:rgba(212,160,23,0.06);border:1px solid rgba(212,160,23,0.2);border-radius:8px;padding:12px;margin-bottom:14px;" id="arc-close-preview"></div>
+      <div class="form-group">
+        <label class="form-label">Reflexión final — ¿qué lograste en este arco?</label>
+        <textarea class="form-textarea" id="arc-close-note" placeholder="En este arco conseguí..." style="min-height:90px;"></textarea>
+      </div>
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="document.getElementById('arc-close-modal').classList.remove('open')">Cancelar</button>
+        <button class="btn-primary" style="background:rgba(212,160,23,0.15);border-color:var(--gold);color:var(--gold);" onclick="confirmCloseArc()">📜 Cerrar Arco</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- ======== CALENDAR ======== -->
@@ -2132,6 +2245,12 @@
           <!-- filled by JS -->
         </select>
       </div>
+      <div class="form-group">
+        <label class="form-label">Arco asociado (opcional)</label>
+        <select class="form-select" id="q-arc">
+          <option value="">Sin arco</option>
+        </select>
+      </div>
       <div class="form-group" style="display:flex;align-items:center;gap:10px;">
         <label class="auto-day-label" style="width:auto;padding:6px 12px;display:flex;align-items:center;gap:6px;">
           <input type="checkbox" id="q-penalty-enabled" style="display:inline;width:auto;margin:0;">
@@ -2198,7 +2317,9 @@ let state = {
     { name: 'Espiritual', val: 0, color: '#40c880' },
     { name: 'Core',       val: 0, color: '#d4a017' },
   ],
-  arc: { name: '', mantras: [] },
+  arc: { name: '', mantras: [] }, // legacy kept for migration
+  arcs: [],         // { id, name, synopsis, startDate, endDate, mantras, objectives:[{id,text,done,questId}], color, status:'active'|'closed', closingNote, xpGained, missionsCompleted }
+  activeArcId: null,
   quests: [],
   habits: [],        // separate habit tracking: { questId, date, done }
   timeBlocks: [],    // free blocks: { id, date, name, startTime, endTime, color }
@@ -2287,10 +2408,31 @@ function loadState() {
       if (!state.penalties) state.penalties = [];
       if (state.sideQuestStreak === undefined) state.sideQuestStreak = 0;
       if (state.sideQuestStreakDate === undefined) state.sideQuestStreakDate = null;
+      if (!state.arcs) state.arcs = [];
+      if (state.activeArcId === undefined) state.activeArcId = null;
+      // Migrate legacy single arc to arcs array
+      if (state.arc && state.arc.name && state.arcs.length === 0) {
+        const legacyArc = {
+          id: 'arc_legacy',
+          name: state.arc.name,
+          synopsis: '',
+          startDate: new Date().toISOString().split('T')[0],
+          endDate: '',
+          mantras: state.arc.mantras || [],
+          objectives: [],
+          color: '#d4a017',
+          status: 'active',
+          closingNote: '',
+          xpGained: 0,
+          missionsCompleted: 0,
+        };
+        state.arcs.push(legacyArc);
+        state.activeArcId = legacyArc.id;
+      }
 
-      // Migrate quests missing time fields
+      // Migrate quests missing fields
       state.quests = state.quests.map(q => ({
-        startTime: '', endTime: '', freq: null, customDays: null, ...q
+        startTime: '', endTime: '', freq: null, customDays: null, arcId: null, ...q
       }));
       if (!state.ranks || state.ranks.length === 0) {
         state.ranks = [
@@ -2340,6 +2482,8 @@ function init() {
 
 function renderAll() {
   renderPlayer();
+  renderArcDashboard();
+  renderArcsSection();
   renderVitals();
   renderStats();
   renderRadar('radar-svg');
@@ -2381,13 +2525,6 @@ function renderPlayer() {
   document.getElementById('profile-current-xp').textContent = state.xp;
   document.getElementById('profile-next-xp').textContent = needed;
   document.getElementById('profile-xp-bar').style.width = pct + '%';
-
-  // Arc
-  document.getElementById('arc-name-text').textContent = state.arc.name || 'Sin arco activo';
-  const mantrasEl = document.getElementById('arc-mantras');
-  mantrasEl.innerHTML = state.arc.mantras.map(m =>
-    `<div class="arc-mantra">— ${m}</div>`
-  ).join('');
 
   // Portrait
   if (state.portrait) {
@@ -2896,6 +3033,14 @@ function openQuestModal(type) {
     questModalType === 'sidequest' ? 'Nueva Side Quest 🎮' : 'Nueva Misión Diaria';
 
   // Fill stat options
+  // Populate arc selector
+  const arcSel = document.getElementById('q-arc');
+  if (arcSel) {
+    arcSel.innerHTML = '<option value="">Sin arco</option>' +
+      state.arcs.filter(a => a.status === 'active').map(a =>
+        `<option value="${a.id}">${a.name}</option>`
+      ).join('');
+  }
   const statSel = document.getElementById('q-stat');
   statSel.innerHTML = '<option value="">Sin estadística</option>' +
     state.stats.map(s => `<option>${s.name}</option>`).join('');
@@ -2963,6 +3108,7 @@ function saveQuest() {
     done: false,
     doneDate: null,
     penaltyEnabled: document.getElementById('q-penalty-enabled')?.checked || false,
+    arcId: document.getElementById('q-arc')?.value || null,
   };
   state.quests.push(quest);
   saveState();
@@ -3075,6 +3221,421 @@ function checkAchievements() {
   });
 }
 
+
+// ============================================================
+// ARC SYSTEM
+// ============================================================
+
+function getActiveArc() {
+  return state.arcs.find(a => a.id === state.activeArcId) || null;
+}
+
+function getArcProgress(arc) {
+  if (!arc || !arc.objectives || arc.objectives.length === 0) {
+    // fallback: count quests linked to this arc
+    const linked = state.quests.filter(q => q.arcId === arc?.id);
+    const done   = linked.filter(q => q.done).length;
+    return { pct: linked.length ? Math.round((done / linked.length) * 100) : 0, done, total: linked.length, mode: 'quests' };
+  }
+  const done  = arc.objectives.filter(o => o.done).length;
+  const total = arc.objectives.length;
+  return { pct: total ? Math.round((done / total) * 100) : 0, done, total, mode: 'objectives' };
+}
+
+function getArcFeedback(arc) {
+  const prog = getArcProgress(arc);
+  const pct  = prog.pct;
+  const today = new Date().toISOString().split('T')[0];
+  const hasEnd = arc.endDate && arc.endDate >= today;
+  const daysLeft = hasEnd ? Math.ceil((new Date(arc.endDate) - new Date(today)) / 86400000) : null;
+
+  let msg = '';
+  if (pct === 0)       msg = 'El arco acaba de comenzar. El primer paso es el más importante.';
+  else if (pct < 25)   msg = 'Los cimientos se están poniendo. Sigue construyendo.';
+  else if (pct < 50)   msg = 'Buen ritmo. Ya tienes terreno ganado, no lo pierdas.';
+  else if (pct < 75)   msg = 'Más de la mitad del camino recorrido. El final ya se ve.';
+  else if (pct < 100)  msg = 'Recta final. Este arco está a punto de cerrarse con victoria.';
+  else                 msg = '✓ Todos los objetivos completados. Puedes cerrar este arco.';
+
+  if (daysLeft !== null) {
+    if (daysLeft <= 0)      msg += ' ⚠️ El plazo ha vencido.';
+    else if (daysLeft <= 3) msg += ` ⏳ Quedan ${daysLeft} día${daysLeft === 1 ? '' : 's'}.`;
+    else                    msg += ` · ${daysLeft} días restantes.`;
+  }
+  return msg;
+}
+
+// ── Render arc in dashboard & profile ──────────────────────────
+function renderArcDashboard() {
+  const arc = getActiveArc();
+  const containers = ['arc-dashboard-content', 'arc-profile-content'];
+
+  containers.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    if (!arc) {
+      el.innerHTML = `
+        <div style="padding:14px 16px;text-align:center;">
+          <div style="font-size:24px;margin-bottom:6px;">⚔</div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:10px;">Sin arco activo. Define un período de tu vida y dale propósito.</div>
+          <button class="btn-secondary" style="padding:4px 14px;font-size:11px;" onclick="showSection('arcs')">Iniciar Arco</button>
+        </div>`;
+      return;
+    }
+
+    const prog = getArcProgress(arc);
+    const feedback = getArcFeedback(arc);
+    const color = arc.color || '#d4a017';
+
+    // Top objectives (max 4)
+    const objHtml = arc.objectives && arc.objectives.length
+      ? arc.objectives.slice(0, 4).map(o => `
+        <div class="arc-objective-item">
+          <div class="arc-obj-check ${o.done ? 'done' : ''}" onclick="toggleArcObjective('${arc.id}','${o.id}')">${o.done ? '✓' : ''}</div>
+          <span class="arc-obj-text ${o.done ? 'done' : ''}" style="flex:1;">${o.text}</span>
+          ${o.questId ? `<span style="font-size:9px;color:var(--purple);">🔗</span>` : ''}
+        </div>`).join('')
+      : '';
+
+    const linkedQuests = state.quests.filter(q => q.arcId === arc.id && !q.done).length;
+
+    el.innerHTML = `
+      <div style="padding:12px 16px 14px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+          <div style="font-family:'Cinzel',serif;font-size:13px;color:${color};">${arc.name}</div>
+          <span style="font-size:11px;font-family:'Share Tech Mono',monospace;color:${color};">${prog.pct}%</span>
+        </div>
+        ${arc.synopsis ? `<div style="font-size:11px;color:var(--text3);margin-bottom:6px;line-height:1.4;">${arc.synopsis}</div>` : ''}
+        <div class="arc-progress-bar-wrap">
+          <div class="arc-progress-bar-fill" style="width:${prog.pct}%;background:linear-gradient(90deg,${color}88,${color});"></div>
+        </div>
+        <div style="font-size:10px;color:var(--text3);margin-bottom:8px;">${prog.done} / ${prog.total} ${prog.mode === 'objectives' ? 'objetivos' : 'misiones'} · ${arc.startDate}${arc.endDate ? ' → ' + arc.endDate : ''}</div>
+        ${objHtml}
+        ${linkedQuests > 0 ? `<div style="font-size:10px;color:var(--text3);margin-top:6px;">🗡 ${linkedQuests} misión${linkedQuests !== 1 ? 'es' : ''} pendiente${linkedQuests !== 1 ? 's' : ''} en este arco</div>` : ''}
+        <div class="arc-feedback-msg">${feedback}</div>
+        ${arc.mantras && arc.mantras.length ? `<div class="arc-mantras" style="padding:8px 0 0;">${arc.mantras.map(m=>`<div class="arc-mantra">— ${m}</div>`).join('')}</div>` : ''}
+      </div>`;
+  });
+}
+
+// ── Toggle arc objective ────────────────────────────────────────
+function toggleArcObjective(arcId, objId) {
+  const arc = state.arcs.find(a => a.id === arcId);
+  if (!arc) return;
+  const obj = arc.objectives.find(o => o.id === objId);
+  if (!obj) return;
+  obj.done = !obj.done;
+  if (obj.done) {
+    const doneCount = arc.objectives.filter(o => o.done).length;
+    showNotification('⚔', `Objetivo completado (${doneCount}/${arc.objectives.length})`);
+  }
+  saveState();
+  renderArcDashboard();
+  renderArcsSection();
+}
+
+// ── Arcs Section ────────────────────────────────────────────────
+function renderArcsSection() {
+  const activeEl = document.getElementById('arc-active-detail');
+  const listEl   = document.getElementById('arc-all-list');
+  if (!activeEl || !listEl) return;
+
+  if (!state.arcs || state.arcs.length === 0) {
+    activeEl.innerHTML = `
+      <div style="background:rgba(212,160,23,0.03);border:1px dashed rgba(212,160,23,0.2);border-radius:10px;padding:36px;text-align:center;">
+        <div style="font-size:36px;margin-bottom:12px;">⚔</div>
+        <div style="font-family:'Cinzel',serif;font-size:15px;color:var(--text2);margin-bottom:8px;">Sin arcos todavía</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:18px;">Crea tu primer arco para darle dirección y significado a tus próximas semanas.</div>
+        <button class="btn-primary" onclick="openArcModal()">+ Crear primer arco</button>
+      </div>`;
+    listEl.innerHTML = '';
+    return;
+  }
+
+  // Active arc — full detail card at the top
+  const arc = getActiveArc();
+  if (arc) {
+    const prog     = getArcProgress(arc);
+    const feedback = getArcFeedback(arc);
+    const color    = arc.color || '#d4a017';
+    const linkedQ  = state.quests.filter(q => q.arcId === arc.id);
+    const doneQ    = linkedQ.filter(q => q.done).length;
+
+    activeEl.innerHTML = `
+    <div class="card" style="border-left:3px solid ${color};background:linear-gradient(135deg,${color}08 0%,transparent 50%);margin-bottom:4px;">
+      <div class="card-header" style="justify-content:space-between;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="dot" style="background:${color}"></span>
+          <span style="font-family:'Cinzel',serif;font-size:16px;color:${color};">${arc.name}</span>
+          <span style="font-size:10px;background:rgba(212,160,23,0.1);color:var(--gold);border:1px solid rgba(212,160,23,0.2);border-radius:4px;padding:2px 8px;letter-spacing:1px;">ACTIVO</span>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn-secondary" style="padding:3px 10px;font-size:11px;" onclick="openArcModal('${arc.id}')">✎ Editar</button>
+          <button class="btn-secondary" style="padding:3px 10px;font-size:11px;color:var(--gold);border-color:rgba(212,160,23,0.3);" onclick="openCloseArcModal('${arc.id}')">📜 Cerrar</button>
+          <button class="btn-secondary" style="padding:3px 10px;font-size:11px;color:var(--accent);border-color:rgba(200,16,46,0.3);" onclick="deleteArc('${arc.id}')">✕</button>
+        </div>
+      </div>
+      <div style="padding:16px;display:grid;grid-template-columns:1fr 180px;gap:20px;">
+        <div>
+          ${arc.synopsis ? `<div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:14px;">${arc.synopsis}</div>` : ''}
+          <div style="margin-bottom:10px;">
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:4px;">
+              <span>PROGRESO</span><span style="color:${color};">${prog.pct}%</span>
+            </div>
+            <div class="arc-progress-bar-wrap" style="height:8px;">
+              <div class="arc-progress-bar-fill" style="width:${prog.pct}%;background:linear-gradient(90deg,${color}88,${color});"></div>
+            </div>
+          </div>
+          <div style="font-size:11px;color:var(--text3);margin-bottom:12px;">${arc.startDate}${arc.endDate ? ' → '+arc.endDate : ' · sin fecha límite'}</div>
+          ${arc.objectives && arc.objectives.length ? `
+            <div style="font-size:10px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Objetivos</div>
+            ${arc.objectives.map(o => `
+              <div class="arc-objective-item">
+                <div class="arc-obj-check ${o.done?'done':''}" onclick="toggleArcObjective('${arc.id}','${o.id}')">${o.done?'✓':''}</div>
+                <span class="arc-obj-text ${o.done?'done':''}" style="flex:1;">${o.text}</span>
+              </div>`).join('')}` : '<div style="font-size:11px;color:var(--text3);">Sin objetivos definidos — edita el arco para añadirlos.</div>'}
+          ${arc.mantras && arc.mantras.length ? `<div class="arc-mantras" style="padding:10px 0 0;">${arc.mantras.map(m=>`<div class="arc-mantra">— ${m}</div>`).join('')}</div>` : ''}
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:12px;text-align:center;">
+            <div style="font-size:24px;font-family:'Share Tech Mono',monospace;color:${color};">${prog.pct}%</div>
+            <div style="font-size:10px;color:var(--text3);letter-spacing:1px;">COMPLETADO</div>
+          </div>
+          <div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:12px;text-align:center;">
+            <div style="font-size:20px;font-family:'Share Tech Mono',monospace;color:var(--gold);">${arc.xpGained||0}</div>
+            <div style="font-size:10px;color:var(--text3);letter-spacing:1px;">XP GANADO</div>
+          </div>
+          <div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:12px;text-align:center;">
+            <div style="font-size:20px;font-family:'Share Tech Mono',monospace;color:var(--text2);">${doneQ}/${linkedQ.length}</div>
+            <div style="font-size:10px;color:var(--text3);letter-spacing:1px;">MISIONES</div>
+          </div>
+        </div>
+      </div>
+      <div style="padding:0 16px 14px;">
+        <div class="arc-feedback-msg">${feedback}</div>
+      </div>
+    </div>`;
+  } else {
+    activeEl.innerHTML = `
+      <div style="background:rgba(212,160,23,0.03);border:1px dashed rgba(212,160,23,0.2);border-radius:10px;padding:20px;text-align:center;margin-bottom:8px;">
+        <div style="font-size:12px;color:var(--text3);">Sin arco activo — activa uno de la lista o crea uno nuevo.</div>
+      </div>`;
+  }
+
+  // All other arcs
+  const others = state.arcs.filter(a => a.id !== state.activeArcId);
+  if (others.length === 0) { listEl.innerHTML = ''; return; }
+
+  const inactive = others.filter(a => a.status !== 'closed');
+  const closed   = others.filter(a => a.status === 'closed');
+  let html = '';
+
+  if (inactive.length) {
+    html += `<div style="font-size:11px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;grid-column:1/-1;">Otros Arcos</div>`;
+    html += inactive.map(a => arcCardHTML(a)).join('');
+  }
+  if (closed.length) {
+    html += `<div style="font-size:11px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin:${inactive.length?'16px':0} 0 8px;grid-column:1/-1;">Arcos Cerrados</div>`;
+    html += closed.map(a => arcCardHTML(a)).join('');
+  }
+  listEl.innerHTML = html;
+}
+
+function arcCardHTML(a) {
+  const prog  = getArcProgress(a);
+  const color = a.color || '#9090a8';
+  const isClosed = a.status === 'closed';
+  return `
+  <div class="arc-list-item" style="border-left:3px solid ${color};${isClosed?'opacity:0.6;':''}">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+      <div style="font-family:'Cinzel',serif;font-size:13px;color:${color};flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${a.name}</div>
+      <span style="font-size:10px;color:var(--text3);margin-left:8px;flex-shrink:0;">${isClosed?'✓ Cerrado':'⏸ Pausado'}</span>
+    </div>
+    ${a.synopsis ? `<div style="font-size:11px;color:var(--text3);margin-bottom:6px;line-height:1.4;">${a.synopsis.slice(0,90)}${a.synopsis.length>90?'…':''}</div>` : ''}
+    <div class="arc-progress-bar-wrap"><div class="arc-progress-bar-fill" style="width:${prog.pct}%;background:${color};"></div></div>
+    <div style="font-size:10px;color:var(--text3);margin-top:4px;display:flex;justify-content:space-between;">
+      <span>${a.startDate}${a.endDate?' → '+a.endDate:''}</span>
+      <span>${prog.pct}% · ${a.xpGained||0} XP</span>
+    </div>
+    ${a.closingNote ? `<div style="font-size:11px;color:var(--text2);font-style:italic;margin-top:6px;padding-top:6px;border-top:1px solid var(--border);">"${a.closingNote.slice(0,100)}${a.closingNote.length>100?'…':''}"</div>` : ''}
+    <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
+      ${!isClosed ? `<button class="btn-secondary" style="padding:2px 10px;font-size:10px;color:var(--gold);border-color:rgba(212,160,23,0.3);" onclick="reactivateArc('${a.id}')">⚔ Activar</button>` : ''}
+      ${!isClosed ? `<button class="btn-secondary" style="padding:2px 10px;font-size:10px;" onclick="openArcModal('${a.id}')">✎ Editar</button>` : ''}
+      ${isClosed  ? `<button class="btn-secondary" style="padding:2px 10px;font-size:10px;" onclick="reactivateArc('${a.id}')">↺ Reactivar</button>` : ''}
+      <button class="btn-secondary" style="padding:2px 10px;font-size:10px;color:var(--accent);border-color:rgba(200,16,46,0.3);" onclick="deleteArc('${a.id}')">✕ Eliminar</button>
+    </div>
+  </div>`;
+}
+
+function deleteArc(arcId) {
+  const arc = state.arcs.find(a => a.id === arcId);
+  if (!arc) return;
+  if (!confirm(`¿Eliminar "${arc.name}"? Las misiones vinculadas no se borrarán.`)) return;
+  state.arcs = state.arcs.filter(a => a.id !== arcId);
+  if (state.activeArcId === arcId) state.activeArcId = null;
+  saveState();
+  renderAll();
+  showNotification('🗑', `Arco "${arc.name}" eliminado`);
+}
+
+function openArcModal(arcId) {
+  const modal = document.getElementById('arc-modal');
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('arc-edit-id').value = arcId || '';
+
+  if (arcId) {
+    const arc = state.arcs.find(a => a.id === arcId);
+    if (!arc) return;
+    document.getElementById('arc-modal-title').textContent = '✎ Editar Arco';
+    document.getElementById('arc-name-input').value    = arc.name;
+    document.getElementById('arc-synopsis-input').value = arc.synopsis || '';
+    document.getElementById('arc-start-input').value   = arc.startDate || today;
+    document.getElementById('arc-end-input').value     = arc.endDate || '';
+    document.getElementById('arc-color-input').value   = arc.color || '#d4a017';
+    document.getElementById('arc-mantras-input').value = (arc.mantras || []).join('\n');
+    renderArcObjectiveRows(arc.objectives || []);
+  } else {
+    document.getElementById('arc-modal-title').textContent = '⚔ Nuevo Arco';
+    document.getElementById('arc-name-input').value    = '';
+    document.getElementById('arc-synopsis-input').value = '';
+    document.getElementById('arc-start-input').value   = today;
+    document.getElementById('arc-end-input').value     = '';
+    document.getElementById('arc-color-input').value   = '#d4a017';
+    document.getElementById('arc-mantras-input').value = '';
+    renderArcObjectiveRows([]);
+  }
+  modal.classList.add('open');
+}
+
+function closeArcModal() {
+  document.getElementById('arc-modal').classList.remove('open');
+}
+
+function renderArcObjectiveRows(objectives) {
+  const list = document.getElementById('arc-objectives-input-list');
+  list.innerHTML = objectives.map((o, i) => `
+    <div style="display:flex;gap:6px;align-items:center;">
+      <input class="form-input arc-obj-row" value="${o.text}" placeholder="Objetivo ${i+1}..." style="flex:1;">
+      <button class="remove-btn" onclick="this.parentElement.remove()">✕</button>
+    </div>`).join('');
+}
+
+function addArcObjectiveRow() {
+  const list = document.getElementById('arc-objectives-input-list');
+  const div  = document.createElement('div');
+  div.style.cssText = 'display:flex;gap:6px;align-items:center;';
+  div.innerHTML = `<input class="form-input arc-obj-row" placeholder="Nuevo objetivo..." style="flex:1;"><button class="remove-btn" onclick="this.parentElement.remove()">✕</button>`;
+  list.appendChild(div);
+  div.querySelector('input').focus();
+}
+
+function saveArc() {
+  const name = document.getElementById('arc-name-input').value.trim();
+  if (!name) { alert('El arco necesita un nombre.'); return; }
+
+  const editId = document.getElementById('arc-edit-id').value;
+  const objectives = [...document.querySelectorAll('.arc-obj-row')]
+    .map(inp => inp.value.trim()).filter(Boolean)
+    .map((text, i) => {
+      // preserve done status if editing
+      if (editId) {
+        const arc = state.arcs.find(a => a.id === editId);
+        const existing = arc?.objectives?.[i];
+        return { id: existing?.id || Date.now().toString() + i, text, done: existing?.done || false, questId: existing?.questId || null };
+      }
+      return { id: Date.now().toString() + i, text, done: false, questId: null };
+    });
+
+  const mantras = document.getElementById('arc-mantras-input').value.split('\n').map(l => l.trim()).filter(Boolean);
+
+  if (editId) {
+    const arc = state.arcs.find(a => a.id === editId);
+    if (arc) {
+      arc.name      = name;
+      arc.synopsis  = document.getElementById('arc-synopsis-input').value.trim();
+      arc.startDate = document.getElementById('arc-start-input').value;
+      arc.endDate   = document.getElementById('arc-end-input').value;
+      arc.color     = document.getElementById('arc-color-input').value;
+      arc.mantras   = mantras;
+      arc.objectives = objectives;
+    }
+  } else {
+    const arc = {
+      id:               Date.now().toString(),
+      name,
+      synopsis:         document.getElementById('arc-synopsis-input').value.trim(),
+      startDate:        document.getElementById('arc-start-input').value,
+      endDate:          document.getElementById('arc-end-input').value,
+      color:            document.getElementById('arc-color-input').value,
+      mantras,
+      objectives,
+      status:           'active',
+      closingNote:      '',
+      xpGained:         0,
+      missionsCompleted: 0,
+    };
+    // Deactivate current active arc if any
+    state.arcs.forEach(a => { if (a.status === 'active') a.status = 'paused'; });
+    state.arcs.unshift(arc);
+    state.activeArcId = arc.id;
+  }
+
+  saveState();
+  closeArcModal();
+  renderAll();
+  showNotification('⚔', `Arco "${name}" ${editId ? 'actualizado' : 'iniciado'}`);
+}
+
+// ── Close arc ───────────────────────────────────────────────────
+let closeArcTargetId = null;
+function openCloseArcModal(arcId) {
+  closeArcTargetId = arcId;
+  const arc = state.arcs.find(a => a.id === arcId);
+  if (!arc) return;
+  const prog = getArcProgress(arc);
+  document.getElementById('arc-close-preview').innerHTML = `
+    <div style="font-family:'Cinzel',serif;font-size:14px;color:var(--gold);margin-bottom:6px;">${arc.name}</div>
+    <div style="font-size:12px;color:var(--text2);">Progreso: ${prog.pct}% · ${arc.xpGained || 0} XP · ${arc.missionsCompleted || 0} misiones</div>`;
+  document.getElementById('arc-close-note').value = '';
+  document.getElementById('arc-close-modal').classList.add('open');
+}
+
+function confirmCloseArc() {
+  const arc = state.arcs.find(a => a.id === closeArcTargetId);
+  if (!arc) return;
+  arc.status      = 'closed';
+  arc.endDate     = arc.endDate || new Date().toISOString().split('T')[0];
+  arc.closingNote = document.getElementById('arc-close-note').value.trim();
+  if (state.activeArcId === arc.id) state.activeArcId = null;
+  document.getElementById('arc-close-modal').classList.remove('open');
+  saveState();
+  renderAll();
+  showNotification('📜', `Arco "${arc.name}" cerrado`);
+}
+
+function reactivateArc(arcId) {
+  state.arcs.forEach(a => { if (a.status === 'active') a.status = 'paused'; });
+  const arc = state.arcs.find(a => a.id === arcId);
+  if (arc) { arc.status = 'active'; state.activeArcId = arcId; }
+  saveState();
+  renderAll();
+  showNotification('⚔', `Arco "${arc.name}" reactivado`);
+}
+
+// ── Hook: track arc XP and missions when quest is completed ─────
+function updateArcOnQuestComplete(quest, xpGained) {
+  const arc = state.arcs.find(a => a.id === quest.arcId);
+  if (!arc) return;
+  arc.xpGained          = (arc.xpGained || 0) + xpGained;
+  arc.missionsCompleted = (arc.missionsCompleted || 0) + 1;
+  // Auto-complete linked objective if any
+  if (arc.objectives) {
+    const linked = arc.objectives.find(o => o.questId === quest.id);
+    if (linked) linked.done = true;
+  }
+}
+
 // ============================================================
 // SUMMARY
 // ============================================================
@@ -3105,8 +3666,11 @@ function updateTopbar() {
 // ============================================================
 function renderConfig() {
   document.getElementById('config-name').value = state.name;
-  document.getElementById('config-arc-name').value = state.arc.name || '';
-  document.getElementById('config-arc-mantras').value = state.arc.mantras.join('\n');
+  const arcPreview = document.getElementById('config-arc-preview');
+  if (arcPreview) {
+    const arc = state.arcs.find(a => a.id === state.activeArcId);
+    arcPreview.textContent = arc ? `Activo: "${arc.name}"` : 'Sin arco activo';
+  }
 
   // Titles select — only unlocked ones
   const titleSel = document.getElementById('config-title');
@@ -3178,12 +3742,7 @@ function updateTitleFromConfig() {
   }
 }
 
-function updateArc() {
-  state.arc.name = document.getElementById('config-arc-name').value;
-  state.arc.mantras = document.getElementById('config-arc-mantras').value
-    .split('\n').map(l => l.trim()).filter(Boolean);
-  saveState(); renderPlayer();
-}
+function updateArc() { /* replaced by arc system */ }
 
 function toggleTitleUnlockInput() {
   const type = document.getElementById('new-title-unlock-type').value;
@@ -3843,7 +4402,7 @@ function showSection(id) {
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('section-' + id).classList.add('active');
   const btns = document.querySelectorAll('.nav-btn');
-  const sections = ['dashboard', 'profile', 'missions', 'calendar', 'evals', 'config'];
+  const sections = ['dashboard', 'profile', 'missions', 'arcs', 'calendar', 'evals', 'config'];
   const idx = sections.indexOf(id);
   if (idx >= 0) btns[idx].classList.add('active');
 
@@ -3852,6 +4411,7 @@ function showSection(id) {
   if (id === 'config') renderConfig();
   if (id === 'calendar') renderCalendar();
   if (id === 'evals') renderEvals();
+  if (id === 'arcs')  renderArcsSection();
 }
 
 // ============================================================
