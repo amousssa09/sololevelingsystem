@@ -1030,24 +1030,6 @@
 
   .big-portrait:hover .portrait-upload-hint { opacity: 1; }
 
-  .achievements-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    padding: 14px 16px;
-  }
-
-  .achievement {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 0px;
-    padding: 10px;
-    text-align: center;
-  }
-
-  .achievement-icon { font-size: 20px; margin-bottom: 4px; }
-  .achievement-name { font-size: 10px; font-weight: 600; letter-spacing: 1px; color: var(--text2); text-transform: uppercase; }
-  .achievement-locked { opacity: 0.3; }
 
   .profile-stats-detail {
     display: grid;
@@ -1899,25 +1881,8 @@
         </div>
 
         <!-- VITALS -->
-        <div class="vitals">
-          <div class="vital-row">
-            <span class="vital-icon">❤️</span>
-            <span class="vital-label">Energía</span>
-            <div class="vital-dots" id="energy-dots"></div>
-            <span class="vital-num" id="energy-num">7/10</span>
-          </div>
-          <div class="vital-row">
-            <span class="vital-icon">🔷</span>
-            <span class="vital-label">Foco</span>
-            <div class="vital-dots" id="focus-dots"></div>
-            <span class="vital-num" id="focus-num">6/10</span>
-          </div>
-          <div class="vital-row">
-            <span class="vital-icon">🌸</span>
-            <span class="vital-label">Humor</span>
-            <div class="vital-dots" id="mood-dots"></div>
-            <span class="vital-num" id="mood-num">8/10</span>
-          </div>
+        <div class="vitals" id="vitals-container">
+          <!-- Rendered dynamically -->
         </div>
       </div>
 
@@ -1995,12 +1960,6 @@
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-header"><span class="dot"></span> Logros</div>
-        <div class="achievements-grid" id="achievements-grid">
-          <!-- filled by JS -->
-        </div>
-      </div>
     </div>
 
     <div class="profile-right">
@@ -2017,7 +1976,10 @@
         </div>
       </div>
       <div class="card">
-        <div class="card-header"><span class="dot"></span> Historial de Misiones</div>
+        <div class="card-header" style="display:flex;align-items:center;justify-content:space-between;">
+          <span><span class="dot"></span> Historial de Misiones</span>
+          <button class="btn-secondary" style="font-size:11px;padding:4px 10px;" onclick="clearMissionHistory()">Limpiar historial</button>
+        </div>
         <div id="history-list" style="padding:10px 0;"></div>
         <div id="history-empty" class="empty-state">Completa misiones para ver el historial</div>
       </div>
@@ -2036,6 +1998,8 @@
       <button class="btn-secondary" onclick="openQuestModal('habit')">+ Hábito</button>
       <button class="btn-secondary" onclick="openQuestModal('daily')">+ Misión</button>
       <button class="btn-primary" onclick="openQuestModal('objective')">+ Objetivo</button>
+      <button class="btn-secondary" onclick="clearPendingMissions()">🧹 Limpiar pendientes</button>
+      <button class="btn-secondary" onclick="clearCompletedMissions()">🧹 Limpiar completadas</button>
       <button class="btn-primary" id="btn-new-arc" style="display:none;background:var(--color-xp);color:#000;border-color:var(--color-xp);" onclick="openArcModal()">+ Nuevo Arco</button>
     </div>
   </div>
@@ -2434,6 +2398,20 @@
         <div style="padding:0 16px 14px;display:flex;align-items:center;gap:10px;">
           <span style="font-size:11px;color:var(--text3);">Color puntos radar</span>
           <input type="color" id="config-radar-dot-color" value="#ff4444" title="Color dots radar" style="width:32px;height:32px;border:none;background:none;cursor:pointer;border-radius: 0px;" onchange="updateRadarDotColor(this.value)">
+        </div>
+      </div>
+
+      <div class="card config-card">
+        <div class="card-header"><span class="dot"></span> Vitales</div>
+        <div class="stats-config-list" id="vitals-config-list">
+          <!-- filled by JS -->
+        </div>
+        <div style="padding:0 16px 14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+          <input class="form-input" id="new-vital-name" placeholder="Nombre vital..." style="flex:1;min-width:180px;">
+          <input class="form-input" id="new-vital-icon" placeholder="Icono" style="width:60px;text-align:center;">
+          <input type="color" id="new-vital-color" value="#ff4444" title="Color" style="width:36px;height:36px;border:none;background:none;cursor:pointer;border-radius: 0px;padding:2px;">
+          <input class="form-input" id="new-vital-value" placeholder="Valor 0-10" style="width:80px;text-align:center;" type="number" min="0" max="10" value="5">
+          <button class="btn-secondary" onclick="addVital()">+ Añadir</button>
         </div>
       </div>
 
@@ -2998,14 +2976,6 @@ let state = {
   kaizenEntries: [], // { id, date, summary, good, bad, improve, tasks:[{id,text,done}] }
   automations: [],   // { id, name, type:'task'|'habit'|'block', priority, difficulty, stat, startDate, endDate, startTime, endTime, weekDays:[0-6], color, lastRun }
   bosses: [],        // { id, name, desc, lore, condition, image, maxHP, currentHP, dmgPerDay, reward, linkedQuests, status:'active'|'defeated'|'escaped', createdAt, defeatDate, log:[] }
-  achievements: [
-    { name: 'Primera Misión', icon: '⚔️', unlocked: false, key: 'first_quest' },
-    { name: 'Rayo Veloz',     icon: '⚡', unlocked: false, key: '5_quests' },
-    { name: 'Nivel 5',        icon: '🌟', unlocked: false, key: 'level_5' },
-    { name: 'Racha x7',       icon: '🔥', unlocked: false, key: 'streak_7' },
-    { name: 'Jefe Caído',     icon: '💀', unlocked: false, key: 'boss' },
-    { name: 'Imparable',      icon: '👑', unlocked: false, key: 'level_10' },
-  ],
   // RANKS stored in state so they're customizable
   ranks: [
     { label: 'C',  icon: '◈',  minLevel: 1  },
@@ -3070,11 +3040,30 @@ function loadState() {
         unlocked: t.unlocked ?? true,
       }));
 
-      // Ensure habits and timeBlocks arrays exist
+          // Ensure habits and timeBlocks arrays exist
       if (!state.habits) state.habits = [];
       if (!state.timeBlocks) state.timeBlocks = [];
       if (!state.kaizenEntries) state.kaizenEntries = [];
       if (!state.automations) state.automations = [];
+      // Remove legacy achievements storage (no longer used)
+      if (state.achievements) delete state.achievements;
+
+      // Migrate old vitals object to new vitals array structure
+      if (state.vitals && !Array.isArray(state.vitals)) {
+        const o = state.vitals;
+        state.vitals = [
+          { id: 'energy',    name: 'Energía', val: o.energy ?? 7, color: 'var(--color-hp)', icon: '❤️' },
+          { id: 'focus',     name: 'Foco',    val: o.focus ?? 6,  color: 'var(--color-mp)', icon: '🔷' },
+          { id: 'mood',      name: 'Humor',   val: o.mood ?? 8,   color: 'var(--color-stamina)', icon: '🌸' },
+        ];
+      }
+      if (!Array.isArray(state.vitals)) {
+        state.vitals = [
+          { id: 'energy',    name: 'Energía', val: 7, color: 'var(--color-hp)', icon: '❤️' },
+          { id: 'focus',     name: 'Foco',    val: 6, color: 'var(--color-mp)', icon: '🔷' },
+          { id: 'mood',      name: 'Humor',   val: 8, color: 'var(--color-stamina)', icon: '🌸' },
+        ];
+      }
 
       // Migrate quests missing time fields
       state.quests = state.quests.map(q => ({
@@ -3199,9 +3188,23 @@ function showPortrait(imgId, phId, src) {
 // VITALS
 // ============================================================
 function renderVitals() {
-  renderVitalDots('energy-dots', 'energy-dot', state.vitals.energy, 'energy', 'energy-num');
-  renderVitalDots('focus-dots', 'focus-dot', state.vitals.focus, 'focus', 'focus-num');
-  renderVitalDots('mood-dots', 'mood-dot', state.vitals.mood, 'mood', 'mood-num');
+  const container = document.getElementById('vitals-container');
+  if (!container) return;
+  container.innerHTML = '';
+
+  (state.vitals || []).forEach(v => {
+    const row = document.createElement('div');
+    row.className = 'vital-row';
+    row.innerHTML = `
+      <span class="vital-icon">${v.icon || '⚡'}</span>
+      <span class="vital-label">${v.name}</span>
+      <div class="vital-dots" id="vital-dots-${v.id}"></div>
+      <span class="vital-num" id="vital-num-${v.id}">0/10</span>
+    `;
+    container.appendChild(row);
+    renderVitalDots(`vital-dots-${v.id}`, v.id, v.val, v.color || '#ff4444', `vital-num-${v.id}`);
+  });
+
   renderPlayerHp();
 }
 
@@ -3233,17 +3236,26 @@ function savePlayerHp() {
   showNotification('❤', `HP: ${state.hp}/${state.maxHp}`);
 }
 
-function renderVitalDots(containerId, cls, val, type, numId) {
+function renderVitalDots(containerId, statId, val, color, numId) {
   const container = document.getElementById(containerId);
   if (!container) return;
   container.innerHTML = '';
   for (let i = 1; i <= 10; i++) {
     const d = document.createElement('div');
-    d.className = `vital-dot ${cls} ${i <= val ? 'filled' : ''}`;
-    d.onclick = () => { state.vitals[type] = i; renderVitals(); saveState(); };
+    d.className = `vital-dot ${statId}-dot ${i <= val ? 'filled' : ''}`;
+    d.style.borderColor = color;
+    d.style.background = i <= val ? color : '';
+    d.onclick = () => {
+      const stat = state.vitals.find(v => v.id === statId);
+      if (!stat) return;
+      stat.val = i;
+      renderVitals();
+      saveState();
+    };
     container.appendChild(d);
   }
-  document.getElementById(numId).textContent = `${val}/10`;
+  const numEl = document.getElementById(numId);
+  if (numEl) numEl.textContent = `${val}/10`;
 }
 
 // ============================================================
@@ -3614,6 +3626,33 @@ function deleteQuest(id) {
   saveState(); renderAll();
 }
 
+function clearMissionHistory() {
+  if (!confirm('¿Borrar el historial de misiones completadas?')) return;
+  state.quests.forEach(q => {
+    if (q.done) {
+      q.done = false;
+      q.doneDate = null;
+    }
+  });
+  saveState(); renderAll();
+}
+
+function clearCompletedMissions() {
+  if (!confirm('¿Eliminar todas las misiones completadas?')) return;
+  const completedIds = new Set(state.quests.filter(q => q.done).map(q => q.id));
+  state.quests = state.quests.filter(q => !q.done);
+  state.habits = state.habits.filter(h => !completedIds.has(h.questId));
+  saveState(); renderAll();
+}
+
+function clearPendingMissions() {
+  if (!confirm('¿Eliminar todas las misiones pendientes?')) return;
+  const pendingIds = new Set(state.quests.filter(q => !q.done).map(q => q.id));
+  state.quests = state.quests.filter(q => q.done);
+  state.habits = state.habits.filter(h => !pendingIds.has(h.questId));
+  saveState(); renderAll();
+}
+
 function toggleHabitToday(questId) {
   const today = new Date().toISOString().split('T')[0];
   const existing = state.habits.find(h => h.questId === questId && h.date === today);
@@ -3951,16 +3990,6 @@ function updateQuest() {
 // PROFILE
 // ============================================================
 function renderProfile() {
-  // Achievements
-  const grid = document.getElementById('achievements-grid');
-  if (grid) {
-    grid.innerHTML = state.achievements.map(a => `
-      <div class="achievement ${a.unlocked ? '' : 'achievement-locked'}">
-        <div class="achievement-icon">${a.icon}</div>
-        <div class="achievement-name">${a.name}</div>
-      </div>`).join('');
-  }
-
   // History
   const hist = state.quests.filter(q => q.done);
   const histEl = document.getElementById('history-list');
@@ -3985,32 +4014,10 @@ function renderProfile() {
 }
 
 // ============================================================
-// ACHIEVEMENTS
+// ACHIEVEMENTS (removed)
 // ============================================================
 function checkAchievements() {
-  const done = state.quests.filter(q => q.done).length;
-
-  const unlock = (key) => {
-    const a = state.achievements.find(x => x.key === key);
-    if (a && !a.unlocked) {
-      a.unlocked = true;
-      showNotification('🏆', `Logro desbloqueado: ${a.name}`);
-      // auto-unlock titles tied to this achievement
-      state.titles.forEach(t => {
-        if (t.unlockType === 'achievement' && t.unlockVal === key && !t.unlocked) {
-          t.unlocked = true;
-          showNotification('🎖️', `Título desbloqueado: "${t.name}"`);
-        }
-      });
-    }
-  };
-
-  if (done >= 1) unlock('first_quest');
-  if (done >= 5) unlock('5_quests');
-  if (state.level >= 5)  unlock('level_5');
-  if (state.level >= 10) unlock('level_10');
-
-  // auto-unlock titles tied to level
+  // Mantener desbloqueo automático de títulos por nivel
   state.titles.forEach(t => {
     if (t.unlockType === 'level' && state.level >= t.unlockVal && !t.unlocked) {
       t.unlocked = true;
@@ -4306,6 +4313,19 @@ function renderConfig() {
 
   const radarDotInput = document.getElementById('config-radar-dot-color');
   if (radarDotInput) radarDotInput.value = state.radarDotColor || '#ff4444';
+
+  // Vitals config
+  const vitalsCfg = document.getElementById('vitals-config-list');
+  if (vitalsCfg) {
+    vitalsCfg.innerHTML = (state.vitals || []).map((v, i) => `
+      <div class="stat-config-item">
+        <input type="color" value="${v.color}" style="width:28px;height:28px;border:none;background:none;cursor:pointer;border-radius: 0px;" onchange="updateVitalField(${i},'color',this.value)">
+        <input class="form-input" value="${v.name}" style="flex:1;" onchange="updateVitalField(${i},'name',this.value)">
+        <input class="form-input" value="${v.icon||''}" style="width:56px;text-align:center;" onchange="updateVitalField(${i},'icon',this.value)">
+        <input class="form-input" type="number" min="0" max="10" value="${v.val||0}" style="width:60px;text-align:center;" onchange="updateVitalField(${i},'val',this.value)">
+        <button class="remove-btn" onclick="removeVital(${i})">✕</button>
+      </div>`).join('');
+  }
 
   // Ranks config — editable
   const ranksEl = document.getElementById('ranks-display');
@@ -5909,6 +5929,35 @@ function removeStat(i) {
 
 function updateStatColor(i, val) {
   state.stats[i].color = val;
+  saveState(); renderAll();
+}
+
+function addVital() {
+  const name = document.getElementById('new-vital-name').value.trim();
+  if (!name) return;
+  const icon = document.getElementById('new-vital-icon').value.trim() || '⚡';
+  const color = document.getElementById('new-vital-color').value || '#ff4444';
+  const val = parseInt(document.getElementById('new-vital-value').value) || 0;
+  const id = name.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9\-]/g,'') || `vital_${Date.now()}`;
+  state.vitals.push({ id, name, icon, color, val: Math.min(10, Math.max(0, val)) });
+  document.getElementById('new-vital-name').value = '';
+  document.getElementById('new-vital-icon').value = '';
+  document.getElementById('new-vital-value').value = '5';
+  saveState(); renderAll();
+}
+
+function removeVital(i) {
+  state.vitals.splice(i, 1);
+  saveState(); renderAll();
+}
+
+function updateVitalField(i, field, value) {
+  if (!state.vitals[i]) return;
+  if (field === 'val') {
+    state.vitals[i].val = Math.min(10, Math.max(0, parseInt(value) || 0));
+  } else {
+    state.vitals[i][field] = value;
+  }
   saveState(); renderAll();
 }
 
