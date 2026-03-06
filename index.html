@@ -7,23 +7,34 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0d0d0f;
-    --surface: #141417;
-    --surface2: #1a1a1f;
-    --surface3: #202028;
-    --border: #2a2a35;
-    --border2: #333345;
-    --accent: #c8102e;
-    --accent2: #e8263d;
-    --gold: #d4a017;
-    --gold2: #f0c040;
-    --text: #e8e8f0;
-    --text2: #9090a8;
-    --text3: #5a5a72;
-    --pink: #e040a0;
-    --blue: #4080e0;
-    --green: #40c880;
-    --purple: #9060d0;
+    --bg:         #000000;
+    --surface:    #0A0A0A;
+    --surface2:   #111111;
+    --surface3:   #151515;
+    --border:     #222222;
+    --border2:    #333333;
+
+    /* Colores funcionales sólidos */
+    --accent:     #FF4444;   /* HP / Fallos / Alertas */
+    --accent2:    #FF4444;
+    --gold:       #FFCC00;   /* XP / Nivel / Oro */
+    --gold2:      #FFCC00;
+    --blue:       #44AAFF;   /* MP / Energía / Técnico */
+    --green:      #44FF44;   /* Hábitos / Salud / Éxito */
+    --pink:       #FF4444;
+    --purple:     #44AAFF;
+
+    --text:       #EEEEEE;
+    --text2:      #777777;
+    --text3:      #444444;
+
+    /* Alias semánticos */
+    --color-xp:       #FFCC00;
+    --color-hp:       #FF4444;
+    --color-mp:       #44AAFF;
+    --color-stamina:  #44FF44;
+
+    --radius: 0px;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -79,7 +90,7 @@
     letter-spacing: 1.5px;
     text-transform: uppercase;
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: 0px;
     transition: all 0.2s;
   }
 
@@ -109,6 +120,457 @@
   }
   .section.active { display: block; }
 
+
+
+  /* ===================== ARC DETAIL VIEW ===================== */
+  .arc-detail-panel {
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--color-xp);
+    background: var(--surface);
+    margin-bottom: 32px;
+  }
+
+  .arc-detail-cover {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    opacity: 0.7;
+  }
+
+  .arc-detail-cover-placeholder {
+    width: 100%;
+    height: 60px;
+    background: linear-gradient(90deg, #0a0a0a, #111);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .arc-detail-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .arc-detail-title {
+    font-family: 'Cinzel', serif;
+    font-size: 20px;
+    color: var(--color-xp);
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+
+  .arc-detail-desc {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+    font-style: italic;
+    max-width: 640px;
+  }
+
+  .arc-detail-meta {
+    display: flex;
+    gap: 24px;
+    margin-top: 12px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    flex-wrap: wrap;
+  }
+
+  .arc-detail-meta-item { display: flex; flex-direction: column; gap: 2px; }
+  .arc-detail-meta-item span:last-child { color: var(--text2); font-size: 12px; }
+
+  .arc-detail-body {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 0;
+  }
+
+  .arc-detail-sidebar {
+    border-right: 1px solid var(--border);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .arc-detail-main {
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .arc-detail-section-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text3);
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .arc-detail-section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Reflection */
+  .arc-reflection-entry {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--color-mp);
+    padding: 12px 14px;
+    margin-bottom: 10px;
+  }
+
+  .arc-reflection-entry:last-child { margin-bottom: 0; }
+
+  .arc-reflection-date {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--color-mp);
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .arc-reflection-text {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
+
+  .arc-reflection-edit-area {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--color-mp);
+    padding: 0;
+    margin-bottom: 10px;
+  }
+
+
+  /* ===================== BOSS SYSTEM ===================== */
+  .boss-card {
+    background: var(--surface);
+    border: 1px solid #1a1a1a;
+    border-top: 3px solid var(--color-hp);
+    cursor: pointer;
+    transition: border-color 0.15s;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+  .boss-card:hover { border-color: var(--color-hp); }
+  .boss-card.boss-defeated { border-top-color: var(--color-xp); opacity: 0.6; }
+  .boss-card.boss-escaped  { border-top-color: #444; opacity: 0.5; }
+
+  .boss-card-img {
+    width: 100%;
+    height: 110px;
+    object-fit: cover;
+    object-position: top;
+    display: block;
+    opacity: 0.7;
+  }
+
+  .boss-card-placeholder {
+    width: 100%;
+    height: 110px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    background: #0a0000;
+    opacity: 0.6;
+  }
+
+  .boss-hp-bar-track {
+    height: 6px;
+    background: #0a0000;
+    border-bottom: 1px solid #220000;
+  }
+
+  .boss-hp-bar-fill {
+    height: 100%;
+    background: var(--color-hp);
+    transition: width 0.5s;
+  }
+
+  .boss-card-body {
+    padding: 12px 14px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .boss-card-name {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    color: var(--color-hp);
+    line-height: 1.2;
+  }
+
+  .boss-defeated .boss-card-name { color: var(--color-xp); }
+  .boss-escaped  .boss-card-name { color: #555; }
+
+  .boss-card-hp-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .boss-status-chip {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    padding: 2px 7px;
+    border: 1px solid;
+    text-transform: uppercase;
+  }
+
+  .boss-card-meta {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: #444;
+    letter-spacing: 1px;
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    border-top: 1px solid #111;
+    padding-top: 8px;
+    margin-top: 2px;
+  }
+
+  .boss-log-line {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 9px 28px;
+    border-bottom: 1px solid #0d0d0d;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .boss-log-time {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: #333;
+    flex-shrink: 0;
+    margin-top: 1px;
+    min-width: 44px;
+  }
+
+  .boss-log-text { flex: 1; }
+
+  /* ===================== ARC SYSTEM ===================== */
+  .arc-section-header {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--color-xp);
+    text-transform: uppercase;
+    border-left: 3px solid var(--color-xp);
+    padding: 4px 10px;
+    background: rgba(255,204,0,0.04);
+    margin-bottom: 16px;
+  }
+
+  .arc-card-big {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--color-xp);
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+
+  .arc-card-big.arc-paused {
+    border-top-color: #444;
+    opacity: 0.7;
+  }
+
+  .arc-card-big.arc-closed {
+    border-top-color: var(--color-stamina);
+    opacity: 0.6;
+  }
+
+  .arc-cover-banner {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    opacity: 0.75;
+  }
+
+  .arc-card-body {
+    padding: 16px;
+  }
+
+  .arc-card-title-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .arc-card-title {
+    font-family: 'Cinzel', serif;
+    font-size: 16px;
+    color: var(--color-xp);
+    line-height: 1.2;
+  }
+
+  .arc-status-chip {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    padding: 3px 8px;
+    border: 1px solid;
+    flex-shrink: 0;
+    text-transform: uppercase;
+  }
+
+  .arc-desc {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.5;
+    margin-bottom: 12px;
+    font-style: italic;
+  }
+
+  .arc-meta-row {
+    display: flex;
+    gap: 20px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    margin-bottom: 14px;
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+  }
+
+  .arc-meta-item span:last-child {
+    color: var(--text2);
+    margin-left: 4px;
+  }
+
+  .arc-objectives-section { margin-bottom: 14px; }
+
+  .arc-obj-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text3);
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .arc-obj-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .arc-obj-bar {
+    flex: 1;
+    height: 4px;
+    background: #111;
+  }
+
+  .arc-obj-bar-fill {
+    height: 100%;
+    background: var(--color-xp);
+    transition: width 0.5s;
+  }
+
+  .arc-obj-count {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--color-xp);
+    flex-shrink: 0;
+  }
+
+  .arc-obj-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 0;
+    border-bottom: 1px solid #111;
+    cursor: pointer;
+  }
+
+  .arc-obj-item:last-child { border-bottom: none; }
+
+  .arc-obj-check {
+    width: 14px;
+    height: 14px;
+    border: 1px solid var(--border2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 9px;
+    transition: all 0.15s;
+  }
+
+  .arc-obj-check.done {
+    background: var(--color-stamina);
+    border-color: var(--color-stamina);
+    color: #000;
+  }
+
+  .arc-obj-text {
+    font-size: 11px;
+    color: var(--text);
+    flex: 1;
+    line-height: 1.3;
+  }
+
+  .arc-obj-text.done { text-decoration: line-through; color: var(--text3); }
+
+  .arc-quests-section { margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px; }
+
+  .arc-linked-quest {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    font-size: 11px;
+    color: var(--text2);
+    border-bottom: 1px solid #111;
+  }
+
+  .arc-linked-quest:last-child { border-bottom: none; }
+
+  .arc-card-footer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-top: 1px solid var(--border);
+    background: var(--surface2);
+  }
+
   /* ===================== DASHBOARD ===================== */
   .dashboard-grid {
     display: grid;
@@ -120,7 +582,7 @@
   .card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 0px;
     overflow: hidden;
   }
 
@@ -149,7 +611,7 @@
     position: relative;
     height: 200px;
     overflow: hidden;
-    background: linear-gradient(180deg, #1a0a10 0%, #0d0508 100%);
+    background: #000000;
     cursor: pointer;
   }
 
@@ -193,7 +655,7 @@
     align-items: center;
     justify-content: center;
     font-size: 64px;
-    background: linear-gradient(135deg, #1a0a14 0%, #0d0d1a 100%);
+    background: #050505;
   }
 
   .player-info {
@@ -206,7 +668,7 @@
     gap: 6px;
     background: rgba(212,160,23,0.1);
     border: 1px solid rgba(212,160,23,0.3);
-    border-radius: 4px;
+    border-radius: 0px;
     padding: 3px 10px;
     font-size: 11px;
     font-weight: 600;
@@ -255,32 +717,16 @@
   .xp-bar {
     height: 6px;
     background: var(--surface3);
-    border-radius: 3px;
+    border-radius: 0px;
     overflow: hidden;
   }
 
   .xp-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--gold) 0%, var(--gold2) 100%);
-    border-radius: 3px;
+    background: var(--color-xp);
+    border-radius: 0px;
     transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
     position: relative;
-  }
-
-  .xp-fill::after {
-    content: '';
-    position: absolute;
-    top: 0; right: 0;
-    width: 4px; height: 100%;
-    background: white;
-    opacity: 0.5;
-    border-radius: 2px;
-    animation: pulse-xp 2s ease-in-out infinite;
-  }
-
-  @keyframes pulse-xp {
-    0%, 100% { opacity: 0.5; }
-    50% { opacity: 0; }
   }
 
   /* VITALS */
@@ -302,24 +748,24 @@
     width: 70px;
   }
 
-  .vital-bar-wrap { flex: 1; }
+  .vital-bar-wrap { flex: 1; border-left: 2px solid var(--border); padding-left: 4px; }
 
   .vital-bar {
     height: 5px;
     background: var(--surface3);
-    border-radius: 3px;
+    border-radius: 0px;
     overflow: hidden;
   }
 
   .vital-fill {
     height: 100%;
-    border-radius: 3px;
+    border-radius: 0px;
     transition: width 0.5s;
   }
 
-  .vital-fill.energy { background: linear-gradient(90deg, #e84040, #ff6060); }
-  .vital-fill.focus { background: linear-gradient(90deg, #4060e8, #60a0ff); }
-  .vital-fill.mood { background: linear-gradient(90deg, #e060c0, #ff90e0); }
+  .vital-fill.energy { background: var(--color-hp); }
+  .vital-fill.focus { background: var(--color-mp); }
+  .vital-fill.mood { background: var(--color-stamina); }
 
   .vital-dots {
     display: flex;
@@ -328,7 +774,7 @@
 
   .vital-dot {
     width: 14px; height: 14px;
-    border-radius: 3px;
+    border-radius: 0px;
     background: var(--surface3);
     border: 1px solid var(--border);
     cursor: pointer;
@@ -375,7 +821,7 @@
   .quest-check {
     width: 16px; height: 16px;
     border: 1px solid var(--border2);
-    border-radius: 3px;
+    border-radius: 0px;
     cursor: pointer;
     flex-shrink: 0;
     margin-top: 2px;
@@ -406,7 +852,7 @@
     font-weight: 600;
     letter-spacing: 0.8px;
     padding: 2px 6px;
-    border-radius: 3px;
+    border-radius: 0px;
   }
 
   .tag.stat { background: rgba(160,80,210,0.15); color: #b070e0; border: 1px solid rgba(160,80,210,0.2); }
@@ -448,8 +894,8 @@
   }
 
   .stat-bar-wrap { flex: 1; }
-  .stat-bar { height: 4px; background: var(--surface3); border-radius: 2px; overflow: hidden; }
-  .stat-fill { height: 100%; background: linear-gradient(90deg, #e040a0, #ff70c0); border-radius: 2px; transition: width 0.6s; }
+  .stat-bar { height: 4px; background: var(--surface3); border-radius: 0px; overflow: hidden; }
+  .stat-fill { height: 100%; background: var(--color-mp); border-radius: 0px; transition: width 0.6s; }
 
   .stat-val {
     font-family: 'Share Tech Mono', monospace;
@@ -541,7 +987,7 @@
     position: relative;
     overflow: hidden;
     cursor: pointer;
-    background: linear-gradient(135deg, #1a0a14 0%, #0d0d1a 100%);
+    background: #050505;
   }
 
   .big-portrait img {
@@ -571,7 +1017,7 @@
   .achievement {
     background: var(--surface2);
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: 0px;
     padding: 10px;
     text-align: center;
   }
@@ -590,7 +1036,7 @@
   .stat-detail-item {
     background: var(--surface2);
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: 0px;
     padding: 12px;
   }
 
@@ -624,28 +1070,28 @@
   .mc {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 0px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    transition: border-color .2s, transform .15s, box-shadow .2s;
+    transition: border-color .2s;
     position: relative;
   }
-  .mc:hover { border-color: var(--border2); transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,0,0,.35); }
+  .mc:hover { border-color: var(--border2); transform: translateY(-2px); box-shadow: none; }
   .mc.mc-done { opacity: .55; }
 
   /* top accent stripe */
   .mc-stripe { height: 3px; width: 100%; flex-shrink: 0; }
-  .mc-stripe-daily     { background: linear-gradient(90deg, var(--accent), var(--accent2)); }
-  .mc-stripe-habit     { background: linear-gradient(90deg, var(--green), #20e090); }
-  .mc-stripe-objective { background: linear-gradient(90deg, var(--gold), var(--gold2)); }
+  .mc-stripe-daily     { background: var(--color-hp); }
+  .mc-stripe-habit     { background: var(--color-stamina); }
+  .mc-stripe-objective { background: var(--color-xp); }
   .mc-stripe-done      { background: var(--border); }
 
   /* cover */
   .mc-cover { width:100%; height:120px; object-fit:cover; display:block; }
   .mc-cover-placeholder {
     width: 100%; height: 72px;
-    background: linear-gradient(135deg, var(--surface2), var(--surface3));
+    background: var(--surface2);
     display: flex; align-items: center; justify-content: center;
     font-size: 28px; color: var(--text3); letter-spacing: 8px;
   }
@@ -660,7 +1106,7 @@
   .mc-xp {
     background: rgba(212,160,23,.12);
     border: 1px solid rgba(212,160,23,.3);
-    border-radius: 20px;
+    border-radius: 0px;
     padding: 3px 10px;
     font-family: 'Share Tech Mono', monospace;
     font-size: 12px; color: var(--gold2);
@@ -669,7 +1115,7 @@
 
   .mc-tags { display:flex; gap:4px; flex-wrap:wrap; }
   .mc-tag {
-    border-radius: 5px; padding: 2px 8px;
+    border-radius: 0px; padding: 2px 8px;
     font-size: 10px; font-weight: 700;
     border: 1px solid; letter-spacing: .4px;
     white-space: nowrap;
@@ -683,7 +1129,7 @@
   }
   .mc-date-chip {
     background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 4px; padding: 2px 7px;
+    border-radius: 0px; padding: 2px 7px;
   }
   .mc-date-chip.overdue { border-color: rgba(200,16,46,.45); color: var(--accent); }
 
@@ -700,7 +1146,7 @@
     display: inline-flex; align-items: center; gap: 3px;
     background: rgba(212,160,23,.08);
     border: 1px solid rgba(212,160,23,.2);
-    border-radius: 20px; padding: 2px 8px;
+    border-radius: 0px; padding: 2px 8px;
     font-size: 10px; color: var(--gold);
   }
 
@@ -709,8 +1155,8 @@
   .mission-xp-reward { font-size:12px; color:var(--gold); font-weight:600; font-family:'Share Tech Mono',monospace; }
   .mission-dates { font-size:11px; color:var(--text3); font-family:'Share Tech Mono',monospace; }
   .mission-progress-wrap { display:flex; align-items:center; gap:8px; margin-top:8px; }
-  .mission-progress-bar { flex:1; height:4px; background:var(--surface3); border-radius:2px; overflow:hidden; }
-  .mission-progress-fill { height:100%; background:linear-gradient(90deg,var(--accent),var(--gold)); border-radius:2px; transition:width .5s; }
+  .mission-progress-bar { flex:1; height:4px; background:var(--surface3); border-radius: 0px; overflow:hidden; }
+  .mission-progress-fill { height:100%; background: var(--color-xp); border-radius: 0px; transition:width .5s; }
 
   /* MODAL */
   .modal-overlay {
@@ -729,7 +1175,7 @@
   .modal {
     background: var(--surface);
     border: 1px solid var(--border2);
-    border-radius: 10px;
+    border-radius: 0px;
     width: 480px;
     max-width: 95vw;
     max-height: 90vh;
@@ -776,7 +1222,7 @@
   .form-input, .form-select, .form-textarea {
     background: var(--surface2);
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: 0px;
     color: var(--text);
     font-family: 'Rajdhani', sans-serif;
     font-size: 14px;
@@ -797,7 +1243,7 @@
   .xp-preview {
     background: rgba(212,160,23,0.08);
     border: 1px solid rgba(212,160,23,0.2);
-    border-radius: 6px;
+    border-radius: 0px;
     padding: 10px 14px;
     display: flex;
     align-items: center;
@@ -810,7 +1256,7 @@
   .btn-primary {
     background: var(--accent);
     border: none;
-    border-radius: 6px;
+    border-radius: 0px;
     color: white;
     font-family: 'Rajdhani', sans-serif;
     font-size: 13px;
@@ -827,7 +1273,7 @@
   .btn-secondary {
     background: var(--surface2);
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: 0px;
     color: var(--text2);
     font-family: 'Rajdhani', sans-serif;
     font-size: 13px;
@@ -870,7 +1316,7 @@
   .remove-btn {
     background: none;
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: 0px;
     color: var(--text3);
     cursor: pointer;
     width: 28px; height: 28px;
@@ -887,7 +1333,7 @@
     top: 70px; right: 20px;
     background: var(--surface2);
     border: 1px solid var(--gold);
-    border-radius: 8px;
+    border-radius: 0px;
     padding: 12px 16px;
     z-index: 300;
     display: flex;
@@ -948,7 +1394,7 @@
   /* Scrollbar */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 0px; }
 
   /* EMPTY STATE */
   .empty-state {
@@ -988,7 +1434,7 @@
     gap: 12px;
   }
 
-  .cal-mini { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+  .cal-mini { background: var(--surface2); border: 1px solid var(--border); border-radius: 0px; padding: 14px; }
 
   .cal-mini-header {
     display: flex; align-items: center; justify-content: space-between;
@@ -1001,7 +1447,7 @@
 
   .cal-mini-nav {
     background: none; border: none; color: var(--text2); cursor: pointer;
-    font-size: 14px; padding: 2px 6px; border-radius: 3px;
+    font-size: 14px; padding: 2px 6px; border-radius: 0px;
     transition: color 0.15s;
   }
   .cal-mini-nav:hover { color: var(--text); }
@@ -1015,7 +1461,7 @@
 
   .cal-mini-day {
     font-size: 11px; text-align: center; padding: 4px 2px;
-    border-radius: 4px; cursor: pointer; color: var(--text2);
+    border-radius: 0px; cursor: pointer; color: var(--text2);
     transition: all 0.15s; font-family: 'Share Tech Mono', monospace;
   }
 
@@ -1050,7 +1496,7 @@
 
   .cal-view-btns { display: flex; gap: 4px; }
   .cal-view-btn {
-    background: none; border: 1px solid var(--border); border-radius: 4px;
+    background: none; border: 1px solid var(--border); border-radius: 0px;
     color: var(--text2); font-family: 'Rajdhani', sans-serif;
     font-size: 11px; font-weight: 600; letter-spacing: 1px;
     padding: 4px 10px; cursor: pointer; transition: all 0.15s;
@@ -1097,13 +1543,13 @@
   /* Events on calendar */
   .cal-event {
     position: absolute;
-    border-radius: 4px;
+    border-radius: 0px;
     padding: 2px 6px;
     font-size: 11px;
     font-weight: 600;
     overflow: hidden;
     cursor: pointer;
-    transition: filter 0.12s, box-shadow 0.12s;
+    transition: filter 0.12s;
     z-index: 2;
     border-left: 3px solid rgba(255,255,255,0.3);
     user-select: none;
@@ -1112,7 +1558,7 @@
 
   .cal-event:hover {
     filter: brightness(1.18);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    box-shadow: none;
     z-index: 10;
   }
 
@@ -1177,7 +1623,7 @@
   .cal-drag-ghost {
     position: absolute; left: 4px; right: 4px;
     background: rgba(212,160,23,0.15); border: 1px dashed var(--gold);
-    border-radius: 5px; z-index: 10; pointer-events: none;
+    border-radius: 0px; z-index: 10; pointer-events: none;
   }
 
   /* Habit tracker sidebar */
@@ -1202,7 +1648,7 @@
   .habit-check-dot.missed { background: rgba(200,16,46,0.3); border-color: var(--accent); }
 
   .block-color-opt {
-    width: 28px; height: 28px; border-radius: 6px; cursor: pointer;
+    width: 28px; height: 28px; border-radius: 0px; cursor: pointer;
     border: 2px solid transparent; transition: all 0.15s;
     flex-shrink: 0;
   }
@@ -1212,7 +1658,7 @@
   /* ===================== EVALUACIONES ===================== */
   .evals-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
   .eval-metric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 14px 16px; }
-  .eval-metric { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; position: relative; overflow: hidden; }
+  .eval-metric { background: var(--surface2); border: 1px solid var(--border); border-radius: 0px; padding: 14px; position: relative; overflow: hidden; }
   .eval-metric::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
   .eval-metric.green::before  { background: var(--green); }
   .eval-metric.gold::before   { background: var(--gold); }
@@ -1223,30 +1669,30 @@
   .eval-metric-label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); }
   .eval-metric-sub { font-size: 11px; color: var(--text3); margin-top: 4px; }
   .eval-period-tabs { display: flex; gap: 2px; padding: 12px 16px; border-bottom: 1px solid var(--border); }
-  .eval-period-btn { background: none; border: 1px solid var(--border); border-radius: 4px; color: var(--text2); font-family: 'Rajdhani', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1px; padding: 4px 12px; cursor: pointer; transition: all 0.15s; }
+  .eval-period-btn { background: none; border: 1px solid var(--border); border-radius: 0px; color: var(--text2); font-family: 'Rajdhani', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1px; padding: 4px 12px; cursor: pointer; transition: all 0.15s; }
   .eval-period-btn:hover { color: var(--text); border-color: var(--border2); }
   .eval-period-btn.active { color: var(--gold); border-color: var(--gold); background: rgba(212,160,23,0.08); }
   .kaizen-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text2); display: flex; align-items: center; gap: 6px; }
-  .kaizen-textarea { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: 'Rajdhani', sans-serif; font-size: 13px; padding: 10px 12px; outline: none; resize: vertical; min-height: 80px; transition: border-color 0.2s; line-height: 1.5; width: 100%; box-sizing: border-box; }
+  .kaizen-textarea { background: var(--surface2); border: 1px solid var(--border); border-radius: 0px; color: var(--text); font-family: 'Rajdhani', sans-serif; font-size: 13px; padding: 10px 12px; outline: none; resize: vertical; min-height: 80px; transition: border-color 0.2s; line-height: 1.5; width: 100%; box-sizing: border-box; }
   .kaizen-textarea:focus { border-color: var(--border2); }
-  .kaizen-log-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; margin-bottom: 10px; }
+  .kaizen-log-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 0px; padding: 14px 16px; margin-bottom: 10px; }
   .kaizen-log-item:hover { border-color: var(--border2); }
   .kaizen-log-date { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--gold); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
   .kaizen-log-section { margin-bottom: 8px; }
   .kaizen-log-section-title { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); margin-bottom: 3px; }
   .kaizen-log-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
-  .kaizen-improvement-tag { display: inline-flex; align-items: center; gap: 4px; background: rgba(144,96,208,0.12); border: 1px solid rgba(144,96,208,0.25); border-radius: 4px; padding: 3px 8px; font-size: 11px; color: #b080e0; margin: 2px; }
+  .kaizen-improvement-tag { display: inline-flex; align-items: center; gap: 4px; background: rgba(144,96,208,0.12); border: 1px solid rgba(144,96,208,0.25); border-radius: 0px; padding: 3px 8px; font-size: 11px; color: #b080e0; margin: 2px; }
   .kaizen-task-item { display: flex; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 1px solid var(--border); }
   .kaizen-task-item:last-child { border-bottom: none; }
-  .kaizen-task-check { width: 15px; height: 15px; border: 1px solid var(--border2); border-radius: 3px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 9px; flex-shrink: 0; transition: all 0.15s; }
+  .kaizen-task-check { width: 15px; height: 15px; border: 1px solid var(--border2); border-radius: 0px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 9px; flex-shrink: 0; transition: all 0.15s; }
   .kaizen-task-check:hover { border-color: var(--purple); }
   .kaizen-task-check.done { background: var(--purple); border-color: var(--purple); color: white; }
   .kaizen-task-name { font-size: 12px; color: var(--text); flex: 1; }
   .kaizen-task-name.done-text { text-decoration: line-through; color: var(--text3); }
   .bar-row { display: flex; align-items: center; gap: 8px; padding: 5px 16px; }
   .bar-label { font-size: 11px; color: var(--text2); width: 80px; text-align: right; flex-shrink: 0; }
-  .bar-track { flex: 1; height: 7px; background: var(--surface3); border-radius: 4px; overflow: hidden; }
-  .bar-fill { height: 100%; border-radius: 4px; transition: width 0.7s cubic-bezier(0.4,0,0.2,1); }
+  .bar-track { flex: 1; height: 7px; background: var(--surface3); border-radius: 0px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 0px; transition: width 0.7s cubic-bezier(0.4,0,0.2,1); }
   .bar-val { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--text2); width: 32px; }
 
   /* Automations */
@@ -1258,7 +1704,7 @@
   .auto-day-label input[type="checkbox"] { display: none; }
 
   .auto-day-label span {
-    width: 30px; height: 30px; border-radius: 6px;
+    width: 30px; height: 30px; border-radius: 0px;
     display: flex; align-items: center; justify-content: center;
     font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
     background: var(--surface3); border: 1px solid var(--border);
@@ -1274,7 +1720,7 @@
   .automation-item {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 0px;
     padding: 14px 16px;
     transition: border-color 0.15s;
   }
@@ -1293,7 +1739,7 @@
 
   .automation-type-badge {
     font-size: 10px; font-weight: 600; letter-spacing: 1px;
-    padding: 2px 7px; border-radius: 3px;
+    padding: 2px 7px; border-radius: 0px;
   }
 
   .automation-type-badge.task  { background: rgba(200,16,46,0.15);  color: var(--accent2); }
@@ -1311,7 +1757,7 @@
   }
 
   .auto-day-dot {
-    width: 20px; height: 20px; border-radius: 4px;
+    width: 20px; height: 20px; border-radius: 0px;
     display: flex; align-items: center; justify-content: center;
     font-size: 9px; font-weight: 700;
     background: var(--surface3); color: var(--text3);
@@ -1360,6 +1806,7 @@
     <button class="nav-btn" onclick="showSection('calendar')">Calendario</button>
     <button class="nav-btn" onclick="showSection('evals')">Evaluaciones</button>
     <button class="nav-btn" onclick="showSection('config')">Config</button>
+    <button class="nav-btn" onclick="showSection('bosses')" style="color:var(--color-hp);">💀 Jefes</button>
   </div>
   <div class="topbar-xp">
     <span class="xp-icon">◆</span>
@@ -1407,6 +1854,18 @@
             <span class="edit-icon">✎</span>
           </div>
           <div class="player-title" id="player-title-text">Aprendiz del Sistema</div>
+
+          <!-- PLAYER HP BAR -->
+          <div style="margin-top:8px;margin-bottom:2px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+              <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:#aa3333;letter-spacing:1.5px;">HP</span>
+              <span id="player-hp-label" style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--color-hp);"></span>
+            </div>
+            <div style="height:5px;background:#0a0000;border:1px solid #1a1a1a;cursor:pointer;" title="Clic para editar HP" onclick="openPlayerHpModal()">
+              <div id="player-hp-bar" style="height:100%;background:var(--color-hp);transition:width 0.4s;width:100%;"></div>
+            </div>
+          </div>
+
           <div class="xp-section">
             <div class="xp-label">
               <span>XP</span>
@@ -1458,11 +1917,14 @@
         </div>
       </div>
 
-      <!-- ARC CARD (moved to center) -->
-      <div class="card arc-card">
-        <div class="card-header"><span class="dot"></span> Arco Activo</div>
-        <div class="arc-name">💰 <span id="arc-name-text">Sin arco activo</span></div>
-        <div class="arc-mantras" id="arc-mantras"></div>
+      <!-- ARC CARD -->
+      <div class="card arc-card" id="dashboard-arc-card">
+        <div class="card-header"><span class="dot" style="background:var(--color-xp);"></span> Arco Activo
+          <button onclick="showSection('missions');setTimeout(()=>showMissionsTab('arcs'),50);" style="margin-left:auto;font-size:10px;color:var(--text3);background:none;border:none;cursor:pointer;letter-spacing:1px;">VER TODOS →</button>
+        </div>
+        <div id="dashboard-arc-body" style="padding:14px 16px;">
+          <div style="font-size:12px;color:var(--text3);font-style:italic;">Sin arco activo</div>
+        </div>
       </div>
     </div>
 
@@ -1547,19 +2009,21 @@
       <div style="font-family:'Cinzel',serif;font-size:20px;color:var(--text);margin-bottom:4px;">Misiones & Objetivos</div>
       <div style="font-size:13px;color:var(--text2);">Crea y gestiona tus misiones, hábitos y objetivos</div>
     </div>
-    <div style="display:flex;gap:8px;">
+    <div style="display:flex;gap:8px;" id="missions-header-btns">
       <button class="btn-secondary" onclick="openQuestModal('habit')">+ Hábito</button>
       <button class="btn-secondary" onclick="openQuestModal('daily')">+ Misión</button>
       <button class="btn-primary" onclick="openQuestModal('objective')">+ Objetivo</button>
+      <button class="btn-primary" id="btn-new-arc" style="display:none;background:var(--color-xp);color:#000;border-color:var(--color-xp);" onclick="openArcModal()">+ Nuevo Arco</button>
     </div>
   </div>
 
-  <div class="tab-row">
+  <div class="tab-row" id="missions-tab-row">
     <button class="tab-btn active" onclick="switchMissionsTab('all',this)">Todas</button>
     <button class="tab-btn" onclick="switchMissionsTab('daily',this)">Diarias</button>
     <button class="tab-btn" onclick="switchMissionsTab('habit',this)">Hábitos</button>
     <button class="tab-btn" onclick="switchMissionsTab('objective',this)">Objetivos</button>
     <button class="tab-btn" onclick="switchMissionsTab('done',this)">Completadas</button>
+    <button class="tab-btn" id="arc-tab-btn" onclick="switchMissionsTab('arcs',this)">⬡ Arcos</button>
   </div>
 
   <div id="missions-list-container"></div>
@@ -1633,7 +2097,7 @@
         </div>
         <div style="display:flex;flex-direction:column;gap:8px;">
           <label class="kaizen-label"><span>⚡</span> Tareas de Mejora</label>
-          <div id="k-tasks-list" style="border:1px solid var(--border);border-radius:6px;padding:4px 10px;min-height:40px;background:var(--surface2);"></div>
+          <div id="k-tasks-list" style="border:1px solid var(--border);border-radius: 0px;padding:4px 10px;min-height:40px;background:var(--surface2);"></div>
           <div style="display:flex;gap:8px;">
             <input class="form-input" id="k-task-input" placeholder="Nueva tarea de mejora..." style="flex:1;" onkeydown="if(event.key==='Enter')addKaizenTask()">
             <button class="btn-secondary" onclick="addKaizenTask()">+ Añadir</button>
@@ -1668,6 +2132,216 @@
 
 
 <!-- ======== CONFIG ======== -->
+
+<!-- ======== JEFES ======== -->
+<div class="section" id="section-bosses">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+    <div>
+      <div style="font-family:'Cinzel',serif;font-size:20px;color:var(--color-hp);margin-bottom:4px;">Jefes</div>
+      <div style="font-size:13px;color:var(--text2);">Invoca jefes y derrótales completando misiones</div>
+    </div>
+    <button class="btn-primary" style="background:var(--color-hp);border-color:var(--color-hp);color:#fff;" onclick="openBossModal()">+ Invocar Jefe</button>
+  </div>
+  <div id="boss-list-container"></div>
+</div>
+
+<!-- ======== BOSS MODAL ======== -->
+<div class="modal-overlay" id="boss-modal">
+  <div class="modal" style="width:540px;max-width:96vw;">
+    <div class="modal-header">
+      <div class="modal-title" id="boss-modal-title">Invocar Jefe</div>
+      <button class="modal-close" onclick="closeBossModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Nombre del Jefe</label>
+        <input class="form-input" id="boss-name" placeholder="Ej: El Dragón de la Pereza">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Descripción / Lore</label>
+        <textarea class="form-textarea" id="boss-lore" rows="2" placeholder="Historia y origen del jefe..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Habilidades <span style="font-size:10px;color:var(--text3);font-weight:400;">una por línea</span></label>
+        <textarea class="form-textarea" id="boss-abilities" rows="3" placeholder="Induce Procrastinación&#10;Drena Energía&#10;Debilita la Fuerza de Voluntad"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Estrategia del jugador</label>
+        <textarea class="form-textarea" id="boss-strategy" rows="2" placeholder="¿Cómo planeas derrotarlo? Tus movimientos clave..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Condición Especial <span style="font-size:10px;color:var(--text3);font-weight:400;">opcional</span></label>
+        <input class="form-input" id="boss-condition" placeholder="Ej: Completar 3 misiones de Físico en un día = daño doble">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Imagen <span style="font-size:10px;color:var(--text3);font-weight:400;">opcional</span></label>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;">
+          <div id="boss-img-thumb" style="width:72px;height:72px;border:1px dashed var(--border2);background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;overflow:hidden;">💀</div>
+          <div style="flex:1;font-size:11px;color:var(--text2);">Haz clic para subir imagen del jefe</div>
+          <input type="file" id="boss-img" accept="image/*" style="display:none" onchange="previewBossImg(this)">
+        </label>
+        <button id="boss-img-remove" onclick="removeBossImg()" style="display:none;margin-top:6px;font-size:10px;color:var(--color-hp);background:none;border:none;cursor:pointer;padding:0;">✕ Quitar imagen</button>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">HP del Jefe (máxima)</label>
+          <input class="form-input" type="number" id="boss-maxhp" value="20" min="1" max="999">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Daño diario al jugador</label>
+          <input class="form-input" type="number" id="boss-dmg" value="2" min="1" max="50">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">HP del Jugador <span style="font-size:10px;color:var(--text3);">en este combate</span></label>
+          <input class="form-input" type="number" id="boss-player-maxhp" value="100" min="1" max="9999">
+        </div>
+        <div class="form-group">
+          <label class="form-label">HP actual del jugador</label>
+          <input class="form-input" type="number" id="boss-player-hp" value="100" min="0" max="9999">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Recompensa XP (derrota)</label>
+          <input class="form-input" type="number" id="boss-reward" value="300" min="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Fecha límite <span style="font-size:10px;color:var(--text3);">opcional</span></label>
+          <input class="form-input" type="date" id="boss-deadline">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Misiones vinculadas <span style="font-size:10px;color:var(--text3);">que infligen daño al jefe</span></label>
+        <div id="boss-quests-list" style="max-height:140px;overflow-y:auto;border:1px solid var(--border);padding:6px;display:flex;flex-direction:column;gap:4px;background:var(--surface2);"></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="closeBossModal()">Cancelar</button>
+        <button class="btn-primary" id="boss-modal-save-btn" style="background:var(--color-hp);border-color:var(--color-hp);" onclick="saveBoss()">Invocar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======== BOSS DETAIL OVERLAY ======== -->
+<div id="boss-detail-overlay" style="display:none;position:fixed;inset:0;z-index:8500;background:#070707;flex-direction:column;overflow:hidden;">
+
+  <!-- Top bar -->
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:48px;background:#0a0a0a;border-bottom:1px solid #222;flex-shrink:0;">
+    <div style="display:flex;align-items:center;gap:14px;">
+      <button onclick="closeBossDetail()" style="background:none;border:1px solid #333;color:#888;font-size:10px;padding:4px 10px;cursor:pointer;letter-spacing:1px;font-family:'Share Tech Mono',monospace;">← VOLVER</button>
+      <div id="boss-ov-name" style="font-family:'Cinzel',serif;font-size:15px;color:var(--color-hp);letter-spacing:1px;"></div>
+      <div id="boss-ov-status-chip" style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.5px;border:1px solid;padding:2px 7px;"></div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button id="boss-ov-edit-btn" onclick="" style="font-size:10px;padding:5px 10px;background:none;border:1px solid #333;color:#666;cursor:pointer;font-family:'Share Tech Mono',monospace;letter-spacing:1px;">✎ EDITAR</button>
+    </div>
+  </div>
+
+  <!-- 3-COLUMN LAYOUT -->
+  <div style="display:grid;grid-template-columns:240px 1fr 280px;flex:1;overflow:hidden;min-height:0;">
+
+    <!-- ── COL 1: IMAGE + NAME + COUNTDOWN ─────────────────── -->
+    <div style="background:#060606;border-right:1px solid #1a1a1a;display:flex;flex-direction:column;overflow:hidden;">
+
+      <!-- Image fills top -->
+      <div id="boss-ov-img-wrap" style="flex:1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;min-height:0;background:#080808;">
+        <div id="boss-ov-img-placeholder" style="font-size:80px;opacity:0.1;">💀</div>
+        <div style="position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(0deg,#060606 0%,transparent 100%);pointer-events:none;"></div>
+      </div>
+
+      <!-- Name block -->
+      <div style="padding:10px 14px;border-top:1px solid #1a1a1a;">
+        <div id="boss-ov-col1-name" style="font-family:'Cinzel',serif;font-size:13px;color:var(--color-hp);letter-spacing:1px;line-height:1.3;margin-bottom:6px;"></div>
+        <div id="boss-ov-start-date" style="font-family:'Share Tech Mono',monospace;font-size:9px;color:#444;letter-spacing:1px;"></div>
+      </div>
+
+      <!-- HP bar full width -->
+      <div style="padding:0 14px 8px;">
+        <div style="display:flex;justify-content:space-between;font-family:'Share Tech Mono',monospace;font-size:9px;color:#444;margin-bottom:4px;letter-spacing:1px;">
+          <span>HP</span><span id="boss-ov-hp-label" style="color:var(--color-hp);"></span>
+        </div>
+        <div style="height:6px;background:#0a0a0a;border:1px solid #1a1a1a;">
+          <div id="boss-ov-hp-bar" style="height:100%;background:var(--color-hp);transition:width 0.5s;width:100%;"></div>
+        </div>
+      </div>
+
+      <!-- Countdown -->
+      <div id="boss-ov-countdown-wrap" style="padding:10px 14px;border-top:1px solid #1a1a1a;background:#050505;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:#555;letter-spacing:2px;margin-bottom:8px;">TIEMPO RESTANTE</div>
+        <div id="boss-ov-countdown" style="display:flex;gap:8px;justify-content:center;"></div>
+      </div>
+
+    </div>
+
+    <!-- ── COL 2: DESCRIPTION + ABILITIES + STRATEGY ────────── -->
+    <div style="overflow-y:auto;border-right:1px solid #1a1a1a;display:flex;flex-direction:column;">
+
+      <!-- Description / Boss lore -->
+      <div id="boss-ov-desc-section" style="padding:12px 18px;border-bottom:1px solid #111;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;color:#555;margin-bottom:8px;">── BOSS DESCRIPTION ──</div>
+        <div id="boss-ov-desc" style="font-size:12px;color:#888;line-height:1.7;font-style:italic;"></div>
+      </div>
+
+      <!-- Abilities -->
+      <div id="boss-ov-abilities-section" style="padding:12px 18px;border-bottom:1px solid #111;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--color-hp);margin-bottom:8px;">ABILITIES:</div>
+        <div id="boss-ov-abilities" style="display:flex;flex-direction:column;gap:6px;"></div>
+      </div>
+
+      <!-- Special condition -->
+      <div id="boss-ov-condition-section" style="padding:10px 18px;border-bottom:1px solid #111;display:none;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--color-mp);margin-bottom:6px;">⚡ CONDICIÓN ESPECIAL</div>
+        <div id="boss-ov-condition" style="font-size:11px;color:var(--color-mp);line-height:1.5;"></div>
+      </div>
+
+      <!-- Reward -->
+      <div style="padding:10px 18px;border-bottom:1px solid #111;display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:#440000;letter-spacing:2px;">RECOMPENSA</span>
+        <span id="boss-ov-reward" style="font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--color-xp);font-weight:700;"></span>
+      </div>
+
+      <!-- Strategy box -->
+      <div style="padding:14px 18px;flex:1;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--color-stamina);margin-bottom:10px;">── ESTRATEGIA DEL JUGADOR ──</div>
+        <div id="boss-ov-strategy-display" style="font-size:12px;color:#666;line-height:1.7;white-space:pre-wrap;"></div>
+        <textarea id="boss-ov-strategy-input"
+          style="display:none;width:100%;background:#080808;border:1px solid #222;border-left:3px solid var(--color-stamina);color:#ccc;font-family:'Rajdhani',sans-serif;font-size:12px;padding:10px 12px;outline:none;resize:vertical;min-height:100px;line-height:1.6;box-sizing:border-box;"
+          placeholder="¿Cómo planeas derrotarlo?"></textarea>
+        <div style="margin-top:8px;display:flex;gap:6px;" id="boss-ov-strategy-btns">
+          <button onclick="toggleBossStrategyEdit()" id="boss-ov-strategy-edit-btn"
+            style="font-size:10px;color:#444;background:none;border:1px solid #222;padding:4px 10px;cursor:pointer;font-family:'Share Tech Mono',monospace;letter-spacing:1px;">✎ EDITAR</button>
+          <button onclick="saveBossStrategy()" id="boss-ov-strategy-save-btn"
+            style="display:none;font-size:10px;color:var(--color-stamina);background:none;border:1px solid var(--color-stamina);padding:4px 10px;cursor:pointer;font-family:'Share Tech Mono',monospace;letter-spacing:1px;">GUARDAR</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── COL 3: COMBAT LOG + LINKED MISSIONS ──────────────── -->
+    <div style="display:flex;flex-direction:column;overflow:hidden;background:#050505;">
+
+      <!-- Player HP strip -->
+      <div style="padding:10px 12px;border-bottom:1px solid #1a1a1a;flex-shrink:0;">
+        <div id="boss-ov-player-hp"></div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:#555;margin-bottom:6px;margin-top:10px;">MISIONES PARA DAÑAR AL JEFE</div>
+        <div id="boss-ov-missions" style="display:flex;flex-direction:column;gap:5px;"></div>
+      </div>
+
+      <!-- Combat log header -->
+      <div style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;color:#555;padding:8px 12px;border-bottom:1px solid #111;background:#080808;flex-shrink:0;">◆ COMBAT LOG ◆</div>
+
+      <!-- Combat log entries -->
+      <div style="flex:1;overflow-y:auto;">
+        <div id="boss-combat-log" style="padding:4px 0;"></div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
 <div class="section" id="section-config">
   <div style="font-family:'Cinzel',serif;font-size:20px;color:var(--text);margin-bottom:20px;">Configuración</div>
   <div class="config-grid">
@@ -1707,7 +2381,7 @@
             <div style="display:flex;gap:8px;">
               <input class="form-input" id="new-title-input" placeholder="Nombre del título..." style="flex:1;">
               <input class="form-input" id="new-title-icon" placeholder="🎖️" style="width:52px;text-align:center;">
-              <input type="color" id="new-title-color" value="#e8263d" title="Color" style="width:36px;height:36px;border:none;background:none;cursor:pointer;border-radius:6px;padding:2px;">
+              <input type="color" id="new-title-color" value="#e8263d" title="Color" style="width:36px;height:36px;border:none;background:none;cursor:pointer;border-radius: 0px;padding:2px;">
             </div>
             <div style="display:flex;gap:8px;align-items:center;">
               <select class="form-select" id="new-title-unlock-type" style="flex:1;" onchange="toggleTitleUnlockInput()">
@@ -1894,10 +2568,10 @@
       <div class="card">
         <div class="card-header"><span class="dot"></span> Leyenda</div>
         <div style="padding:10px 16px;display:flex;flex-direction:column;gap:8px;">
-          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);"><span style="width:12px;height:12px;border-radius:3px;background:rgba(200,16,46,0.4);border-left:3px solid var(--accent);display:inline-block;flex-shrink:0;"></span> Misión Diaria</div>
-          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);"><span style="width:12px;height:12px;border-radius:3px;background:rgba(64,200,128,0.3);border-left:3px solid var(--green);display:inline-block;flex-shrink:0;"></span> Hábito</div>
-          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);"><span style="width:12px;height:12px;border-radius:3px;background:rgba(212,160,23,0.3);border-left:3px solid var(--gold);display:inline-block;flex-shrink:0;"></span> Objetivo</div>
-          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);"><span style="width:12px;height:12px;border-radius:3px;background:rgba(64,80,160,0.35);border-left:3px solid var(--blue);display:inline-block;flex-shrink:0;"></span> Bloque libre</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);"><span style="width:12px;height:12px;border-radius: 0px;background:rgba(200,16,46,0.4);border-left:3px solid var(--accent);display:inline-block;flex-shrink:0;"></span> Misión Diaria</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);"><span style="width:12px;height:12px;border-radius: 0px;background:rgba(64,200,128,0.3);border-left:3px solid var(--green);display:inline-block;flex-shrink:0;"></span> Hábito</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);"><span style="width:12px;height:12px;border-radius: 0px;background:rgba(212,160,23,0.3);border-left:3px solid var(--gold);display:inline-block;flex-shrink:0;"></span> Objetivo</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);"><span style="width:12px;height:12px;border-radius: 0px;background:rgba(64,80,160,0.35);border-left:3px solid var(--blue);display:inline-block;flex-shrink:0;"></span> Bloque libre</div>
         </div>
       </div>
     </div>
@@ -1956,6 +2630,116 @@
 </div>
 
 <!-- QUEST MODAL -->
+
+
+<!-- ======== ARC DETAIL OVERLAY ======== -->
+<div id="arc-detail-overlay" style="display:none;position:fixed;inset:0;z-index:8000;background:#000;flex-direction:column;overflow:hidden;">
+
+  <!-- Topbar -->
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:52px;background:#0a0a0a;border-bottom:1px solid #222;flex-shrink:0;">
+    <div style="display:flex;align-items:center;gap:16px;">
+      <button onclick="closeArcDetailOverlay()" style="background:none;border:1px solid #333;color:#777;font-size:11px;padding:4px 12px;cursor:pointer;letter-spacing:1px;font-family:'Share Tech Mono',monospace;">← VOLVER</button>
+      <div id="arc-overlay-title" style="font-family:'Cinzel',serif;font-size:16px;color:var(--color-xp);letter-spacing:1px;"></div>
+      <div id="arc-overlay-status" style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1.5px;border:1px solid;padding:2px 8px;"></div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <!-- Tab buttons -->
+      <div style="display:flex;gap:0;border:1px solid #222;">
+        <button id="arc-ov-tab-missions" onclick="switchArcOverlayTab('missions')" style="background:#111;border:none;border-right:1px solid #222;color:#aaa;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;padding:6px 14px;cursor:pointer;">MISIONES</button>
+        <button id="arc-ov-tab-objectives" onclick="switchArcOverlayTab('objectives')" style="background:none;border:none;border-right:1px solid #222;color:#555;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;padding:6px 14px;cursor:pointer;">OBJETIVOS</button>
+        <button id="arc-ov-tab-reflect" onclick="switchArcOverlayTab('reflect')" style="background:none;border:none;color:#555;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;padding:6px 14px;cursor:pointer;">REFLEXIÓN</button>
+      </div>
+      <button id="arc-ov-edit-btn" onclick="" style="font-size:11px;padding:5px 12px;background:none;border:1px solid #333;color:#777;cursor:pointer;font-family:'Rajdhani',sans-serif;letter-spacing:1px;">✎ Editar arco</button>
+    </div>
+  </div>
+
+  <!-- Cover banner (if exists) -->
+  <div id="arc-overlay-cover" style="display:none;width:100%;height:120px;overflow:hidden;flex-shrink:0;position:relative;">
+    <img id="arc-overlay-cover-img" src="" style="width:100%;height:100%;object-fit:cover;opacity:0.5;">
+    <div style="position:absolute;inset:0;background:linear-gradient(0deg,#000 0%,transparent 60%);"></div>
+  </div>
+
+  <!-- Arc meta strip -->
+  <div id="arc-overlay-meta" style="display:flex;gap:32px;align-items:center;padding:10px 24px;background:#050505;border-bottom:1px solid #1a1a1a;flex-shrink:0;flex-wrap:wrap;"></div>
+
+  <!-- Content area -->
+  <div style="flex:1;overflow-y:auto;padding:24px;" id="arc-overlay-content"></div>
+
+</div>
+
+<!-- ======== ARC MODAL ======== -->
+<div class="modal-overlay" id="arc-modal">
+  <div class="modal" style="width:560px;max-width:96vw;">
+    <div class="modal-header">
+      <div class="modal-title" id="arc-modal-title">Nuevo Arco</div>
+      <button class="modal-close" onclick="closeArcModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group" style="flex:2;">
+          <label class="form-label">Título del Arco</label>
+          <input class="form-input" id="arc-name" placeholder="Ej: Ascenso al Rango A">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Descripción <span style="font-size:10px;color:var(--text3);font-weight:400;">opcional</span></label>
+        <textarea class="form-textarea" id="arc-desc" rows="2" placeholder="El propósito de este arco..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Imagen de Portada <span style="font-size:10px;color:var(--text3);font-weight:400;">opcional</span></label>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;">
+          <div id="arc-cover-thumb" style="width:80px;height:54px;border:1px dashed var(--border2);background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;overflow:hidden;">🖼</div>
+          <div style="flex:1;font-size:11px;color:var(--text2);">Haz clic para subir una imagen</div>
+          <input type="file" id="arc-cover" accept="image/*" style="display:none" onchange="previewArcCover(this)">
+        </label>
+        <button id="arc-cover-remove" onclick="removeArcCover()" style="display:none;margin-top:6px;font-size:10px;color:var(--accent);background:none;border:none;cursor:pointer;padding:0;">✕ Quitar portada</button>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Fecha inicio</label>
+          <input class="form-input" type="date" id="arc-start">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Fecha fin</label>
+          <input class="form-input" type="date" id="arc-end">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Objetivos del Arco</label>
+        <div id="arc-objectives-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px;min-height:20px;"></div>
+        <div style="display:flex;gap:8px;">
+          <input class="form-input" id="arc-obj-input" placeholder="Añadir objetivo..." style="flex:1;" onkeydown="if(event.key==='Enter'){event.preventDefault();addArcObjective();}">
+          <button class="btn-secondary" onclick="addArcObjective()">+ Añadir</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Misiones vinculadas <span style="font-size:10px;color:var(--text3);font-weight:400;">selecciona las que forman parte de este arco</span></label>
+        <div id="arc-quests-list" style="max-height:140px;overflow-y:auto;border:1px solid var(--border);padding:6px;display:flex;flex-direction:column;gap:4px;background:var(--surface2);"></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="closeArcModal()">Cancelar</button>
+        <button class="btn-primary" id="arc-modal-save-btn" onclick="saveArc()">Crear Arco</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======== ARC CLOSE OVERLAY ======== -->
+<div id="arc-close-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.92);align-items:center;justify-content:center;flex-direction:column;">
+  <div id="arc-close-inner" style="max-width:520px;width:90%;border:2px solid var(--color-xp);background:#050505;padding:0;overflow:hidden;">
+    <div id="arc-close-cover" style="height:180px;overflow:hidden;display:none;"></div>
+    <div style="padding:32px 32px 28px;">
+      <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:4px;color:var(--color-xp);margin-bottom:12px;text-align:center;text-transform:uppercase;">── Arco Completado ──</div>
+      <div id="arc-close-name" style="font-family:'Cinzel',serif;font-size:22px;color:#eee;text-align:center;margin-bottom:16px;"></div>
+      <div id="arc-close-stats" style="display:flex;gap:24px;justify-content:center;margin-bottom:24px;font-family:'Share Tech Mono',monospace;"></div>
+      <div id="arc-close-title" style="display:none;text-align:center;padding:12px;border:1px solid var(--color-xp);background:rgba(255,204,0,0.05);margin-bottom:20px;font-family:'Cinzel',serif;font-size:14px;color:var(--color-xp);"></div>
+      <div style="text-align:center;">
+        <button class="btn-primary" style="font-size:13px;padding:10px 32px;" onclick="dismissArcCloseOverlay()">Continuar →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="quest-modal">
   <div class="modal">
     <div class="modal-header">
@@ -1970,7 +2754,7 @@
       <div class="form-group">
         <label class="form-label">Portada <span style="font-size:10px;color:var(--text3);font-weight:400;">imagen o GIF (opcional)</span></label>
         <label id="q-cover-label" style="display:flex;align-items:center;gap:10px;cursor:pointer;">
-          <div id="q-cover-thumb" style="width:54px;height:54px;border-radius:8px;border:1px dashed var(--border2);background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;overflow:hidden;">🖼</div>
+          <div id="q-cover-thumb" style="width:54px;height:54px;border-radius: 0px;border:1px dashed var(--border2);background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;overflow:hidden;">🖼</div>
           <div style="flex:1;">
             <div style="font-size:11px;color:var(--text2);margin-bottom:4px;">Haz clic para subir</div>
             <div style="font-size:10px;color:var(--text3);">PNG, JPG, GIF — máx. recomendado 2 MB</div>
@@ -2068,6 +2852,24 @@
           <!-- filled by JS -->
         </select>
       </div>
+      <div class="form-group" id="q-arc-row">
+        <label class="form-label">Arco vinculado <span style="font-size:10px;color:var(--text3);font-weight:400;">opcional</span></label>
+        <select class="form-select" id="q-arc">
+          <!-- filled by JS -->
+        </select>
+      </div>
+      <div class="form-group" id="q-boss-row">
+        <label class="form-label">Jefe vinculado <span style="font-size:10px;color:var(--text3);font-weight:400;">opcional</span></label>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <select class="form-select" id="q-boss" style="flex:1;">
+            <!-- filled by JS -->
+          </select>
+          <div style="display:flex;flex-direction:column;gap:2px;flex-shrink:0;">
+            <label style="font-size:9px;color:var(--text3);font-family:'Share Tech Mono',monospace;letter-spacing:1px;">DAÑO</label>
+            <input class="form-input" type="number" id="q-boss-dmg" min="1" max="99" value="1" style="width:60px;text-align:center;">
+          </div>
+        </div>
+      </div>
       <div class="xp-preview">
         <span class="xp-preview-label">XP a ganar</span>
         <span class="xp-preview-val" id="xp-preview-val">50 XP</span>
@@ -2082,6 +2884,36 @@
 
 <!-- NAME EDIT MODAL -->
 <div class="modal-overlay" id="name-modal">
+
+<!-- PLAYER HP MODAL -->
+<div class="modal-overlay" id="player-hp-modal">
+  <div class="modal" style="width:340px;">
+    <div class="modal-header">
+      <div class="modal-title">❤ Vida del Jugador</div>
+      <button class="modal-close" onclick="document.getElementById('player-hp-modal').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">HP actual</label>
+          <input class="form-input" type="number" id="php-current" min="0" max="9999">
+        </div>
+        <div class="form-group">
+          <label class="form-label">HP máxima</label>
+          <input class="form-input" type="number" id="php-max" min="1" max="9999">
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px;margin-bottom:8px;line-height:1.5;">
+        Los jefes activos descontarán su daño diario de este HP al final del día.
+        Si llega a 0, el jugador entra en estado crítico.
+      </div>
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="document.getElementById('player-hp-modal').classList.remove('open')">Cancelar</button>
+        <button class="btn-primary" onclick="savePlayerHp()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
   <div class="modal" style="width:360px;">
     <div class="modal-header">
       <div class="modal-title">Editar Nombre</div>
@@ -2120,6 +2952,8 @@ let state = {
   xp: 0,
   totalXP: 0,
   vitals: { energy: 7, focus: 6, mood: 8 },
+  hp: 100,       // current player HP
+  maxHp: 100,    // max player HP
   // stats: val = raw points accumulated. statLevel = floor(val/10)+1
   stats: [
     { name: 'Físico',     val: 0, color: '#e040a0' },
@@ -2128,12 +2962,14 @@ let state = {
     { name: 'Espiritual', val: 0, color: '#40c880' },
     { name: 'Core',       val: 0, color: '#d4a017' },
   ],
-  arc: { name: '', mantras: [] },
+  arcs: [],        // { id, name, desc, cover, start, end, objectives:[{id,text,done}], status:'active'|'paused'|'closed', xpBonus, titleUnlocked }
+  activeArcId: null,
   quests: [],
   habits: [],        // separate habit tracking: { questId, date, done }
   timeBlocks: [],    // free blocks: { id, date, name, startTime, endTime, color }
   kaizenEntries: [], // { id, date, summary, good, bad, improve, tasks:[{id,text,done}] }
   automations: [],   // { id, name, type:'task'|'habit'|'block', priority, difficulty, stat, startDate, endDate, startTime, endTime, weekDays:[0-6], color, lastRun }
+  bosses: [],        // { id, name, desc, lore, condition, image, maxHP, currentHP, dmgPerDay, reward, linkedQuests, status:'active'|'defeated'|'escaped', createdAt, defeatDate, log:[] }
   achievements: [
     { name: 'Primera Misión', icon: '⚔️', unlocked: false, key: 'first_quest' },
     { name: 'Rayo Veloz',     icon: '⚡', unlocked: false, key: '5_quests' },
@@ -2228,6 +3064,10 @@ function loadState() {
 
     } catch(e) { console.warn('Error loading state:', e); }
   }
+  if (!state.bosses) state.bosses = [];
+  if (!state.arcs) state.arcs = [];
+  if (state.hp === undefined) state.hp = 100;
+  if (state.maxHp === undefined) state.maxHp = 100;
 }
 
 // ============================================================
@@ -2271,6 +3111,7 @@ function renderAll() {
   renderConfig();
   renderSummary();
   renderLogs();
+  renderBossList();
   updateTopbar();
 }
 
@@ -2304,12 +3145,8 @@ function renderPlayer() {
   document.getElementById('profile-next-xp').textContent = needed;
   document.getElementById('profile-xp-bar').style.width = pct + '%';
 
-  // Arc
-  document.getElementById('arc-name-text').textContent = state.arc.name || 'Sin arco activo';
-  const mantrasEl = document.getElementById('arc-mantras');
-  mantrasEl.innerHTML = state.arc.mantras.map(m =>
-    `<div class="arc-mantra">— ${m}</div>`
-  ).join('');
+  // Arc dashboard card
+  renderDashboardArc();
 
   // Portrait
   if (state.portrait) {
@@ -2334,6 +3171,35 @@ function renderVitals() {
   renderVitalDots('energy-dots', 'energy-dot', state.vitals.energy, 'energy', 'energy-num');
   renderVitalDots('focus-dots', 'focus-dot', state.vitals.focus, 'focus', 'focus-num');
   renderVitalDots('mood-dots', 'mood-dot', state.vitals.mood, 'mood', 'mood-num');
+  renderPlayerHp();
+}
+
+function renderPlayerHp() {
+  const hp    = Math.max(0, state.hp || 0);
+  const maxHp = state.maxHp || 100;
+  const pct   = Math.round((hp / maxHp) * 100);
+  const color = pct > 50 ? 'var(--color-hp)' : pct > 25 ? '#ff6600' : '#ff2222';
+  const label = document.getElementById('player-hp-label');
+  const bar   = document.getElementById('player-hp-bar');
+  if (label) { label.textContent = `${hp} / ${maxHp}`; label.style.color = color; }
+  if (bar)   { bar.style.width = pct + '%'; bar.style.background = color; }
+}
+
+function openPlayerHpModal() {
+  document.getElementById('php-current').value = state.hp ?? 100;
+  document.getElementById('php-max').value = state.maxHp ?? 100;
+  document.getElementById('player-hp-modal').classList.add('open');
+}
+
+function savePlayerHp() {
+  const cur = parseInt(document.getElementById('php-current').value) || 0;
+  const max = parseInt(document.getElementById('php-max').value) || 100;
+  state.hp    = Math.min(cur, max);
+  state.maxHp = max;
+  saveState();
+  renderPlayerHp();
+  document.getElementById('player-hp-modal').classList.remove('open');
+  showNotification('❤', `HP: ${state.hp}/${state.maxHp}`);
 }
 
 function renderVitalDots(containerId, cls, val, type, numId) {
@@ -2364,7 +3230,7 @@ function renderStats() {
       <div class="stat-row">
         <span class="stat-name">${s.name}</span>
         <div class="stat-bar-wrap">
-          <div class="stat-bar"><div class="stat-fill" style="width:${pct}%;background:linear-gradient(90deg,${s.color}88,${s.color})"></div></div>
+          <div class="stat-bar"><div class="stat-fill" style="width:${pct}%;background:${s.color}"></div></div>
         </div>
         <span class="stat-val" style="color:${s.color};width:44px;font-size:11px;">Nv.${lvl}</span>
       </div>`;
@@ -2396,53 +3262,67 @@ function renderRadar(svgId) {
   const svg = document.getElementById(svgId);
   if (!svg) return;
 
-  const stats = state.stats.slice(0, 6);
+  const stats = state.stats;
   const n = stats.length;
-  if (n < 3) { svg.innerHTML = '<text x="150" y="130" text-anchor="middle" fill="#555" font-size="12">Añade al menos 3 stats</text>'; return; }
+  if (n < 3) {
+    svg.setAttribute('viewBox', '0 0 300 260');
+    svg.setAttribute('width', '300'); svg.setAttribute('height', '260');
+    svg.innerHTML = '<text x="150" y="130" text-anchor="middle" fill="#555" font-size="12">Añade al menos 3 stats</text>';
+    return;
+  }
 
-  const cx = 150, cy = 135, maxR = 100;
-  const maxVal = 100;
+  // Dynamic sizing so labels never clip regardless of stat count
+  const labelPad  = n > 8 ? 30 : n > 6 ? 26 : 22;
+  const maxR      = n > 8 ? 68 : n > 6 ? 80 : 95;
+  const vbPad     = maxR + labelPad + 12;
+  const vbSize    = vbPad * 2;
+  const cx = vbPad, cy = vbPad;
+
+  svg.setAttribute('viewBox', `0 0 ${vbSize} ${vbSize}`);
+  svg.setAttribute('width',  String(vbSize));
+  svg.setAttribute('height', String(vbSize));
+
   const angleStep = (2 * Math.PI) / n;
-
   function pt(i, r) {
-    const angle = -Math.PI / 2 + i * angleStep;
-    return { x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle) };
+    const a = -Math.PI / 2 + i * angleStep;
+    return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a) };
   }
 
   let html = '';
 
-  // Grid polygons
+  // Grid rings
   for (let g = 1; g <= 5; g++) {
     const r = (maxR / 5) * g;
     const pts = Array.from({length: n}, (_, i) => pt(i, r));
-    html += `<polygon class="radar-grid" points="${pts.map(p => `${p.x},${p.y}`).join(' ')}"/>`;
+    html += `<polygon class="radar-grid" points="${pts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ')}"/>`;
   }
 
   // Axes
   for (let i = 0; i < n; i++) {
     const p = pt(i, maxR);
-    html += `<line class="radar-axis" x1="${cx}" y1="${cy}" x2="${p.x}" y2="${p.y}"/>`;
+    html += `<line class="radar-axis" x1="${cx}" y1="${cy}" x2="${p.x.toFixed(1)}" y2="${p.y.toFixed(1)}"/>`;
   }
 
-  // Data polygon — use stat level, cap at 20 for display
+  // Data polygon
   const maxStatLvl = 20;
   const dataPts = stats.map((s, i) => {
-    const lvl = statLevel(s.val);
-    const r = (Math.min(lvl, maxStatLvl) / maxStatLvl) * maxR;
+    const r = (Math.min(statLevel(s.val), maxStatLvl) / maxStatLvl) * maxR;
     return pt(i, r);
   });
-  html += `<polygon class="radar-polygon" points="${dataPts.map(p => `${p.x},${p.y}`).join(' ')}"/>`;
+  html += `<polygon class="radar-polygon" points="${dataPts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ')}"/>`;
 
-  // Dots
-  dataPts.forEach(p => {
-    html += `<circle class="radar-dot" cx="${p.x}" cy="${p.y}" r="3"/>`;
+  // Colored dots per stat
+  dataPts.forEach((p, i) => {
+    html += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3" fill="${stats[i].color || '#e04040'}" stroke="#000" stroke-width="1"/>`;
   });
 
-  // Labels
+  // Labels — color-coded, smart anchor
+  const fs = n > 9 ? 7 : n > 7 ? 8 : n > 5 ? 9 : 10;
   for (let i = 0; i < n; i++) {
-    const p = pt(i, maxR + 18);
-    const anchor = p.x < cx - 5 ? 'end' : p.x > cx + 5 ? 'start' : 'middle';
-    html += `<text class="radar-label" x="${p.x}" y="${p.y + 4}" text-anchor="${anchor}">${stats[i].name.toUpperCase()}</text>`;
+    const lp = pt(i, maxR + labelPad);
+    const anchor = lp.x < cx - 4 ? 'end' : lp.x > cx + 4 ? 'start' : 'middle';
+    const name = stats[i].name.length > 9 ? stats[i].name.slice(0,8).toUpperCase() + '…' : stats[i].name.toUpperCase();
+    html += `<text x="${lp.x.toFixed(1)}" y="${(lp.y + 4).toFixed(1)}" text-anchor="${anchor}" font-size="${fs}" fill="${stats[i].color || '#777'}" font-family="'Share Tech Mono',monospace" letter-spacing="0.5">${name}</text>`;
   }
 
   svg.innerHTML = html;
@@ -2509,6 +3389,7 @@ function toggleQuest(id) {
     q.done = true;
     q.doneDate = new Date().toISOString().split('T')[0];
     addXP(q.xp);
+    onQuestCompleteBossCheck(id);
     // +1 stat point only
     if (q.stat) {
       const stat = state.stats.find(s => s.name === q.stat);
@@ -2561,7 +3442,15 @@ let currentMissionsTab = 'all';
 function switchMissionsTab(tab, btn) {
   currentMissionsTab = tab;
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
+  if (btn) btn.classList.add('active');
+  const headerBtnsEl = document.getElementById('missions-header-btns');
+  if (headerBtnsEl) {
+    Array.from(headerBtnsEl.children).forEach(b => {
+      if (b.id === 'btn-new-arc') b.style.display = tab === 'arcs' ? 'inline-flex' : 'none';
+      else b.style.display = tab === 'arcs' ? 'none' : 'inline-flex';
+    });
+  }
+  if (tab === 'arcs') { renderArcsView(); return; }
   renderMissions();
 }
 
@@ -2765,6 +3654,24 @@ function openQuestModal(type) {
   statSel.innerHTML = '<option value="">Sin estadística</option>' +
     state.stats.map(s => `<option>${s.name}</option>`).join('');
 
+  // Fill arc selector
+  const arcSel = document.getElementById('q-arc');
+  if (arcSel) {
+    const availArcs = (state.arcs || []).filter(a => a.status === 'active' || a.status === 'paused');
+    arcSel.innerHTML = '<option value="">— Sin arco —</option>' +
+      availArcs.map(a => `<option value="${a.id}">${a.name}${a.status==='paused'?' (pausado)':''}</option>`).join('');
+  }
+
+  // Fill boss selector
+  const bossSel = document.getElementById('q-boss');
+  if (bossSel) {
+    const activeBosses = (state.bosses || []).filter(b => b.status === 'active');
+    bossSel.innerHTML = '<option value="">— Sin jefe —</option>' +
+      activeBosses.map(b => `<option value="${b.id}">${b.name}</option>`).join('');
+    const dmgInput = document.getElementById('q-boss-dmg');
+    if (dmgInput) dmgInput.value = 1;
+  }
+
   calcXP();
   document.getElementById('quest-modal').classList.add('open');
 }
@@ -2847,8 +3754,9 @@ function saveQuest() {
     : null;
 
   const finish = (cover) => {
+    const newQuestId = Date.now().toString();
     state.quests.push({
-      id: Date.now().toString(),
+      id: newQuestId,
       name, type,
       priority:   document.getElementById('q-prio').value,
       difficulty: document.getElementById('q-diff').value,
@@ -2861,6 +3769,31 @@ function saveQuest() {
       cover: cover || null,
       done: false, doneDate: null,
     });
+    const newQuest = state.quests[state.quests.length - 1];
+
+  // Link quest to arc if selected
+  const arcSelVal = document.getElementById('q-arc')?.value;
+  if (arcSelVal) {
+    const linkedArc = state.arcs.find(a => a.id === arcSelVal);
+    if (linkedArc && !linkedArc.linkedQuests) linkedArc.linkedQuests = [];
+    if (linkedArc && !linkedArc.linkedQuests.includes(newQuest.id)) {
+      linkedArc.linkedQuests.push(newQuest.id);
+    }
+    newQuest.arcId = arcSelVal;
+  }
+
+  // Link quest to boss if selected
+  const bossSelVal = document.getElementById('q-boss')?.value;
+  if (bossSelVal) {
+    const linkedBoss = state.bosses.find(b => b.id === bossSelVal);
+    if (linkedBoss) {
+      if (!linkedBoss.linkedQuests) linkedBoss.linkedQuests = [];
+      if (!linkedBoss.linkedQuests.includes(newQuest.id)) linkedBoss.linkedQuests.push(newQuest.id);
+    }
+    newQuest.bossId  = bossSelVal;
+    newQuest.bossDmg = parseInt(document.getElementById('q-boss-dmg')?.value) || 1;
+  }
+
     saveState(); closeQuestModal(); renderAll();
     showNotification('📋', `"${name}" creado`);
   };
@@ -2912,6 +3845,24 @@ function openEditQuestModal(id) {
   calcXP();
   const btn = document.querySelector('#quest-modal .btn-primary');
   if (btn) { btn.textContent = 'Guardar cambios'; btn.onclick = updateQuest; }
+
+  // Arc selector in edit mode
+  const arcSelEdit = document.getElementById('q-arc');
+  if (arcSelEdit) {
+    const availArcs = (state.arcs || []).filter(a => a.status === 'active' || a.status === 'paused');
+    arcSelEdit.innerHTML = '<option value="">— Sin arco —</option>' +
+      availArcs.map(a => `<option value="${a.id}" ${q.arcId === a.id ? 'selected' : ''}>${a.name}${a.status==='paused'?' (pausado)':''}</option>`).join('');
+  }
+
+  const bossSelEdit = document.getElementById('q-boss');
+  if (bossSelEdit) {
+    const activeBosses = (state.bosses || []).filter(b => b.status === 'active');
+    bossSelEdit.innerHTML = '<option value="">— Sin jefe —</option>' +
+      activeBosses.map(b => `<option value="${b.id}" ${q.bossId === b.id ? 'selected' : ''}>${b.name}</option>`).join('');
+    const dmgInput = document.getElementById('q-boss-dmg');
+    if (dmgInput) dmgInput.value = q.bossDmg || 1;
+  }
+
   document.getElementById('quest-modal').classList.add('open');
 }
 
@@ -2933,6 +3884,27 @@ function updateQuest() {
     q.xp         = calcXP();
     if (q.type === 'habit') q.freq = document.getElementById('q-freq').value;
     if (cover !== undefined) q.cover = cover;
+
+    // Update boss link
+    const bossSelVal2 = document.getElementById('q-boss')?.value;
+    const prevBossId  = q.bossId;
+    // Remove from old boss linkedQuests if changed
+    if (prevBossId && prevBossId !== bossSelVal2) {
+      const oldBoss = state.bosses.find(b => b.id === prevBossId);
+      if (oldBoss) oldBoss.linkedQuests = (oldBoss.linkedQuests||[]).filter(x=>x!==id);
+    }
+    if (bossSelVal2) {
+      const newBoss2 = state.bosses.find(b => b.id === bossSelVal2);
+      if (newBoss2) {
+        if (!newBoss2.linkedQuests) newBoss2.linkedQuests = [];
+        if (!newBoss2.linkedQuests.includes(id)) newBoss2.linkedQuests.push(id);
+      }
+      q.bossId  = bossSelVal2;
+      q.bossDmg = parseInt(document.getElementById('q-boss-dmg')?.value) || 1;
+    } else {
+      delete q.bossId; delete q.bossDmg;
+    }
+
     window._editingQuestId = null;
     saveState(); closeQuestModal(); renderAll();
     showNotification('✎', `"${q.name}" actualizada`);
@@ -3047,50 +4019,32 @@ function renderLogs() {
   container.innerHTML = '';
 
   const today = new Date().toISOString().split('T')[0];
-  const completedToday = state.quests.filter(q => q.done && q.doneDate === today).length;
-  const totalXP = state.totalXP || 0;
-  const levelUps = Math.max(0, (state.level || 1) - 1);
   const currentLevel = state.level || 1;
 
-  // ====== HEADER DECORATION ======
-  const headerDecor = document.createElement('div');
-  headerDecor.style.cssText = 'text-align:center;margin-bottom:12px;color:var(--gold);font-size:16px;letter-spacing:2px;';
-  headerDecor.textContent = '✦ ✦ ✦';
-  container.appendChild(headerDecor);
+  // XP earned today = sum of XP from quests completed today
+  const completedTodayQuests = state.quests.filter(q => q.done && q.doneDate === today);
+  const xpEarnedToday = completedTodayQuests.reduce((sum, q) => sum + (q.xp || 0), 0);
+  const completedToday = completedTodayQuests.length;
 
-  // ====== PLAYER STATUS SECTION ======
-  const statusSec = document.createElement('div');
-  statusSec.style.cssText = 'margin-bottom:14px;padding:10px;border:1px solid rgba(212,160,23,0.3);border-radius:6px;background:linear-gradient(135deg, rgba(212,160,23,0.04), rgba(232,40,61,0.02));';
-  statusSec.innerHTML = `
-    <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:3px;color:var(--gold2);font-weight:700;margin-bottom:10px;text-transform:uppercase;text-align:center;text-shadow:0 0 8px rgba(212,160,23,0.3);">⚔️ ESTADO DEL GUERRERO ⚔️</div>
-    <div style="font-size:12px;color:var(--text);line-height:1.8;display:flex;flex-direction:column;gap:8px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:4px;border-bottom:1px solid rgba(212,160,23,0.1);">
-        <span style="color:var(--gold);">⭐ NIVEL</span>
-        <span style="color:var(--gold2);font-weight:700;font-family:'Share Tech Mono',monospace;font-size:14px;">${currentLevel}</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:4px;border-bottom:1px solid rgba(212,160,23,0.1);">
-        <span style="color:var(--gold);">✨ EXPERIENCIA</span>
-        <span style="color:var(--gold2);font-weight:700;font-family:'Share Tech Mono',monospace;">${totalXP}</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:4px;border-bottom:1px solid rgba(64,200,128,0.1);">
-        <span style="color:var(--green);">✓ HOY</span>
-        <span style="color:var(--green);font-weight:700;font-family:'Share Tech Mono',monospace;font-size:14px;">${completedToday}</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:4px;">
-        <span style="color:#e8263d;">🆙 ASCENSOS</span>
-        <span style="color:#e8263d;font-weight:700;font-family:'Share Tech Mono',monospace;font-size:14px;">${levelUps}</span>
-      </div>
-    </div>
-  `;
-  container.appendChild(statusSec);
+  // XP progress toward next level
+  const xpCurrent = state.xp || 0;
+  const xpNeeded = XP_PER_LEVEL(currentLevel);
+  const xpMissing = xpNeeded - xpCurrent;
 
-  // ====== MID DECORATION ======
-  const midDecor = document.createElement('div');
-  midDecor.style.cssText = 'text-align:center;margin:12px 0;color:var(--pink);font-size:14px;letter-spacing:2px;';
-  midDecor.textContent = '━━━━━';
-  container.appendChild(midDecor);
+  // Next rank unlock
+  const sortedRanks = [...(state.ranks || [])].sort((a,b) => a.minLevel - b.minLevel);
+  const nextRank = sortedRanks.find(r => r.minLevel > currentLevel);
+  const levelsToNextRank = nextRank ? nextRank.minLevel - currentLevel : null;
 
-  // ====== TODAY'S TASKS SECTION ======
+  // Stats that gained points today (from completed quests today)
+  const statGainsToday = {};
+  completedTodayQuests.forEach(q => {
+    if (q.stat && q.statXP) {
+      statGainsToday[q.stat] = (statGainsToday[q.stat] || 0) + q.statXP;
+    }
+  });
+
+  // Pending quests
   const pendingQuests = state.quests.filter(q => {
     if (q.type === 'habit') {
       const doneToday = state.habits && state.habits.some(h => h.questId === q.id && h.date === today && h.done);
@@ -3099,115 +4053,174 @@ function renderLogs() {
     return !q.done;
   });
 
-  const taskSec = document.createElement('div');
-  taskSec.style.cssText = 'margin-bottom:14px;padding:10px;border:1px solid rgba(224,64,160,0.3);border-radius:6px;background:linear-gradient(135deg, rgba(224,64,160,0.04), rgba(200,16,46,0.02));';
-  taskSec.innerHTML = `<div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:3px;color:var(--pink);font-weight:700;margin-bottom:8px;text-transform:uppercase;text-align:center;text-shadow:0 0 8px rgba(224,64,160,0.3);">📋 TRABAJO DEL DÍA 📋</div>`;
+  // ── helper to build a section block ─────────────────────────────
+  function makeSection(label, color, contentHTML) {
+    const sec = document.createElement('div');
+    sec.style.cssText = 'margin-bottom:14px;';
+    sec.innerHTML = `
+      <div style="
+        font-family:'Share Tech Mono',monospace;
+        font-size:10px;
+        letter-spacing:2px;
+        color:${color};
+        font-weight:700;
+        text-transform:uppercase;
+        border-left:3px solid ${color};
+        padding:3px 8px;
+        background:${color}12;
+        margin-bottom:6px;
+      ">${label}</div>
+      <div style="padding:0 2px;">${contentHTML}</div>
+    `;
+    return sec;
+  }
 
-  const taskList = document.createElement('div');
-  taskList.style.display = 'flex';
-  taskList.style.flexDirection = 'column';
-  taskList.style.gap = '7px';
+  // ── helper: mono stat row ────────────────────────────────────────
+  function row(label, value, valueColor) {
+    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid #181818;">
+      <span style="font-size:11px;color:#666;">${label}</span>
+      <span style="font-family:'Share Tech Mono',monospace;font-size:12px;font-weight:700;color:${valueColor};">${value}</span>
+    </div>`;
+  }
 
-  if (pendingQuests.length === 0) {
-    const empty = document.createElement('div');
-    empty.style.cssText = 'padding:12px;background:linear-gradient(135deg, rgba(64,200,128,0.1), rgba(64,200,128,0.04));border:1px solid rgba(64,200,128,0.3);border-radius:4px;text-align:center;color:var(--green);font-size:12px;font-weight:600;text-shadow:0 0 6px rgba(64,200,128,0.2);';
-    empty.textContent = '🎉 ¡El jugador completó todas sus misiones!';
-    taskList.appendChild(empty);
+  // ── helper: quest row ─────────────────────────────────────────────
+  function questRow(q, done) {
+    const typeMap = { habit: '[H]', daily: '[D]', objective: '[O]' };
+    const colorMap = { habit: 'var(--color-stamina)', daily: 'var(--color-hp)', objective: 'var(--color-xp)' };
+    const typeChar = typeMap[q.type] || '[?]';
+    const typeColor = colorMap[q.type] || '#aaa';
+    const nameStyle = done ? 'text-decoration:line-through;color:#444;' : 'color:#ccc;';
+    const prefixColor = done ? '#333' : typeColor;
+    const xpColor = done ? '#333' : 'var(--color-xp)';
+    return `<div style="display:flex;align-items:flex-start;gap:6px;padding:4px 0;border-bottom:1px solid #111;">
+      <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:${prefixColor};flex-shrink:0;margin-top:1px;">${done ? '[✓]' : typeChar}</span>
+      <span style="font-size:11px;flex:1;line-height:1.3;${nameStyle}">${q.name}</span>
+      <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:${xpColor};flex-shrink:0;">+${q.xp}xp</span>
+    </div>`;
+  }
+
+  // ── HEADER: date/time ────────────────────────────────────────────
+  const now = new Date();
+  const timeStr = now.toTimeString().slice(0,5);
+  const dateStr = now.toLocaleDateString('es-ES', { day:'2-digit', month:'short' }).toUpperCase();
+  const header = document.createElement('div');
+  header.style.cssText = 'font-family:"Share Tech Mono",monospace;font-size:10px;color:#444;display:flex;justify-content:space-between;padding-bottom:8px;border-bottom:1px solid #1a1a1a;margin-bottom:12px;letter-spacing:1px;';
+  header.innerHTML = `<span style="color:#333;">──── LOG ────</span><span>${dateStr} · ${timeStr}</span>`;
+  container.appendChild(header);
+
+  // ────────────────────────────────────────────────────────────────
+  // SECCIÓN 1: MISIONES
+  // ────────────────────────────────────────────────────────────────
+  let missionsHTML = '';
+
+  if (pendingQuests.length === 0 && completedTodayQuests.length === 0) {
+    missionsHTML = `<div style="font-size:11px;color:#555;font-style:italic;padding:6px 0;">Sin misiones registradas.</div>`;
   } else {
-    pendingQuests.forEach(q => {
-      const typeIcon = q.type === 'habit' ? '🔄' : q.type === 'daily' ? '📅' : '🎯';
-      const diffColor = q.difficulty === 'easy' ? 'var(--green)' : q.difficulty === 'medium' ? 'var(--gold)' : 'var(--accent2)';
-      const diffBg = q.difficulty === 'easy' ? 'rgba(64,200,128,0.08)' : q.difficulty === 'medium' ? 'rgba(212,160,23,0.08)' : 'rgba(232,40,61,0.08)';
-      const prioEmoji = q.priority === 'Crítica' ? '🔴' : q.priority === 'Alta' ? '🟠' : '🟡';
-      const prioColor = q.priority === 'Crítica' ? '#e8263d' : q.priority === 'Alta' ? '#f0a040' : '#f0c040';
+    if (pendingQuests.length > 0) {
+      missionsHTML += `<div style="font-size:10px;color:#555;letter-spacing:1px;margin-bottom:4px;font-family:'Share Tech Mono',monospace;">PENDIENTE</div>`;
+      pendingQuests.forEach(q => { missionsHTML += questRow(q, false); });
+    }
+    if (completedTodayQuests.length > 0) {
+      missionsHTML += `<div style="font-size:10px;color:#333;letter-spacing:1px;margin-top:8px;margin-bottom:4px;font-family:'Share Tech Mono',monospace;">COMPLETADO HOY</div>`;
+      completedTodayQuests.forEach(q => { missionsHTML += questRow(q, true); });
+    }
+  }
 
-      const taskItem = document.createElement('div');
-      taskItem.style.cssText = `
-        padding:8px;
-        background:${diffBg};
-        border-left:4px solid ${diffColor};
-        border-top:1px solid ${diffColor}44;
-        border-right:1px solid ${diffColor}22;
-        border-bottom:1px solid ${diffColor}22;
-        border-radius:4px;
-      `;
-      taskItem.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px;">
-          <div style="flex:1;">
-            <div style="font-size:12px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:5px;">
-              <span style="font-size:14px;">${typeIcon}</span>
-              <span>${q.name}</span>
-            </div>
-            <div style="font-size:10px;margin-top:3px;display:flex;gap:7px;align-items:center;">
-              <span style="color:${prioColor};font-weight:600;">${prioEmoji} ${q.priority}</span>
-              <span style="color:${diffColor};">⚔️ ${q.difficulty}</span>
-            </div>
-          </div>
-          <div style="text-align:right;white-space:nowrap;">
-            <div style="font-size:12px;font-weight:700;color:var(--gold2);font-family:'Share Tech Mono',monospace;text-shadow:0 0 4px rgba(212,160,23,0.3);">+${q.xp}⭐</div>
-          </div>
-        </div>
-      `;
-      taskList.appendChild(taskItem);
+  container.appendChild(makeSection('Misiones', 'var(--color-hp)', missionsHTML));
+
+  // ────────────────────────────────────────────────────────────────
+  // SECCIÓN 2: PROGRESO DEL JUGADOR
+  // ────────────────────────────────────────────────────────────────
+  let progressHTML = '';
+  progressHTML += row('Nivel actual', `${currentLevel}`, 'var(--color-xp)');
+  progressHTML += row('XP ganada hoy', `+${xpEarnedToday} xp`, 'var(--color-xp)');
+  progressHTML += row('XP actual / siguiente Nv.', `${xpCurrent} / ${xpNeeded}`, '#aaa');
+  progressHTML += row('Faltan para subir', `${xpMissing} xp`, '#666');
+
+  if (nextRank) {
+    progressHTML += row(`Rango siguiente: ${nextRank.icon || ''} ${nextRank.label}`, `${levelsToNextRank} nv.`, 'var(--color-mp)');
+  }
+
+  // XP bar visual
+  const xpPct = Math.min(100, (xpCurrent / xpNeeded) * 100);
+  progressHTML += `<div style="margin-top:8px;">
+    <div style="display:flex;justify-content:space-between;font-family:'Share Tech Mono',monospace;font-size:9px;color:#555;margin-bottom:3px;">
+      <span>XP</span><span>${Math.round(xpPct)}%</span>
+    </div>
+    <div style="height:5px;background:#111;width:100%;">
+      <div style="height:100%;width:${xpPct}%;background:var(--color-xp);"></div>
+    </div>
+  </div>`;
+
+  // Stats gained today
+  const statKeys = Object.keys(statGainsToday);
+  if (statKeys.length > 0) {
+    progressHTML += `<div style="margin-top:10px;font-size:10px;color:#555;letter-spacing:1px;font-family:'Share Tech Mono',monospace;margin-bottom:4px;">STATS SUBIDOS HOY</div>`;
+    statKeys.forEach(statName => {
+      const pts = statGainsToday[statName];
+      const statObj = state.stats.find(s => s.name === statName);
+      const statColor = statObj ? statObj.color : 'var(--color-mp)';
+      progressHTML += `<div style="display:flex;justify-content:space-between;align-items:center;padding:2px 0;border-bottom:1px solid #111;">
+        <span style="font-size:11px;color:${statColor};">${statName}</span>
+        <span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:${statColor};font-weight:700;">+${pts} pts</span>
+      </div>`;
     });
+  } else if (completedToday > 0) {
+    progressHTML += `<div style="font-size:10px;color:#444;margin-top:8px;font-style:italic;">Sin puntos de stat asignados hoy.</div>`;
   }
 
-  taskSec.appendChild(taskList);
-  container.appendChild(taskSec);
+  container.appendChild(makeSection('Progreso', 'var(--color-xp)', progressHTML));
 
-  // ====== MID DECORATION ======
-  const midDecor2 = document.createElement('div');
-  midDecor2.style.cssText = 'text-align:center;margin:12px 0;color:var(--blue);font-size:14px;letter-spacing:2px;';
-  midDecor2.textContent = '━━━━━';
-  container.appendChild(midDecor2);
-
-  // ====== RPG ADVICE SECTION ======
-  const adviceSec = document.createElement('div');
-  adviceSec.style.cssText = 'padding:10px;background:linear-gradient(135deg, rgba(144,96,208,0.1), rgba(64,128,224,0.08));border:1px solid rgba(144,96,208,0.3);border-radius:6px;';
-
+  // ────────────────────────────────────────────────────────────────
+  // SECCIÓN 3: CONSEJO DEL ORÁCULO
+  // ────────────────────────────────────────────────────────────────
   let adviceText = '';
-  let adviceEmoji = '';
-  let adviceColor = 'var(--purple)';
-  
-  if (completedToday === 0 && pendingQuests.length > 0) {
-    adviceEmoji = '⚡';
-    adviceText = 'El jugador aún no inició su jornada. Comienza con una tarea pequeña para ganar velocidad.';
-    adviceColor = 'var(--blue)';
-  } else if (pendingQuests.length === 0) {
-    adviceEmoji = '🏆';
-    adviceText = 'Misión cumplida. El jugador ha finalizado todo su trabajo. Merecido descanso.';
-    adviceColor = 'var(--gold)';
-  } else if (totalXP > 1000) {
-    adviceEmoji = '👑';
-    adviceText = 'El jugador es un veterano. Busca desafíos mayores para continuar su ascenso.';
-    adviceColor = '#e8263d';
-  } else if (pendingQuests.length >= 5) {
-    adviceEmoji = '🎯';
-    adviceText = 'Muchas tareas en cola. Prioriza las 3 más urgentes para mantener eficiencia.';
-    adviceColor = 'var(--accent2)';
-  } else if (completedToday > 2) {
-    adviceEmoji = '🌟';
-    adviceText = 'Buen ritmo. El jugador mantiene su consistencia. Mantén la cadena.';
-    adviceColor = 'var(--gold2)';
+  let adviceColor = 'var(--color-mp)';
+
+  const totalPending = pendingQuests.length;
+  const ratio = completedToday / Math.max(1, completedToday + totalPending);
+
+  if (totalPending === 0 && completedToday > 0) {
+    adviceText = 'El guerrero ha limpiado el tablero. Quien domina el hoy, forja el mañana.';
+    adviceColor = 'var(--color-stamina)';
+  } else if (completedToday === 0 && totalPending > 0) {
+    adviceText = 'La espada sin uso se oxida. Elige una misión pequeña y comienza.';
+    adviceColor = 'var(--color-mp)';
+  } else if (xpMissing <= xpEarnedToday && xpEarnedToday > 0) {
+    adviceText = 'Estás cerca de subir de nivel. Un último esfuerzo y el rango cambia.';
+    adviceColor = 'var(--color-xp)';
+  } else if (ratio >= 0.7) {
+    adviceText = 'Buen ritmo. Consistencia sostenida es más valiosa que un esfuerzo puntual.';
+    adviceColor = 'var(--color-stamina)';
+  } else if (totalPending >= 5) {
+    adviceText = 'Cola larga. No temas reducir el alcance: menos pero completado supera a mucho sin terminar.';
+    adviceColor = 'var(--color-hp)';
+  } else if ((state.totalXP || 0) > 500) {
+    adviceText = 'Veterano en el camino. Busca las misiones que te incomodan: ahí está el crecimiento real.';
+    adviceColor = 'var(--color-xp)';
   } else {
-    adviceEmoji = '💪';
-    adviceText = 'Avanza paso a paso. Cada tarea completada fortalece al jugador.';
-    adviceColor = 'var(--green)';
+    adviceText = 'Cada punto de XP es una decisión tomada. El progreso es silencioso pero se acumula.';
+    adviceColor = 'var(--color-mp)';
   }
 
-  adviceSec.innerHTML = `
-    <div style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:${adviceColor};font-weight:700;margin-bottom:6px;text-transform:uppercase;text-align:center;text-shadow:0 0 6px ${adviceColor}40;">🔮 ${adviceEmoji} CONSEJO DEL ORÁCULO 🔮</div>
-    <div style="font-size:11px;color:var(--text2);line-height:1.4;font-style:italic;">"${adviceText}"</div>
-  `;
-  container.appendChild(adviceSec);
+  const adviceHTML = `<div style="
+    font-size:11px;
+    color:#aaa;
+    line-height:1.5;
+    font-style:italic;
+    border-left:2px solid ${adviceColor}55;
+    padding:6px 10px;
+    background:${adviceColor}08;
+  ">"${adviceText}"</div>`;
 
-  // ====== FOOTER DECORATION ======
-  const footerDecor = document.createElement('div');
-  footerDecor.style.cssText = 'text-align:center;margin-top:12px;color:var(--purple);font-size:14px;letter-spacing:2px;';
-  footerDecor.textContent = '✦ ✦ ✦';
-  container.appendChild(footerDecor);
+  container.appendChild(makeSection('Oráculo', adviceColor, adviceHTML));
+
+  // ── footer ───────────────────────────────────────────────────────
+  const footer = document.createElement('div');
+  footer.style.cssText = 'font-family:"Share Tech Mono",monospace;font-size:9px;color:#2a2a2a;text-align:center;margin-top:8px;letter-spacing:1px;';
+  footer.textContent = '── END OF LOG ──';
+  container.appendChild(footer);
 }
-
 function updateTopbar() {
   document.getElementById('topbar-xp-val').textContent = state.totalXP + ' XP';
   document.getElementById('topbar-level').textContent = 'Nv. ' + state.level;
@@ -3241,7 +4254,7 @@ function renderConfig() {
           <div style="font-size:13px;color:${t.unlocked ? (t.color || 'var(--text)') : 'var(--text3)'};">${t.name}</div>
           <div style="font-size:10px;color:var(--text3);letter-spacing:0.8px;">${unlockDesc} · ${t.unlocked ? '✓ Desbloqueado' : '🔒 Bloqueado'}</div>
         </div>
-        ${t.unlocked ? `<input type="color" value="${t.color || '#e8263d'}" title="Color del título" style="width:24px;height:24px;border:none;background:none;cursor:pointer;border-radius:4px;padding:0;" onchange="updateTitleColor(${i},this.value)">` : '<div style="width:24px;"></div>'}
+        ${t.unlocked ? `<input type="color" value="${t.color || '#e8263d'}" title="Color del título" style="width:24px;height:24px;border:none;background:none;cursor:pointer;border-radius: 0px;padding:0;" onchange="updateTitleColor(${i},this.value)">` : '<div style="width:24px;"></div>'}
         ${i > 0 ? `<button class="remove-btn" onclick="removeTitle(${i})">✕</button>` : '<div style="width:28px;"></div>'}
       </div>`;
     }).join('');
@@ -3252,7 +4265,7 @@ function renderConfig() {
   if (statsCfg) {
     statsCfg.innerHTML = state.stats.map((s, i) => `
       <div class="stat-config-item">
-        <input type="color" value="${s.color}" style="width:28px;height:28px;border:none;background:none;cursor:pointer;border-radius:4px;" onchange="updateStatColor(${i},this.value)">
+        <input type="color" value="${s.color}" style="width:28px;height:28px;border:none;background:none;cursor:pointer;border-radius: 0px;" onchange="updateStatColor(${i},this.value)">
         <input class="form-input" value="${s.name}" style="flex:1;" onchange="updateStatName(${i},this.value)">
         <span style="font-size:11px;color:var(--text2);white-space:nowrap;">Nv.${statLevel(s.val)} (${s.val}pts)</span>
         <button class="remove-btn" onclick="removeStat(${i})">✕</button>
@@ -3292,10 +4305,1499 @@ function updateTitleFromConfig() {
 }
 
 function updateArc() {
-  state.arc.name = document.getElementById('config-arc-name').value;
-  state.arc.mantras = document.getElementById('config-arc-mantras').value
-    .split('\n').map(l => l.trim()).filter(Boolean);
-  saveState(); renderPlayer();
+  // legacy: kept for config-arc fields if still present
+}
+
+
+// ============================================================
+// ARC DETAIL OVERLAY
+// ============================================================
+let currentOverlayArcId = null;
+let currentOverlayTab = 'missions';
+
+function openArcDetailOverlay(arcId) {
+  const arc = state.arcs.find(a => a.id === arcId);
+  if (!arc) return;
+  currentOverlayArcId = arcId;
+  currentOverlayTab = 'missions';
+
+  // Title & status
+  document.getElementById('arc-overlay-title').textContent = arc.name;
+  const statusMap = {
+    active: { label: 'ACTIVO', color: 'var(--color-xp)' },
+    paused: { label: 'PAUSADO', color: '#666' },
+    closed: { label: 'CERRADO', color: 'var(--color-stamina)' },
+  };
+  const st = statusMap[arc.status] || statusMap.active;
+  const statusEl = document.getElementById('arc-overlay-status');
+  statusEl.textContent = st.label;
+  statusEl.style.color = st.color;
+  statusEl.style.borderColor = st.color;
+
+  // Edit button
+  document.getElementById('arc-ov-edit-btn').setAttribute('onclick', `openArcModal('${arcId}')`);
+
+  // Cover
+  const coverWrap = document.getElementById('arc-overlay-cover');
+  const coverImg = document.getElementById('arc-overlay-cover-img');
+  if (arc.cover) {
+    coverImg.src = arc.cover;
+    coverWrap.style.display = 'block';
+  } else {
+    coverWrap.style.display = 'none';
+  }
+
+  // Meta strip
+  const today = new Date().toISOString().split('T')[0];
+  const doneObjs = arc.objectives.filter(o => o.done).length;
+  const totalObjs = arc.objectives.length;
+  const pct = totalObjs > 0 ? Math.round((doneObjs / totalObjs) * 100) : 0;
+  let daysLeft = '—'; let daysColor = '#666';
+  if (arc.end) {
+    const diff = Math.ceil((new Date(arc.end) - new Date(today)) / 86400000);
+    if (diff > 0)        { daysLeft = `${diff} días restantes`; daysColor = diff <= 7 ? 'var(--color-hp)' : 'var(--text2)'; }
+    else if (diff === 0) { daysLeft = 'Vence hoy'; daysColor = 'var(--color-hp)'; }
+    else                 { daysLeft = `Vencido hace ${-diff}d`; daysColor = 'var(--color-hp)'; }
+  }
+  const linkedCount = (arc.linkedQuests || []).length;
+  const reflCount = (arc.reflections || []).length;
+
+  document.getElementById('arc-overlay-meta').innerHTML = `
+    ${arc.start ? metaItem('INICIO', arc.start) : ''}
+    ${arc.end   ? metaItem('FIN', arc.end) : ''}
+    ${metaItem('DÍAS', '<span style="color:' + daysColor + ';">' + daysLeft + '</span>')}
+    ${metaItem('OBJETIVOS', '<span style="color:var(--color-xp);">' + doneObjs + '/' + totalObjs + ' (' + pct + '%)</span>')}
+    ${metaItem('MISIONES', linkedCount)}
+    ${metaItem('REFLEXIONES', reflCount)}
+    ${arc.desc ? `<div style="font-size:11px;color:#555;font-style:italic;border-left:2px solid #222;padding-left:12px;max-width:400px;">"${arc.desc}"</div>` : ''}
+  `;
+
+  // Progress bar under meta
+  document.getElementById('arc-overlay-meta').insertAdjacentHTML('afterend',
+    `<div style="height:3px;background:#0a0a0a;flex-shrink:0;">
+      <div style="height:100%;width:${pct}%;background:var(--color-xp);transition:width 0.5s;"></div>
+    </div>`
+  );
+
+  // Show overlay
+  const overlay = document.getElementById('arc-detail-overlay');
+  overlay.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+
+  renderArcOverlayTab('missions');
+}
+
+function metaItem(label, value) {
+  return `<div style="display:flex;flex-direction:column;gap:2px;">
+    <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:#444;letter-spacing:1.5px;">${label}</span>
+    <span style="font-family:'Share Tech Mono',monospace;font-size:12px;color:#aaa;">${value}</span>
+  </div>`;
+}
+
+function closeArcDetailOverlay() {
+  document.getElementById('arc-detail-overlay').style.display = 'none';
+  document.body.style.overflow = '';
+  // Remove injected progress bar if present
+  const meta = document.getElementById('arc-overlay-meta');
+  if (meta && meta.nextElementSibling && meta.nextElementSibling.style.height === '3px') {
+    meta.nextElementSibling.remove();
+  }
+  currentOverlayArcId = null;
+}
+
+function switchArcOverlayTab(tab) {
+  currentOverlayTab = tab;
+  ['missions','objectives','reflect'].forEach(t => {
+    const btn = document.getElementById(`arc-ov-tab-${t}`);
+    if (btn) {
+      btn.style.background = t === tab ? '#111' : 'none';
+      btn.style.color = t === tab ? '#aaa' : '#555';
+    }
+  });
+  renderArcOverlayTab(tab);
+}
+
+function renderArcOverlayTab(tab) {
+  const arc = state.arcs.find(a => a.id === currentOverlayArcId);
+  if (!arc) return;
+  const content = document.getElementById('arc-overlay-content');
+  const today = new Date().toISOString().split('T')[0];
+  const nowTime = new Date().toTimeString().slice(0,5);
+
+  if (tab === 'missions') {
+    const linkedQuests = (arc.linkedQuests || [])
+      .map(qid => state.quests.find(q => q.id === qid))
+      .filter(Boolean);
+
+    if (linkedQuests.length === 0) {
+      content.innerHTML = `
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 0;gap:12px;">
+          <div style="font-size:32px;opacity:0.3;">⚔</div>
+          <div style="font-family:'Cinzel',serif;font-size:13px;color:#444;">Sin misiones vinculadas</div>
+          <div style="font-size:12px;color:#333;">Edita el arco para vincular misiones existentes.</div>
+          <button class="btn-secondary" style="margin-top:8px;font-size:11px;" onclick="openArcModal('${arc.id}')">+ Vincular misiones</button>
+        </div>`;
+      return;
+    }
+
+    // Split by done / pending
+    const pending = linkedQuests.filter(q => !q.done);
+    const done = linkedQuests.filter(q => q.done);
+
+    let html = '';
+
+    if (pending.length > 0) {
+      html += `<div style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:#555;border-left:3px solid var(--color-hp);padding:3px 8px;background:rgba(255,68,68,0.04);margin-bottom:14px;">PENDIENTES · ${pending.length}</div>`;
+      html += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:28px;">`;
+      pending.forEach(q => { html += missionCardHTML(q, today, nowTime); });
+      html += `</div>`;
+    }
+
+    if (done.length > 0) {
+      html += `<div style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:#444;border-left:3px solid var(--color-stamina);padding:3px 8px;background:rgba(68,255,68,0.03);margin-bottom:14px;">COMPLETADAS · ${done.length}</div>`;
+      html += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:28px;opacity:0.65;">`;
+      done.forEach(q => { html += missionCardHTML(q, today, nowTime); });
+      html += `</div>`;
+    }
+
+    content.innerHTML = html;
+  }
+
+  else if (tab === 'objectives') {
+    const objs = arc.objectives || [];
+    const doneObjs = objs.filter(o => o.done).length;
+    const pct = objs.length > 0 ? Math.round((doneObjs / objs.length) * 100) : 0;
+
+    if (objs.length === 0) {
+      content.innerHTML = `
+        <div style="display:flex;flex-direction:column;align-items:center;padding:60px 0;gap:12px;">
+          <div style="font-size:32px;opacity:0.3;">🎯</div>
+          <div style="font-family:'Cinzel',serif;font-size:13px;color:#444;">Sin objetivos definidos</div>
+          <button class="btn-secondary" style="margin-top:8px;font-size:11px;" onclick="openArcModal('${arc.id}')">+ Añadir objetivos</button>
+        </div>`;
+      return;
+    }
+
+    let html = `
+      <!-- Summary bar -->
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;padding:16px;border:1px solid #1a1a1a;background:#050505;">
+        <div style="flex:1;">
+          <div style="display:flex;justify-content:space-between;font-family:'Share Tech Mono',monospace;font-size:10px;color:#555;margin-bottom:6px;">
+            <span>PROGRESO TOTAL</span>
+            <span style="color:var(--color-xp);">${doneObjs} / ${objs.length} objetivos</span>
+          </div>
+          <div style="height:8px;background:#0a0a0a;border:1px solid #1a1a1a;">
+            <div style="height:100%;width:${pct}%;background:var(--color-xp);transition:width 0.5s;"></div>
+          </div>
+        </div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:28px;font-weight:700;color:var(--color-xp);">${pct}%</div>
+      </div>
+
+      <!-- Objectives list -->
+      <div style="display:flex;flex-direction:column;gap:6px;max-width:680px;">
+    `;
+
+    objs.forEach((o, idx) => {
+      html += `
+        <div onclick="toggleArcObjectiveOverlay('${arc.id}','${o.id}')" style="
+          display:flex;align-items:center;gap:14px;
+          padding:14px 16px;
+          border:1px solid ${o.done ? '#1a1a1a' : '#222'};
+          border-left:4px solid ${o.done ? 'var(--color-stamina)' : 'var(--color-xp)'};
+          background:${o.done ? '#050505' : '#0a0a0a'};
+          cursor:pointer;
+          transition:border-color 0.15s;
+        ">
+          <div style="
+            width:20px;height:20px;flex-shrink:0;
+            border:1px solid ${o.done ? 'var(--color-stamina)' : '#444'};
+            background:${o.done ? 'var(--color-stamina)' : 'transparent'};
+            display:flex;align-items:center;justify-content:center;
+            font-size:11px;color:#000;
+          ">${o.done ? '✓' : ''}</div>
+          <span style="
+            flex:1;font-size:13px;
+            color:${o.done ? '#444' : '#ccc'};
+            ${o.done ? 'text-decoration:line-through;' : ''}
+            line-height:1.4;
+          ">${o.text}</span>
+          <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:${o.done?'#333':'#444'};letter-spacing:1px;">${o.done ? 'LISTO' : 'PENDIENTE'}</span>
+        </div>`;
+    });
+
+    html += `</div>`;
+    content.innerHTML = html;
+  }
+
+  else if (tab === 'reflect') {
+    const reflections = arc.reflections || [];
+
+    let html = `
+      <!-- New reflection form -->
+      <div style="display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start;max-width:1100px;">
+
+        <!-- History -->
+        <div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:#555;border-left:3px solid var(--color-mp);padding:3px 8px;background:rgba(68,170,255,0.04);margin-bottom:16px;">HISTORIAL · ${reflections.length} entradas</div>
+    `;
+
+    if (reflections.length === 0) {
+      html += `<div style="font-size:12px;color:#444;font-style:italic;padding:20px 0;">Sin reflexiones aún. Escribe tu primera entrada →</div>`;
+    } else {
+      reflections.forEach((r, i) => {
+        html += `
+          <div style="
+            background:#0a0a0a;
+            border:1px solid #1a1a1a;
+            border-left:3px solid var(--color-mp);
+            padding:14px 16px;
+            margin-bottom:10px;
+          ">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+              <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--color-mp);">${r.date}${r.editedAt ? ` · editado ${r.editedAt}` : ''}</span>
+              <div style="display:flex;gap:8px;">
+                <button onclick="editArcReflectionOverlay('${arc.id}',${i})" style="font-size:10px;color:#555;background:none;border:none;cursor:pointer;padding:0 4px;letter-spacing:1px;font-family:'Share Tech Mono',monospace;">EDITAR</button>
+                <button onclick="deleteArcReflectionOverlay('${arc.id}',${i})" style="font-size:10px;color:var(--color-hp);background:none;border:none;cursor:pointer;padding:0 4px;letter-spacing:1px;font-family:'Share Tech Mono',monospace;">✕</button>
+              </div>
+            </div>
+            <div style="font-size:12px;color:#aaa;line-height:1.7;white-space:pre-wrap;" id="arc-ov-refl-text-${arc.id}-${i}">${r.text}</div>
+          </div>`;
+      });
+    }
+
+    html += `
+        </div>
+
+        <!-- New entry form -->
+        <div style="position:sticky;top:0;">
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:#555;border-left:3px solid var(--color-mp);padding:3px 8px;background:rgba(68,170,255,0.04);margin-bottom:12px;" id="arc-ov-refl-form-label">NUEVA REFLEXIÓN</div>
+          <textarea id="arc-ov-refl-input"
+            style="width:100%;background:#0a0a0a;border:1px solid #222;border-left:3px solid var(--color-mp);color:#ddd;font-family:'Rajdhani',sans-serif;font-size:13px;padding:12px 14px;outline:none;resize:vertical;min-height:180px;line-height:1.6;box-sizing:border-box;"
+            placeholder="¿Cómo está avanzando el arco? ¿Qué obstáculos encuentras? ¿Qué estás aprendiendo..."></textarea>
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <button class="btn-primary" style="flex:1;font-size:12px;padding:8px;" onclick="saveArcReflectionOverlay('${arc.id}')">Guardar reflexión</button>
+            <button class="btn-secondary" style="font-size:12px;padding:8px 12px;" onclick="cancelArcReflectionEdit()" id="arc-ov-refl-cancel" style="display:none;">✕</button>
+          </div>
+        </div>
+
+      </div>`;
+
+    content.innerHTML = html;
+  }
+}
+
+function toggleArcObjectiveOverlay(arcId, objId) {
+  toggleArcObjective(arcId, objId);
+  // Re-render current tab
+  renderArcOverlayTab('objectives');
+  // Also update meta strip
+  const arc = state.arcs.find(a => a.id === arcId);
+  if (arc) {
+    const doneObjs = arc.objectives.filter(o => o.done).length;
+    const totalObjs = arc.objectives.length;
+    const pct = totalObjs > 0 ? Math.round((doneObjs / totalObjs) * 100) : 0;
+    // update progress bar
+    const bars = document.querySelectorAll('#arc-detail-overlay [style*="background:var(--color-xp)"]');
+    bars.forEach(b => { if (b.parentElement.style.height === '3px') b.style.width = pct + '%'; });
+  }
+}
+
+function saveArcReflectionOverlay(arcId) {
+  const arc = state.arcs.find(a => a.id === arcId);
+  if (!arc) return;
+  const input = document.getElementById('arc-ov-refl-input');
+  if (!input) return;
+  const text = input.value.trim();
+  if (!text) return;
+  if (!arc.reflections) arc.reflections = [];
+
+  const today = new Date().toLocaleDateString('es-ES', { day:'2-digit', month:'short', year:'numeric' });
+  const editIdx = input.dataset.editIdx !== undefined && input.dataset.editIdx !== '' ? parseInt(input.dataset.editIdx) : -1;
+
+  if (editIdx >= 0) {
+    arc.reflections[editIdx].text = text;
+    arc.reflections[editIdx].editedAt = today;
+    delete input.dataset.editIdx;
+    const lbl = document.getElementById('arc-ov-refl-form-label');
+    if (lbl) lbl.textContent = 'NUEVA REFLEXIÓN';
+    const cancelBtn = document.getElementById('arc-ov-refl-cancel');
+    if (cancelBtn) cancelBtn.style.display = 'none';
+  } else {
+    arc.reflections.unshift({ text, date: today, id: 'refl_' + Date.now() });
+  }
+
+  input.value = '';
+  saveState();
+  renderArcOverlayTab('reflect');
+}
+
+function editArcReflectionOverlay(arcId, idx) {
+  const arc = state.arcs.find(a => a.id === arcId);
+  if (!arc || !arc.reflections[idx]) return;
+  const input = document.getElementById('arc-ov-refl-input');
+  if (!input) return;
+  input.value = arc.reflections[idx].text;
+  input.dataset.editIdx = idx;
+  input.focus();
+  const lbl = document.getElementById('arc-ov-refl-form-label');
+  if (lbl) lbl.textContent = 'EDITANDO REFLEXIÓN';
+  const cancelBtn = document.getElementById('arc-ov-refl-cancel');
+  if (cancelBtn) cancelBtn.style.display = 'block';
+  input.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function cancelArcReflectionEdit() {
+  const input = document.getElementById('arc-ov-refl-input');
+  if (input) { input.value = ''; delete input.dataset.editIdx; }
+  const lbl = document.getElementById('arc-ov-refl-form-label');
+  if (lbl) lbl.textContent = 'NUEVA REFLEXIÓN';
+  const cancelBtn = document.getElementById('arc-ov-refl-cancel');
+  if (cancelBtn) cancelBtn.style.display = 'none';
+}
+
+function deleteArcReflectionOverlay(arcId, idx) {
+  const arc = state.arcs.find(a => a.id === arcId);
+  if (!arc || !arc.reflections) return;
+  arc.reflections.splice(idx, 1);
+  saveState();
+  renderArcOverlayTab('reflect');
+}
+
+// ============================================================
+// ARC SYSTEM
+// ============================================================
+
+let editingArcId = null;
+let arcCoverData = null;
+
+function openArcModal(arcId) {
+  editingArcId = arcId || null;
+  arcCoverData = null;
+  document.getElementById('arc-modal-title').textContent = arcId ? 'Editar Arco' : 'Nuevo Arco';
+  document.getElementById('arc-modal-save-btn').textContent = arcId ? 'Guardar Cambios' : 'Crear Arco';
+
+  if (arcId) {
+    const arc = state.arcs.find(a => a.id === arcId);
+    if (!arc) return;
+    document.getElementById('arc-name').value = arc.name;
+    document.getElementById('arc-desc').value = arc.desc || '';
+    document.getElementById('arc-start').value = arc.start || '';
+    document.getElementById('arc-end').value = arc.end || '';
+    arcCoverData = arc.cover || null;
+    renderArcCoverThumb();
+    renderArcObjectivesInModal(arc.objectives || []);
+    renderArcQuestSelector(arc.linkedQuests || []);
+  } else {
+    document.getElementById('arc-name').value = '';
+    document.getElementById('arc-desc').value = '';
+    document.getElementById('arc-start').value = new Date().toISOString().split('T')[0];
+    document.getElementById('arc-end').value = '';
+    renderArcCoverThumb();
+    renderArcObjectivesInModal([]);
+    renderArcQuestSelector([]);
+  }
+  document.getElementById('arc-modal').classList.add('open');
+}
+
+function closeArcModal() {
+  document.getElementById('arc-modal').classList.remove('open');
+  editingArcId = null; arcCoverData = null;
+}
+
+function previewArcCover(input) {
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => { arcCoverData = e.target.result; renderArcCoverThumb(); };
+  reader.readAsDataURL(file);
+}
+
+function removeArcCover() {
+  arcCoverData = null;
+  document.getElementById('arc-cover').value = '';
+  renderArcCoverThumb();
+}
+
+function renderArcCoverThumb() {
+  const thumb = document.getElementById('arc-cover-thumb');
+  const removeBtn = document.getElementById('arc-cover-remove');
+  if (arcCoverData) {
+    thumb.innerHTML = `<img src="${arcCoverData}" style="width:100%;height:100%;object-fit:cover;">`;
+    removeBtn.style.display = 'block';
+  } else {
+    thumb.innerHTML = '🖼';
+    removeBtn.style.display = 'none';
+  }
+}
+
+// Modal arc objectives list
+let modalArcObjectives = [];
+
+function renderArcObjectivesInModal(objs) {
+  modalArcObjectives = objs.map(o => ({...o}));
+  const list = document.getElementById('arc-objectives-list');
+  if (!list) return;
+  if (modalArcObjectives.length === 0) {
+    list.innerHTML = '<div style="font-size:11px;color:var(--text3);padding:4px 0;">Sin objetivos aún.</div>';
+    return;
+  }
+  list.innerHTML = modalArcObjectives.map((o, i) => `
+    <div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid #111;">
+      <span style="font-size:11px;color:var(--text2);flex:1;">${o.text}</span>
+      <button onclick="removeModalArcObjective(${i})" style="font-size:10px;color:var(--color-hp);background:none;border:none;cursor:pointer;padding:2px 6px;">✕</button>
+    </div>
+  `).join('');
+}
+
+function addArcObjective() {
+  const input = document.getElementById('arc-obj-input');
+  const text = input.value.trim(); if (!text) return;
+  modalArcObjectives.push({ id: 'obj_' + Date.now() + '_' + Math.random().toString(36).slice(2,6), text, done: false });
+  input.value = '';
+  renderArcObjectivesInModal(modalArcObjectives);
+}
+
+function removeModalArcObjective(i) {
+  modalArcObjectives.splice(i, 1);
+  renderArcObjectivesInModal(modalArcObjectives);
+}
+
+// Modal quest selector
+let modalArcLinkedQuests = [];
+
+function renderArcQuestSelector(linked) {
+  modalArcLinkedQuests = [...(linked || [])];
+  const list = document.getElementById('arc-quests-list');
+  if (!list) return;
+  const allQuests = state.quests.filter(q => q.type !== 'habit');
+  if (allQuests.length === 0) {
+    list.innerHTML = '<div style="font-size:11px;color:var(--text3);padding:4px;">No hay misiones creadas aún.</div>';
+    return;
+  }
+  list.innerHTML = allQuests.map(q => {
+    const checked = modalArcLinkedQuests.includes(q.id);
+    const typeIcon = q.type === 'objective' ? '🎯' : '⚔';
+    return `<label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:3px 0;">
+      <input type="checkbox" value="${q.id}" ${checked ? 'checked' : ''} onchange="toggleArcQuestLink('${q.id}',this.checked)" style="accent-color:var(--color-xp);">
+      <span style="font-size:11px;color:var(--text2);">${typeIcon} ${q.name}</span>
+      <span style="margin-left:auto;font-size:10px;color:var(--color-xp);font-family:'Share Tech Mono',monospace;">+${q.xp}xp</span>
+    </label>`;
+  }).join('');
+}
+
+function toggleArcQuestLink(questId, checked) {
+  if (checked && !modalArcLinkedQuests.includes(questId)) {
+    modalArcLinkedQuests.push(questId);
+  } else if (!checked) {
+    modalArcLinkedQuests = modalArcLinkedQuests.filter(id => id !== questId);
+  }
+}
+
+function saveArc() {
+  const name = document.getElementById('arc-name').value.trim();
+  if (!name) { alert('El arco necesita un nombre.'); return; }
+  const desc    = document.getElementById('arc-desc').value.trim();
+  const start   = document.getElementById('arc-start').value;
+  const end     = document.getElementById('arc-end').value;
+
+  if (editingArcId) {
+    const arc = state.arcs.find(a => a.id === editingArcId);
+    if (arc) {
+      arc.name = name; arc.desc = desc; arc.start = start; arc.end = end;
+      arc.cover = arcCoverData;
+      arc.objectives = modalArcObjectives;
+      arc.linkedQuests = modalArcLinkedQuests;
+    }
+  } else {
+    // Pause any currently active arc
+    state.arcs.forEach(a => { if (a.status === 'active') a.status = 'paused'; });
+    const newArc = {
+      id: 'arc_' + Date.now(),
+      name, desc, start, end,
+      cover: arcCoverData,
+      objectives: modalArcObjectives,
+      linkedQuests: modalArcLinkedQuests,
+      status: 'active',
+      createdAt: new Date().toISOString(),
+    };
+    state.arcs.push(newArc);
+    state.activeArcId = newArc.id;
+  }
+
+  saveState();
+  closeArcModal();
+  renderAll();
+}
+
+function setActiveArc(arcId) {
+  state.arcs.forEach(a => { if (a.status === 'active') a.status = 'paused'; });
+  const arc = state.arcs.find(a => a.id === arcId);
+  if (arc) { arc.status = 'active'; state.activeArcId = arcId; }
+  saveState(); renderAll();
+}
+
+function deleteArc(arcId) {
+  if (!confirm('¿Eliminar este arco?')) return;
+  state.arcs = state.arcs.filter(a => a.id !== arcId);
+  if (state.activeArcId === arcId) {
+    state.activeArcId = null;
+    const nextActive = state.arcs.find(a => a.status === 'paused');
+    if (nextActive) { nextActive.status = 'active'; state.activeArcId = nextActive.id; }
+  }
+  saveState(); renderAll();
+}
+
+function toggleArcObjective(arcId, objId) {
+  const arc = state.arcs.find(a => a.id === arcId);
+  if (!arc) return;
+  const obj = arc.objectives.find(o => o.id === objId);
+  if (!obj) return;
+  obj.done = !obj.done;
+  saveState();
+  checkArcAutoClose(arc);
+  renderAll();
+}
+
+function checkArcAutoClose(arc) {
+  if (arc.status !== 'active') return;
+  const allDone = arc.objectives.length > 0 && arc.objectives.every(o => o.done);
+  const expired = arc.end && arc.end < new Date().toISOString().split('T')[0];
+  if (allDone || expired) {
+    arc.status = 'closed';
+    arc.closedAt = new Date().toISOString();
+    state.activeArcId = null;
+    // XP bonus
+    const bonus = Math.max(100, arc.objectives.length * 50);
+    addXP(bonus);
+    saveState();
+    showArcCloseOverlay(arc, bonus, allDone);
+  }
+}
+
+function showArcCloseOverlay(arc, xpBonus, completed) {
+  const overlay = document.getElementById('arc-close-overlay');
+  document.getElementById('arc-close-name').textContent = arc.name;
+  const coverEl = document.getElementById('arc-close-cover');
+  if (arc.cover) {
+    coverEl.innerHTML = `<img src="${arc.cover}" style="width:100%;height:100%;object-fit:cover;">`;
+    coverEl.style.display = 'block';
+  } else {
+    coverEl.style.display = 'none';
+  }
+  const doneCount = arc.objectives.filter(o => o.done).length;
+  document.getElementById('arc-close-stats').innerHTML = `
+    <div style="text-align:center;">
+      <div style="font-size:22px;color:var(--color-xp);font-weight:700;">+${xpBonus}</div>
+      <div style="font-size:10px;color:#666;margin-top:2px;">XP GANADA</div>
+    </div>
+    <div style="text-align:center;">
+      <div style="font-size:22px;color:var(--color-stamina);font-weight:700;">${doneCount}/${arc.objectives.length}</div>
+      <div style="font-size:10px;color:#666;margin-top:2px;">OBJETIVOS</div>
+    </div>
+    <div style="text-align:center;">
+      <div style="font-size:22px;color:var(--color-mp);font-weight:700;">${completed ? '✓' : '⏰'}</div>
+      <div style="font-size:10px;color:#666;margin-top:2px;">${completed ? 'COMPLETADO' : 'TIEMPO'}</div>
+    </div>
+  `;
+  document.getElementById('arc-close-title').style.display = 'none';
+  overlay.style.display = 'flex';
+}
+
+function dismissArcCloseOverlay() {
+  document.getElementById('arc-close-overlay').style.display = 'none';
+  renderAll();
+}
+
+// ── Dashboard arc card ────────────────────────────────────────────
+function renderDashboardArc() {
+  const body = document.getElementById('dashboard-arc-body');
+  if (!body) return;
+  const arc = state.arcs.find(a => a.status === 'active') || state.arcs.find(a => a.id === state.activeArcId);
+  if (!arc) {
+    body.innerHTML = `<div style="font-size:12px;color:var(--text3);padding:4px 0;font-style:italic;">Sin arco activo.</div>
+      <button class="btn-primary" style="margin-top:10px;font-size:11px;padding:5px 14px;" onclick="showSection('missions');setTimeout(()=>showMissionsTab('arcs'),50);">+ Crear arco</button>`;
+    return;
+  }
+  const today = new Date().toISOString().split('T')[0];
+  const doneObjs = arc.objectives.filter(o => o.done).length;
+  const totalObjs = arc.objectives.length;
+  const pct = totalObjs > 0 ? Math.round((doneObjs / totalObjs) * 100) : 0;
+
+  let daysLeft = '';
+  if (arc.end) {
+    const diff = Math.ceil((new Date(arc.end) - new Date(today)) / 86400000);
+    daysLeft = diff > 0 ? `${diff} días` : diff === 0 ? 'Hoy' : 'Vencido';
+  }
+
+  body.innerHTML = `
+    ${arc.cover ? `<img src="${arc.cover}" style="width:100%;height:80px;object-fit:cover;display:block;margin:-14px -16px 12px;width:calc(100% + 32px);">` : ''}
+    <div style="font-family:'Cinzel',serif;font-size:13px;color:var(--color-xp);margin-bottom:4px;">${arc.name}</div>
+    ${arc.desc ? `<div style="font-size:11px;color:var(--text3);font-style:italic;margin-bottom:8px;">${arc.desc.slice(0,80)}${arc.desc.length>80?'…':''}</div>` : ''}
+    <div style="display:flex;justify-content:space-between;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);margin-bottom:4px;">
+      <span>OBJETIVOS</span>
+      <span style="color:var(--color-xp);">${doneObjs}/${totalObjs} · ${pct}%</span>
+    </div>
+    <div style="height:4px;background:#111;margin-bottom:10px;">
+      <div style="height:100%;width:${pct}%;background:var(--color-xp);transition:width 0.5s;"></div>
+    </div>
+    ${arc.objectives.slice(0,4).map(o => `
+      <div style="display:flex;align-items:center;gap:7px;padding:3px 0;border-bottom:1px solid #111;cursor:pointer;" onclick="toggleArcObjective('${arc.id}','${o.id}')">
+        <div style="width:12px;height:12px;border:1px solid ${o.done?'var(--color-stamina)':'var(--border2)'};background:${o.done?'var(--color-stamina)':'transparent'};flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;color:#000;">${o.done?'✓':''}</div>
+        <span style="font-size:11px;color:${o.done?'var(--text3)':'var(--text)'};${o.done?'text-decoration:line-through;':''}">${o.text}</span>
+      </div>
+    `).join('')}
+    ${arc.objectives.length > 4 ? `<div style="font-size:10px;color:var(--text3);margin-top:6px;">+${arc.objectives.length-4} objetivos más →</div>` : ''}
+    ${daysLeft ? `<div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:${daysLeft.includes('Venc')?'var(--color-hp)':'#666'};margin-top:8px;">⏱ ${daysLeft}</div>` : ''}
+    <button onclick="openArcDetailOverlay('${arc.id}')" style="margin-top:12px;width:100%;padding:7px;background:transparent;border:1px solid var(--color-xp);color:var(--color-xp);font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;cursor:pointer;">◎ VER DETALLE</button>
+  `;
+}
+
+// ── Missions tab: arcs view ───────────────────────────────────────
+function showMissionsTab(tab) {
+  // Find the tab button and activate it
+  currentMissionsTab = tab;
+  const btns = document.querySelectorAll('#missions-tab-row .tab-btn');
+  btns.forEach(b => b.classList.remove('active'));
+  const arcBtn = document.getElementById('arc-tab-btn');
+  if (arcBtn && tab === 'arcs') arcBtn.classList.add('active');
+  // Toggle header buttons
+  const headerBtnsEl = document.getElementById('missions-header-btns');
+  if (headerBtnsEl) {
+    Array.from(headerBtnsEl.children).forEach(b => {
+      if (b.id === 'btn-new-arc') b.style.display = tab === 'arcs' ? 'inline-flex' : 'none';
+      else b.style.display = tab === 'arcs' ? 'none' : 'inline-flex';
+    });
+  }
+  if (tab === 'arcs') { renderArcsView(); return; }
+  renderMissions();
+}
+
+function renderArcsView() {
+  const container = document.getElementById('missions-list-container');
+  if (!container) return;
+
+  if (state.arcs.length === 0) {
+    container.innerHTML = `<div class="empty-state" style="padding:56px;text-align:center;">
+      <div style="font-size:36px;margin-bottom:14px;opacity:0.25;">⬡</div>
+      <div style="font-family:'Cinzel',serif;font-size:14px;color:var(--text2);margin-bottom:8px;">Sin arcos creados</div>
+      <div style="font-size:12px;color:var(--text3);max-width:320px;margin:0 auto;">Los arcos son capítulos de tu historia. Define objetivos, vincula misiones y ciérralo cuando los cumplas.</div>
+    </div>`;
+    return;
+  }
+
+  const activeArcs  = state.arcs.filter(a => a.status === 'active');
+  const pausedArcs  = state.arcs.filter(a => a.status === 'paused');
+  const closedArcs  = state.arcs.filter(a => a.status === 'closed');
+
+  const group = (arcs, label, color) => {
+    if (!arcs.length) return '';
+    return `
+      <div style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:${color};border-left:3px solid ${color};padding:3px 10px;background:${color}0d;margin-bottom:16px;">${label}</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin-bottom:32px;">
+        ${arcs.map(arc => arcCardHTML(arc)).join('')}
+      </div>`;
+  };
+
+  container.innerHTML =
+    group(activeArcs, '▶ ACTIVO', 'var(--color-xp)') +
+    group(pausedArcs, '⏸ EN PAUSA', '#666') +
+    group(closedArcs, '✓ CERRADOS', 'var(--color-stamina)');
+}
+
+
+// ── Full detail panel for active arcs ────────────────────────────
+function arcDetailPanelHTML(arc) {
+  const today = new Date().toISOString().split('T')[0];
+  const linkedQuests = (arc.linkedQuests || []).map(qid => state.quests.find(q => q.id === qid)).filter(Boolean);
+  const doneObjs = arc.objectives.filter(o => o.done).length;
+  const totalObjs = arc.objectives.length;
+  const pct = totalObjs > 0 ? Math.round((doneObjs / totalObjs) * 100) : 0;
+
+  let daysLeft = '—'; let daysColor = '#666';
+  if (arc.end) {
+    const diff = Math.ceil((new Date(arc.end) - new Date(today)) / 86400000);
+    if (diff > 0)        { daysLeft = `${diff} días restantes`; daysColor = diff <= 7 ? 'var(--color-hp)' : 'var(--text2)'; }
+    else if (diff === 0) { daysLeft = 'Vence hoy'; daysColor = 'var(--color-hp)'; }
+    else                 { daysLeft = `Vencido hace ${-diff}d`; daysColor = 'var(--color-hp)'; }
+  }
+
+  // Mission cards HTML (reuse missionCardHTML)
+  const questsHTML = linkedQuests.length > 0
+    ? `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;">` +
+        linkedQuests.map(q => missionCardHTML(q, today, new Date().toTimeString().slice(0,5))).join('') +
+      `</div>`
+    : `<div style="font-size:12px;color:var(--text3);font-style:italic;padding:8px 0;">Sin misiones vinculadas. Edita el arco para asociar misiones.</div>`;
+
+  // Reflections
+  const reflections = arc.reflections || [];
+  const reflectionsHTML = reflections.length === 0
+    ? `<div style="font-size:12px;color:var(--text3);font-style:italic;padding:4px 0;">Sin reflexiones aún.</div>`
+    : reflections.map((r, i) => `
+        <div class="arc-reflection-entry" id="arc-refl-display-${arc.id}-${i}">
+          <div class="arc-reflection-date">
+            <span>${r.date}</span>
+            <span style="display:flex;gap:6px;">
+              <button onclick="editArcReflection('${arc.id}',${i})" style="font-size:10px;color:var(--text3);background:none;border:none;cursor:pointer;padding:0 4px;">✎</button>
+              <button onclick="deleteArcReflection('${arc.id}',${i})" style="font-size:10px;color:var(--color-hp);background:none;border:none;cursor:pointer;padding:0 4px;">✕</button>
+            </span>
+          </div>
+          <div class="arc-reflection-text">${r.text}</div>
+        </div>`
+    ).join('');
+
+  return `
+  <div class="arc-detail-panel" id="arc-detail-${arc.id}">
+    ${arc.cover
+      ? `<img class="arc-detail-cover" src="${arc.cover}" alt="">`
+      : `<div class="arc-detail-cover-placeholder"></div>`}
+
+    <div class="arc-detail-header">
+      <div style="flex:1;">
+        <div class="arc-detail-title">${arc.name}</div>
+        ${arc.desc ? `<div class="arc-detail-desc">${arc.desc}</div>` : ''}
+        <div class="arc-detail-meta">
+          ${arc.start ? `<div class="arc-detail-meta-item"><span>INICIO</span><span>${arc.start}</span></div>` : ''}
+          ${arc.end   ? `<div class="arc-detail-meta-item"><span>FIN</span><span>${arc.end}</span></div>` : ''}
+          ${arc.end   ? `<div class="arc-detail-meta-item"><span>TIEMPO</span><span style="color:${daysColor};">${daysLeft}</span></div>` : ''}
+          <div class="arc-detail-meta-item"><span>OBJETIVOS</span><span style="color:var(--color-xp);">${doneObjs}/${totalObjs} (${pct}%)</span></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;flex-shrink:0;">
+        <span class="arc-status-chip" style="color:var(--color-xp);border-color:var(--color-xp);">ACTIVO</span>
+        <button class="btn-primary" style="font-size:11px;padding:5px 14px;background:var(--color-xp);color:#000;border-color:var(--color-xp);font-weight:700;letter-spacing:1px;" onclick="openArcDetailOverlay('${arc.id}')">◎ VER DETALLE</button>
+        <button class="btn-secondary" style="font-size:11px;padding:4px 12px;" onclick="openArcModal('${arc.id}')">✎ Editar</button>
+        <button class="btn-secondary" style="font-size:11px;padding:4px 12px;color:var(--color-hp);border-color:rgba(255,68,68,0.3);" onclick="deleteArc('${arc.id}')">🗑</button>
+      </div>
+    </div>
+
+    <div style="padding:0 24px 10px;border-bottom:1px solid var(--border);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+        <div style="flex:1;height:4px;background:#0a0a0a;">
+          <div style="height:100%;width:${pct}%;background:var(--color-xp);transition:width 0.5s;"></div>
+        </div>
+        <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--color-xp);">${pct}%</span>
+      </div>
+    </div>
+
+    <div class="arc-detail-body">
+
+      <!-- SIDEBAR: objectives + reflection form -->
+      <div class="arc-detail-sidebar">
+
+        <!-- Objectives -->
+        <div>
+          <div class="arc-detail-section-label">Objetivos</div>
+          ${totalObjs === 0
+            ? `<div style="font-size:12px;color:var(--text3);font-style:italic;">Sin objetivos definidos.</div>`
+            : arc.objectives.map(o => `
+              <div class="arc-obj-item" onclick="toggleArcObjective('${arc.id}','${o.id}')">
+                <div class="arc-obj-check ${o.done ? 'done' : ''}">${o.done ? '✓' : ''}</div>
+                <span class="arc-obj-text ${o.done ? 'done' : ''}">${o.text}</span>
+              </div>`).join('')
+          }
+        </div>
+
+        <!-- Reflection write -->
+        <div>
+          <div class="arc-detail-section-label">Reflexión</div>
+          <textarea id="arc-refl-input-${arc.id}"
+            style="width:100%;background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--color-mp);color:var(--text);font-family:'Rajdhani',sans-serif;font-size:12px;padding:10px 12px;outline:none;resize:vertical;min-height:90px;line-height:1.5;box-sizing:border-box;"
+            placeholder="Escribe una reflexión sobre este arco..."></textarea>
+          <button class="btn-secondary" style="margin-top:6px;font-size:11px;padding:5px 14px;width:100%;" onclick="saveArcReflection('${arc.id}')">Guardar reflexión</button>
+        </div>
+
+      </div>
+
+      <!-- MAIN: missions + reflection history -->
+      <div class="arc-detail-main">
+
+        <!-- Linked missions -->
+        <div>
+          <div class="arc-detail-section-label">Misiones del arco</div>
+          ${questsHTML}
+        </div>
+
+        <!-- Reflection history -->
+        <div>
+          <div class="arc-detail-section-label">Historial de reflexiones</div>
+          <div id="arc-reflections-${arc.id}">
+            ${reflectionsHTML}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── Arc reflection CRUD ───────────────────────────────────────────
+function saveArcReflection(arcId) {
+  const arc = state.arcs.find(a => a.id === arcId);
+  if (!arc) return;
+  const input = document.getElementById(`arc-refl-input-${arcId}`);
+  const text = input.value.trim();
+  if (!text) return;
+  if (!arc.reflections) arc.reflections = [];
+
+  // Check if editing existing
+  const editIdx = input.dataset.editIdx !== undefined ? parseInt(input.dataset.editIdx) : -1;
+  const today = new Date().toLocaleDateString('es-ES', { day:'2-digit', month:'short', year:'numeric' });
+
+  if (editIdx >= 0) {
+    arc.reflections[editIdx].text = text;
+    arc.reflections[editIdx].editedAt = today;
+    delete input.dataset.editIdx;
+    input.closest('.arc-detail-sidebar').querySelector('button[onclick*="saveArcReflection"]').textContent = 'Guardar reflexión';
+  } else {
+    arc.reflections.unshift({ text, date: today, id: 'refl_' + Date.now() });
+  }
+
+  input.value = '';
+  saveState();
+  renderArcsView();
+}
+
+function editArcReflection(arcId, idx) {
+  const arc = state.arcs.find(a => a.id === arcId);
+  if (!arc || !arc.reflections[idx]) return;
+  const input = document.getElementById(`arc-refl-input-${arcId}`);
+  if (!input) return;
+  input.value = arc.reflections[idx].text;
+  input.dataset.editIdx = idx;
+  input.focus();
+  const btn = input.closest('.arc-detail-sidebar').querySelector('button[onclick*="saveArcReflection"]');
+  if (btn) btn.textContent = 'Actualizar reflexión';
+  // Scroll to textarea
+  input.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function deleteArcReflection(arcId, idx) {
+  const arc = state.arcs.find(a => a.id === arcId);
+  if (!arc || !arc.reflections) return;
+  arc.reflections.splice(idx, 1);
+  saveState();
+  renderArcsView();
+}
+
+function arcCardHTML(arc) {
+  const today = new Date().toISOString().split('T')[0];
+  const doneObjs = arc.objectives.filter(o => o.done).length;
+  const totalObjs = arc.objectives.length;
+  const pct = totalObjs > 0 ? Math.round((doneObjs / totalObjs) * 100) : 0;
+  const linkedCount = (arc.linkedQuests || []).length;
+  const reflCount = (arc.reflections || []).length;
+
+  // Days left
+  let daysLeft = ''; let daysColor = '#555';
+  if (arc.end) {
+    const diff = Math.ceil((new Date(arc.end) - new Date(today)) / 86400000);
+    if (diff > 0)        { daysLeft = `${diff}d restantes`; daysColor = diff <= 7 ? 'var(--color-hp)' : '#666'; }
+    else if (diff === 0) { daysLeft = 'Vence hoy'; daysColor = 'var(--color-hp)'; }
+    else                 { daysLeft = `Vencido ${-diff}d`; daysColor = 'var(--color-hp)'; }
+  }
+
+  const statusStyles = {
+    active: { chip: 'color:var(--color-xp);border-color:var(--color-xp);', border: 'var(--color-xp)' },
+    paused: { chip: 'color:#555;border-color:#333;', border: '#333' },
+    closed: { chip: 'color:var(--color-stamina);border-color:var(--color-stamina);', border: 'var(--color-stamina)' },
+  }[arc.status] || { chip: '', border: '#333' };
+
+  const statusLabel = { active: 'ACTIVO', paused: 'PAUSADO', closed: 'CERRADO' }[arc.status] || arc.status;
+
+  return `
+  <div style="
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: 3px solid ${statusStyles.border};
+    display: flex;
+    flex-direction: column;
+    ${arc.status !== 'active' ? 'opacity:0.75;' : ''}
+  ">
+    ${arc.cover
+      ? `<div style="height:100px;overflow:hidden;flex-shrink:0;">
+           <img src="${arc.cover}" style="width:100%;height:100%;object-fit:cover;opacity:${arc.status==='active'?'0.8':'0.4'};">
+         </div>`
+      : ''}
+
+    <div style="padding:14px 16px;flex:1;display:flex;flex-direction:column;gap:10px;">
+
+      <!-- Title row -->
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
+        <div style="font-family:'Cinzel',serif;font-size:14px;color:${arc.status==='active'?'var(--color-xp)':'var(--text2)'};line-height:1.2;">${arc.name}</div>
+        <span class="arc-status-chip" style="${statusStyles.chip}">${statusLabel}</span>
+      </div>
+
+      <!-- Description -->
+      ${arc.desc ? `<div style="font-size:11px;color:var(--text3);font-style:italic;line-height:1.4;border-left:2px solid #222;padding-left:8px;">${arc.desc.length > 100 ? arc.desc.slice(0,100) + '…' : arc.desc}</div>` : ''}
+
+      <!-- Progress bar + stats row -->
+      <div>
+        <div style="display:flex;justify-content:space-between;font-family:'Share Tech Mono',monospace;font-size:9px;color:#444;margin-bottom:4px;letter-spacing:1px;">
+          <span>OBJETIVOS ${doneObjs}/${totalObjs}</span>
+          <span style="color:${statusStyles.border};">${pct}%</span>
+        </div>
+        <div style="height:3px;background:#0d0d0d;">
+          <div style="height:100%;width:${pct}%;background:${statusStyles.border};transition:width 0.4s;"></div>
+        </div>
+      </div>
+
+      <!-- Meta chips -->
+      <div style="display:flex;gap:12px;font-family:'Share Tech Mono',monospace;font-size:9px;color:#444;letter-spacing:1px;flex-wrap:wrap;">
+        ${arc.start ? `<span>INICIO · <span style="color:#666;">${arc.start}</span></span>` : ''}
+        ${arc.end   ? `<span>FIN · <span style="color:${daysColor};">${arc.end}</span></span>` : ''}
+        ${daysLeft  ? `<span style="color:${daysColor};">⏱ ${daysLeft}</span>` : ''}
+        ${linkedCount ? `<span>⚔ ${linkedCount} misiones</span>` : ''}
+        ${reflCount   ? `<span>✦ ${reflCount} reflexiones</span>` : ''}
+      </div>
+
+    </div>
+
+    <!-- Footer actions -->
+    <div style="display:flex;align-items:center;gap:6px;padding:8px 12px;border-top:1px solid #111;background:#050505;">
+      <button onclick="openArcDetailOverlay('${arc.id}')" style="
+        flex:1;
+        padding:6px 0;
+        background: transparent;
+        border: 1px solid ${statusStyles.border};
+        color: ${statusStyles.border};
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 10px;
+        letter-spacing: 2px;
+        cursor: pointer;
+        text-transform: uppercase;
+      ">◎ Ver detalle</button>
+      ${arc.status !== 'active'
+        ? `<button onclick="setActiveArc('${arc.id}')" title="Activar" style="padding:6px 10px;background:none;border:1px solid #333;color:#555;font-size:11px;cursor:pointer;">▶</button>`
+        : ''}
+      <button onclick="openArcModal('${arc.id}')" title="Editar" style="padding:6px 10px;background:none;border:1px solid #222;color:#555;font-size:11px;cursor:pointer;">✎</button>
+      <button onclick="deleteArc('${arc.id}')" title="Eliminar" style="padding:6px 10px;background:none;border:1px solid #221111;color:#553333;font-size:11px;cursor:pointer;">🗑</button>
+    </div>
+  </div>`;
+}
+
+
+// ============================================================
+// BOSS SYSTEM
+// ============================================================
+
+let editingBossId = null;
+let bossImgData = null;
+let currentBossId = null;
+
+// ── Modal ────────────────────────────────────────────────────────
+function openBossModal(bossId) {
+  editingBossId = bossId || null;
+  bossImgData = null;
+  document.getElementById('boss-modal-title').textContent = bossId ? 'Editar Jefe' : 'Invocar Jefe';
+  document.getElementById('boss-modal-save-btn').textContent = bossId ? 'Guardar' : 'Invocar';
+
+  if (bossId) {
+    const b = state.bosses.find(x => x.id === bossId);
+    if (!b) return;
+    document.getElementById('boss-name').value = b.name;
+    document.getElementById('boss-lore').value = b.lore || '';
+    document.getElementById('boss-abilities').value = b.abilities || '';
+    document.getElementById('boss-strategy').value = b.strategy || '';
+    document.getElementById('boss-condition').value = b.condition || '';
+    document.getElementById('boss-maxhp').value = b.maxHP;
+    document.getElementById('boss-dmg').value = b.dmgPerDay;
+    document.getElementById('boss-player-maxhp').value = b.playerMaxHP ?? 100;
+    document.getElementById('boss-player-hp').value = b.playerHP ?? b.playerMaxHP ?? 100;
+    document.getElementById('boss-reward').value = b.reward;
+    document.getElementById('boss-deadline').value = b.deadline || '';
+    bossImgData = b.image || null;
+  } else {
+    document.getElementById('boss-name').value = '';
+    document.getElementById('boss-lore').value = '';
+    document.getElementById('boss-abilities').value = '';
+    document.getElementById('boss-strategy').value = '';
+    document.getElementById('boss-condition').value = '';
+    document.getElementById('boss-maxhp').value = 20;
+    document.getElementById('boss-dmg').value = 2;
+    document.getElementById('boss-player-maxhp').value = 100;
+    document.getElementById('boss-player-hp').value = 100;
+    document.getElementById('boss-reward').value = 300;
+    document.getElementById('boss-deadline').value = '';
+    bossImgData = null;
+  }
+  renderBossImgThumb();
+  renderBossQuestSelector(bossId ? (state.bosses.find(x=>x.id===bossId)?.linkedQuests||[]) : []);
+  document.getElementById('boss-modal').classList.add('open');
+}
+
+function closeBossModal() {
+  document.getElementById('boss-modal').classList.remove('open');
+  editingBossId = null; bossImgData = null;
+}
+
+function previewBossImg(input) {
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => { bossImgData = e.target.result; renderBossImgThumb(); };
+  reader.readAsDataURL(file);
+}
+
+function removeBossImg() {
+  bossImgData = null;
+  document.getElementById('boss-img').value = '';
+  renderBossImgThumb();
+}
+
+function renderBossImgThumb() {
+  const thumb = document.getElementById('boss-img-thumb');
+  const rm = document.getElementById('boss-img-remove');
+  if (bossImgData) {
+    thumb.innerHTML = `<img src="${bossImgData}" style="width:100%;height:100%;object-fit:cover;">`;
+    rm.style.display = 'block';
+  } else {
+    thumb.innerHTML = '💀';
+    rm.style.display = 'none';
+  }
+}
+
+let modalBossLinkedQuests = [];
+function renderBossQuestSelector(linked) {
+  modalBossLinkedQuests = [...(linked||[])];
+  const list = document.getElementById('boss-quests-list');
+  if (!list) return;
+  const quests = state.quests.filter(q => !q.done || q.type === 'habit');
+  if (quests.length === 0) {
+    list.innerHTML = '<div style="font-size:11px;color:var(--text3);padding:4px;">No hay misiones activas.</div>';
+    return;
+  }
+  list.innerHTML = quests.map(q => {
+    const checked = modalBossLinkedQuests.includes(q.id);
+    const typeIcon = q.type === 'habit' ? '🔄' : q.type === 'daily' ? '⚔' : '🎯';
+    return `<label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:3px 0;">
+      <input type="checkbox" value="${q.id}" ${checked?'checked':''} onchange="toggleBossQuestLink('${q.id}',this.checked)" style="accent-color:var(--color-hp);">
+      <span style="font-size:11px;color:var(--text2);flex:1;">${typeIcon} ${q.name}</span>
+      <span style="font-size:10px;color:var(--color-xp);font-family:'Share Tech Mono',monospace;">+${q.xp}xp</span>
+    </label>`;
+  }).join('');
+}
+
+function toggleBossQuestLink(qid, checked) {
+  if (checked && !modalBossLinkedQuests.includes(qid)) modalBossLinkedQuests.push(qid);
+  else if (!checked) modalBossLinkedQuests = modalBossLinkedQuests.filter(id => id !== qid);
+}
+
+function saveBoss() {
+  const name = document.getElementById('boss-name').value.trim();
+  if (!name) { alert('El jefe necesita un nombre.'); return; }
+  const maxHP        = parseInt(document.getElementById('boss-maxhp').value) || 20;
+  const dmg          = parseInt(document.getElementById('boss-dmg').value) || 2;
+  const playerMaxHP  = parseInt(document.getElementById('boss-player-maxhp').value) || 100;
+  const playerHP     = Math.min(parseInt(document.getElementById('boss-player-hp').value) || playerMaxHP, playerMaxHP);
+
+  if (editingBossId) {
+    const b = state.bosses.find(x => x.id === editingBossId);
+    if (b) {
+      b.name = name;
+      b.lore = document.getElementById('boss-lore').value.trim();
+      b.abilities = document.getElementById('boss-abilities').value.trim();
+      b.strategy = document.getElementById('boss-strategy').value.trim();
+      b.condition = document.getElementById('boss-condition').value.trim();
+      b.maxHP = maxHP;
+      b.dmgPerDay = dmg;
+      b.playerMaxHP = playerMaxHP;
+      b.playerHP = playerHP;
+      b.reward = parseInt(document.getElementById('boss-reward').value) || 0;
+      b.deadline = document.getElementById('boss-deadline').value;
+      b.linkedQuests = modalBossLinkedQuests;
+      if (bossImgData) b.image = bossImgData;
+    }
+  } else {
+    const now = new Date();
+    const timeStr = now.toTimeString().slice(0,5);
+    const dateStr = now.toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'});
+    const newBoss = {
+      id: 'boss_' + Date.now(),
+      name,
+      lore:         document.getElementById('boss-lore').value.trim(),
+      abilities:    document.getElementById('boss-abilities').value.trim(),
+      strategy:     document.getElementById('boss-strategy').value.trim(),
+      condition:    document.getElementById('boss-condition').value.trim(),
+      image:        bossImgData,
+      maxHP,
+      currentHP:    maxHP,
+      dmgPerDay:    dmg,
+      playerMaxHP,
+      playerHP,
+      reward:       parseInt(document.getElementById('boss-reward').value) || 0,
+      deadline:     document.getElementById('boss-deadline').value,
+      linkedQuests: modalBossLinkedQuests,
+      status:       'active',
+      createdAt:    now.toISOString(),
+      lastDmgDate:  null,
+      log: [
+        { time: timeStr, date: dateStr, type: 'summon', text: `${name} invocado con ${maxHP} HP. Jugador: ${playerHP}/${playerMaxHP} HP.`, hp: maxHP }
+      ]
+    };
+    state.bosses.push(newBoss);
+    showNotification('💀', `¡${name} ha sido invocado!`);
+  }
+  saveState();
+  closeBossModal();
+  renderBossList();
+  if (editingBossId && currentBossId === editingBossId) renderBossDetail(editingBossId);
+}
+
+// ── Boss list view ────────────────────────────────────────────────
+function renderBossList() {
+  const container = document.getElementById('boss-list-container');
+  if (!container) return;
+
+  if (!state.bosses || state.bosses.length === 0) {
+    container.innerHTML = `<div class="empty-state" style="padding:56px;text-align:center;">
+      <div style="font-size:40px;margin-bottom:14px;opacity:0.2;">💀</div>
+      <div style="font-family:'Cinzel',serif;font-size:14px;color:var(--text2);margin-bottom:8px;">Sin jefes invocados</div>
+      <div style="font-size:12px;color:var(--text3);max-width:320px;margin:0 auto;">Invoca un jefe para tener un reto con fecha límite. Completa misiones para reducir su HP antes de que el tiempo se acabe.</div>
+    </div>`;
+    return;
+  }
+
+  const active   = state.bosses.filter(b => b.status === 'active');
+  const defeated = state.bosses.filter(b => b.status === 'defeated');
+  const escaped  = state.bosses.filter(b => b.status === 'escaped');
+
+  const group = (bosses, label, color) => {
+    if (!bosses.length) return '';
+    return `
+      <div style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:${color};border-left:3px solid ${color};padding:3px 10px;background:${color}0d;margin-bottom:16px;">${label}</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:32px;">
+        ${bosses.map(b => bossCardHTML(b)).join('')}
+      </div>`;
+  };
+
+  container.innerHTML =
+    group(active,   '▶ ACTIVOS',   'var(--color-hp)') +
+    group(defeated, '☠ DERROTADOS','var(--color-xp)') +
+    group(escaped,  '✗ ESCAPARON', '#555');
+}
+
+function bossCardHTML(b) {
+  const pct = Math.round((b.currentHP / b.maxHP) * 100);
+  const hpColor = pct > 60 ? 'var(--color-hp)' : pct > 30 ? '#ff8800' : '#ff2222';
+
+  let daysInfo = '';
+  if (b.status === 'active' && b.dmgPerDay > 0) {
+    const daysLeft = Math.floor(b.currentHP / b.dmgPerDay);
+    daysInfo = `~${daysLeft}d estimados`;
+  }
+
+  const statusChip = {
+    active:   `<span class="boss-status-chip" style="color:var(--color-hp);border-color:var(--color-hp);">ACTIVO</span>`,
+    defeated: `<span class="boss-status-chip" style="color:var(--color-xp);border-color:var(--color-xp);">DERROTADO</span>`,
+    escaped:  `<span class="boss-status-chip" style="color:#555;border-color:#333;">ESCAPÓ</span>`,
+  }[b.status] || '';
+
+  return `
+  <div class="boss-card ${b.status === 'defeated' ? 'boss-defeated' : b.status === 'escaped' ? 'boss-escaped' : ''}"
+       onclick="openBossDetail('${b.id}')">
+    ${b.image
+      ? `<img class="boss-card-img" src="${b.image}" alt="">`
+      : `<div class="boss-card-placeholder">💀</div>`}
+    <div class="boss-hp-bar-track">
+      <div class="boss-hp-bar-fill" style="width:${b.status==='active'?pct:0}%;background:${hpColor};"></div>
+    </div>
+    <div class="boss-card-body">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:6px;">
+        <div class="boss-card-name">${b.name}</div>
+        ${statusChip}
+      </div>
+      ${b.lore ? `<div style="font-size:11px;color:#555;font-style:italic;line-height:1.3;">${b.lore.length>70?b.lore.slice(0,70)+'…':b.lore}</div>` : ''}
+      <div class="boss-card-hp-label">
+        <span style="color:${hpColor};font-family:'Share Tech Mono',monospace;">HP ${b.currentHP} / ${b.maxHP}</span>
+        <span style="font-size:9px;color:#444;">${pct}%</span>
+      </div>
+      <div class="boss-card-meta">
+        <span>-${b.dmgPerDay} HP/día al jugador</span>
+        ${b.playerHP !== undefined ? `<span style="color:${Math.round((b.playerHP/(b.playerMaxHP||100))*100) > 30 ? 'var(--color-hp)' : '#ff3333'};">❤ ${b.playerHP}/${b.playerMaxHP||100}</span>` : ''}
+        ${daysInfo ? `<span style="color:${pct<=30?'var(--color-hp)':'#555'};">${daysInfo}</span>` : ''}
+        ${b.deadline ? `<span>límite: ${b.deadline}</span>` : ''}
+        <span style="color:var(--color-xp);">+${b.reward} XP</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── Boss detail overlay ───────────────────────────────────────────
+function openBossDetail(bossId) {
+  currentBossId = bossId;
+  renderBossDetail(bossId);
+  const ov = document.getElementById('boss-detail-overlay');
+  ov.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeBossDetail() {
+  document.getElementById('boss-detail-overlay').style.display = 'none';
+  document.body.style.overflow = '';
+  currentBossId = null;
+}
+
+function renderBossDetail(bossId) {
+  const b = state.bosses.find(x => x.id === bossId);
+  if (!b) return;
+
+  const pct = Math.max(0, Math.round((b.currentHP / b.maxHP) * 100));
+  const hpColor = pct > 60 ? 'var(--color-hp)' : pct > 30 ? '#ff8800' : '#ff2222';
+
+  // ── TOPBAR ──────────────────────────────────────────────────────
+  document.getElementById('boss-ov-name').textContent = b.name;
+  const chipData = {
+    active:   { text:'ACTIVO',   style:'color:var(--color-hp);border-color:#440000;' },
+    defeated: { text:'DERROTADO',style:'color:var(--color-xp);border-color:#443300;' },
+    escaped:  { text:'ESCAPÓ',   style:'color:#555;border-color:#333;' },
+  }[b.status] || { text:'?', style:'' };
+  const chipEl = document.getElementById('boss-ov-status-chip');
+  chipEl.textContent = chipData.text;
+  chipEl.style.cssText = chipData.style;
+  document.getElementById('boss-ov-edit-btn').onclick = () => { closeBossDetail(); openBossModal(bossId); };
+
+  // ── COL 1: IMAGE ─────────────────────────────────────────────────
+  const imgWrap = document.getElementById('boss-ov-img-wrap');
+  if (b.image) {
+    imgWrap.innerHTML = `
+      <img src="${b.image}" style="width:100%;height:100%;object-fit:cover;object-position:top center;">
+      <div style="position:absolute;bottom:0;left:0;right:0;height:100px;background:linear-gradient(0deg,#060606 0%,transparent 100%);pointer-events:none;"></div>`;
+  } else {
+    imgWrap.innerHTML = `
+      <label for="boss-portrait-upload-${b.id}" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:10px;opacity:0.2;">
+        <div style="font-size:64px;">💀</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:#aa4444;">SUBIR IMAGEN</div>
+      </label>
+      <input type="file" id="boss-portrait-upload-${b.id}" accept="image/*" style="display:none" onchange="uploadBossPortrait('${b.id}',this)">`;
+  }
+
+  // Name + start date
+  document.getElementById('boss-ov-col1-name').textContent = b.name;
+  const createdDate = b.createdAt ? new Date(b.createdAt).toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'}) : '—';
+  document.getElementById('boss-ov-start-date').textContent = 'Invocado: ' + createdDate;
+
+  // HP bar col1
+  document.getElementById('boss-ov-hp-label').textContent = b.currentHP + ' / ' + b.maxHP;
+  document.getElementById('boss-ov-hp-label').style.color = hpColor;
+  const hpBar = document.getElementById('boss-ov-hp-bar');
+  hpBar.style.width = pct + '%';
+  hpBar.style.background = hpColor;
+
+  // Countdown (days to deadline)
+  const cdWrap = document.getElementById('boss-ov-countdown-wrap');
+  const cdEl   = document.getElementById('boss-ov-countdown');
+  if (b.deadline && b.status === 'active') {
+    cdWrap.style.display = '';
+    const today = new Date().toISOString().split('T')[0];
+    const totalMs = new Date(b.deadline) - new Date(today);
+    const totalDays = Math.max(0, Math.ceil(totalMs / 86400000));
+    const days  = totalDays;
+    const hours = new Date().getHours();
+    const mins  = new Date().getMinutes();
+    cdEl.innerHTML = [
+      [days, 'DÍAS'], [hours, 'HORAS'], [mins, 'MIN']
+    ].map(([val, lbl]) => `
+      <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:22px;color:${totalDays<=3?'var(--color-hp)':'#cc2222'};line-height:1;">${String(val).padStart(2,'0')}</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:#440000;letter-spacing:1px;">${lbl}</div>
+      </div>`).join('<div style="font-family:monospace;color:#440000;padding-top:2px;">:</div>');
+  } else {
+    cdWrap.style.display = b.deadline ? '' : 'none';
+    if (b.deadline && b.status !== 'active') {
+      cdEl.innerHTML = `<div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:#444;letter-spacing:1px;">${b.status === 'defeated' ? 'DERROTADO' : 'ESCAPÓ'}</div>`;
+    }
+  }
+
+  // ── COL 2: DESCRIPTION, ABILITIES, CONDITION, REWARD, STRATEGY ──
+  document.getElementById('boss-ov-desc').textContent = b.lore || 'Sin descripción.';
+
+  // Abilities (stored as newline-separated string)
+  const abilitiesEl = document.getElementById('boss-ov-abilities');
+  const abilities = (b.abilities || '').split('\n').map(s => s.trim()).filter(Boolean);
+  if (abilities.length > 0) {
+    document.getElementById('boss-ov-abilities-section').style.display = '';
+    abilitiesEl.innerHTML = abilities.map(ab => `
+      <div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #0d0000;">
+        <span style="color:var(--color-hp);font-size:10px;flex-shrink:0;">▸</span>
+        <span style="font-size:12px;color:#cc4444;">${ab}</span>
+      </div>`).join('');
+  } else {
+    document.getElementById('boss-ov-abilities-section').style.display = 'none';
+  }
+
+  // Condition
+  const condSec = document.getElementById('boss-ov-condition-section');
+  if (b.condition) {
+    condSec.style.display = '';
+    document.getElementById('boss-ov-condition').textContent = b.condition;
+  } else {
+    condSec.style.display = 'none';
+  }
+
+  // Reward
+  document.getElementById('boss-ov-reward').textContent = '+' + (b.reward || 0) + ' XP';
+
+  // Strategy
+  const stratDisplay = document.getElementById('boss-ov-strategy-display');
+  const stratInput   = document.getElementById('boss-ov-strategy-input');
+  const stratSaveBtn = document.getElementById('boss-ov-strategy-save-btn');
+  stratDisplay.textContent  = b.strategy || '';
+  stratDisplay.style.color  = b.strategy ? 'var(--color-stamina)' : '#333';
+  stratDisplay.style.fontStyle = b.strategy ? 'normal' : 'italic';
+  if (!b.strategy) stratDisplay.textContent = 'Sin estrategia definida. Haz clic en editar para añadirla.';
+  stratInput.value = b.strategy || '';
+  stratInput.style.display = 'none';
+  stratSaveBtn.style.display = 'none';
+
+  // ── COL 3: PLAYER HP + LINKED MISSIONS + COMBAT LOG ────────────
+  const playerHpEl = document.getElementById('boss-ov-player-hp');
+  if (playerHpEl) {
+    const php    = Math.max(0, b.playerHP ?? b.playerMaxHP ?? 100);
+    const pmaxhp = b.playerMaxHP || 100;
+    const ppct   = Math.round((php / pmaxhp) * 100);
+    const pcolor = ppct > 50 ? 'var(--color-hp)' : ppct > 25 ? '#ff6600' : '#ff2222';
+    const daysLeft = b.dmgPerDay > 0 ? Math.max(0, Math.floor(php / b.dmgPerDay)) : '∞';
+    playerHpEl.innerHTML = `
+      <div style="display:flex;justify-content:space-between;font-family:'Share Tech Mono',monospace;font-size:9px;color:#555;margin-bottom:4px;letter-spacing:1px;">
+        <span>❤ HP JUGADOR</span>
+        <span style="color:${pcolor};">${php} / ${pmaxhp}</span>
+      </div>
+      <div style="height:4px;background:#111;">
+        <div style="height:100%;width:${ppct}%;background:${pcolor};transition:width 0.4s;"></div>
+      </div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:#444;margin-top:5px;">
+        -${b.dmgPerDay} HP/día · ${daysLeft} días antes de caer
+      </div>`;
+  }
+
+  const missionsEl = document.getElementById('boss-ov-missions');
+  const linked = (b.linkedQuests || []).map(qid => state.quests.find(q => q.id === qid)).filter(Boolean);
+  if (linked.length === 0) {
+    missionsEl.innerHTML = `<div style="font-size:11px;color:#333;font-style:italic;">Sin misiones vinculadas.</div>`;
+  } else {
+    const today2 = new Date().toISOString().split('T')[0];
+    missionsEl.innerHTML = linked.map(q => {
+      const isDone = q.done && q.doneDate === today2;
+      const dmg = q.bossDmg || 1;
+      return `<div style="
+        display:flex;align-items:center;gap:8px;
+        padding:6px 8px;
+        border:1px solid ${isDone ? '#1a3300' : '#1a0000'};
+        background:${isDone ? '#010500' : '#040000'};
+        border-left:3px solid ${isDone ? 'var(--color-stamina)' : 'var(--color-hp)'};
+      ">
+        <span style="font-size:12px;">${isDone ? '✓' : '⚔'}</span>
+        <span style="flex:1;font-size:11px;color:${isDone ? '#446633' : '#aa4444'};${isDone?'text-decoration:line-through;':''}">${q.name}</span>
+        <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:${dmg>1?'var(--color-hp)':'#553333'};">-${dmg}HP</span>
+      </div>`;
+    }).join('');
+  }
+
+  renderBossCombatLog(b);
+}
+
+function uploadBossPortrait(bossId, input) {
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const b = state.bosses.find(x => x.id === bossId);
+    if (b) { b.image = e.target.result; saveState(); renderBossDetail(bossId); renderBossList(); }
+  };
+  reader.readAsDataURL(file);
+}
+
+function toggleBossStrategyEdit() {
+  const display  = document.getElementById('boss-ov-strategy-display');
+  const input    = document.getElementById('boss-ov-strategy-input');
+  const editBtn  = document.getElementById('boss-ov-strategy-edit-btn');
+  const saveBtn  = document.getElementById('boss-ov-strategy-save-btn');
+  const isEditing = input.style.display !== 'none';
+  if (isEditing) {
+    input.style.display = 'none';
+    display.style.display = '';
+    saveBtn.style.display = 'none';
+    editBtn.textContent = '✎ EDITAR';
+  } else {
+    input.style.display = '';
+    display.style.display = 'none';
+    saveBtn.style.display = '';
+    editBtn.textContent = '✕ CANCELAR';
+    input.focus();
+  }
+}
+
+function saveBossStrategy() {
+  const b = state.bosses.find(x => x.id === currentBossId);
+  if (!b) return;
+  const input = document.getElementById('boss-ov-strategy-input');
+  b.strategy = input.value.trim();
+  saveState();
+  renderBossDetail(currentBossId);
+}
+
+function renderBossCombatLog(b) {
+  const logEl = document.getElementById('boss-combat-log');
+  if (!logEl) return;
+  const log = [...(b.log||[])].reverse(); // newest first
+  if (log.length === 0) {
+    logEl.innerHTML = '<div style="padding:16px 28px;font-size:12px;color:#333;font-style:italic;">Sin entradas aún.</div>';
+    return;
+  }
+  const typeStyle = {
+    summon:   { color:'#9060d0', icon:'💀' },
+    damage:   { color:'#ff8800', icon:'⚔' },
+    critical: { color:'var(--color-hp)', icon:'💥' },
+    rest:     { color:'#444',    icon:'💤' },
+    defeated: { color:'var(--color-xp)', icon:'☠' },
+    escaped:  { color:'#555',   icon:'✗' },
+    special:  { color:'var(--color-mp)', icon:'✦' },
+  };
+  logEl.innerHTML = log.map(entry => {
+    const s = typeStyle[entry.type] || { color:'#555', icon:'·' };
+    return `<div class="boss-log-line">
+      <span class="boss-log-time">${entry.time||''}</span>
+      <span style="font-size:14px;flex-shrink:0;">${s.icon}</span>
+      <span class="boss-log-text" style="color:${s.color};">${entry.text}</span>
+      ${entry.hp !== undefined ? `<span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:#440000;flex-shrink:0;margin-left:8px;">HP:${entry.hp}</span>` : ''}
+    </div>`;
+  }).join('');
+}
+
+
+function onQuestCompleteBossCheck(questId) {
+  const today = new Date().toISOString().split('T')[0];
+  const now = new Date();
+  const timeStr = now.toTimeString().slice(0,5);
+  const dateStr = now.toLocaleDateString('es-ES',{day:'2-digit',month:'short'});
+
+  const q = state.quests.find(x => x.id === questId);
+  if (!q) return;
+
+  // Use per-quest boss damage (set in modal) or fallback to 1
+  const dmgAmount = q.bossDmg || (q.priority === 'SSS' ? 2 : 1);
+  const logType   = dmgAmount >= 2 ? 'critical' : 'damage';
+
+  state.bosses.filter(b => b.status === 'active' && (b.linkedQuests||[]).includes(questId)).forEach(b => {
+    b.currentHP = Math.max(0, b.currentHP - dmgAmount);
+    b.log.push({ time: timeStr, date: dateStr, type: logType, text: `"${q.name}" completada — -${dmgAmount} HP`, hp: b.currentHP });
+
+    if (b.currentHP <= 0) {
+      b.status = 'defeated';
+      b.currentHP = 0;
+      b.defeatDate = today;
+      b.log.push({ time: timeStr, date: dateStr, type:'defeated', text:`¡${b.name} ha sido derrotado!`, hp: 0 });
+      addXP(b.reward);
+      showNotification('☠', `¡${b.name} derrotado! +${b.reward} XP`);
+    } else {
+      showNotification('⚔', `${b.name} -${dmgAmount} HP → ${b.currentHP}/${b.maxHP}`);
+    }
+  });
+  saveState();
+}
+
+function deleteBoss(bossId) {
+  if (!confirm('¿Eliminar este jefe permanentemente?')) return;
+  state.bosses = state.bosses.filter(b => b.id !== bossId);
+  saveState();
+  renderBossList();
 }
 
 function toggleTitleUnlockInput() {
@@ -3956,7 +6458,7 @@ function showSection(id) {
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('section-' + id).classList.add('active');
   const btns = document.querySelectorAll('.nav-btn');
-  const sections = ['dashboard', 'profile', 'missions', 'calendar', 'evals', 'config'];
+  const sections = ['dashboard', 'profile', 'missions', 'calendar', 'evals', 'config', 'bosses'];
   const idx = sections.indexOf(id);
   if (idx >= 0) btns[idx].classList.add('active');
 
@@ -3965,6 +6467,7 @@ function showSection(id) {
   if (id === 'config') renderConfig();
   if (id === 'calendar') renderCalendar();
   if (id === 'evals') renderEvals();
+  if (id === 'bosses') renderBossList();
 }
 
 // ============================================================
@@ -4072,8 +6575,8 @@ function renderEvalMetrics() {
         <div style="font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text3);">Rendimiento ${range.label}</div>
       </div>
       <div style="flex:1;">
-        <div style="height:8px;background:var(--surface3);border-radius:4px;overflow:hidden;margin-bottom:8px;">
-          <div style="height:100%;width:${perfScore}%;background:${scoreColor};border-radius:4px;transition:width 0.8s;"></div>
+        <div style="height:8px;background:var(--surface3);border-radius: 0px;overflow:hidden;margin-bottom:8px;">
+          <div style="height:100%;width:${perfScore}%;background:${scoreColor};border-radius: 0px;transition:width 0.8s;"></div>
         </div>
         <div style="font-size:12px;color:var(--text2);">${perfScore} / 100 puntos de rendimiento</div>
         <div style="font-size:11px;color:var(--text3);margin-top:4px;">
@@ -4558,7 +7061,67 @@ function runAutomations() {
   state.automations.forEach(auto => {
     if (runSingleAutomation(auto)) anyChange = true;
   });
-  if (anyChange) saveState();
+
+  // ── Auto boss daily damage to player + quest cleanup ─────────
+  const today = new Date().toISOString().split('T')[0];
+  const timeStr = new Date().toTimeString().slice(0,5);
+  const dateStr = new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'short'});
+
+  (state.bosses || []).filter(b => b.status === 'active').forEach(b => {
+    if (b.lastDmgDate === today) return; // already processed today
+    b.lastDmgDate = today;
+    anyChange = true;
+
+    // ── Expire/reset daily linked quests from previous days ──────
+    // Non-habit quests linked to this boss that were completed yesterday → reset
+    // Non-habit quests that are past their end date → unlink and remove from boss
+    (b.linkedQuests || []).slice().forEach(qid => {
+      const q = state.quests.find(x => x.id === qid);
+      if (!q) return;
+      if (q.type === 'habit') return; // habits persist
+      // If quest end date is before today → remove from boss links (expired)
+      if (q.end && q.end < today) {
+        b.linkedQuests = b.linkedQuests.filter(id => id !== qid);
+        return;
+      }
+      // If completed on a previous day → reset so it can be done again today
+      if (q.done && q.doneDate && q.doneDate < today) {
+        q.done = false;
+        q.doneDate = null;
+      }
+    });
+
+    // ── Check deadline → boss escapes ───────────────────────────
+    if (b.deadline && today > b.deadline) {
+      b.status = 'escaped';
+      const escapeDmg = b.playerHP ?? b.playerMaxHP ?? 100; // drain all player HP
+      b.playerHP = 0;
+      b.log.push({ time: timeStr, date: dateStr, type:'escaped',
+        text:`${b.name} escapó. Tiempo agotado. Jugador derrotado (-${escapeDmg} HP).`, hp: b.currentHP });
+      showNotification('💀', `${b.name} escapó. ¡Tu HP cayó a 0!`);
+      return;
+    }
+
+    // ── Boss damages player unconditionally each day ─────────────
+    const playerDmg = b.dmgPerDay || 1;
+    const prevHP    = b.playerHP ?? b.playerMaxHP ?? 100;
+    b.playerHP = Math.max(0, prevHP - playerDmg);
+    const pmaxHP    = b.playerMaxHP || 100;
+    b.log.push({ time: timeStr, date: dateStr, type: 'rest',
+      text: `${b.name} ataca — Jugador pierde ${playerDmg} HP. (${b.playerHP}/${pmaxHP})`,
+      hp: b.currentHP
+    });
+    if (b.playerHP <= 0 && prevHP > 0) {
+      b.log.push({ time: timeStr, date: dateStr, type: 'escaped',
+        text: `El jugador cayó. ${b.name} ha escapado.`, hp: b.currentHP });
+      b.status = 'escaped';
+      showNotification('💀', `¡Caíste! ${b.name} te derrotó.`);
+    } else {
+      showNotification('💀', `${b.name} te quita ${playerDmg} HP → ${b.playerHP}/${pmaxHP}`);
+    }
+  });
+
+  if (anyChange) { saveState(); renderPlayerHp(); }
 }
 
 // Generates all missing events for a single automation. Returns true if anything was created.
