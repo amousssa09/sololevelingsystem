@@ -278,6 +278,29 @@
   .boss-card.boss-defeated { border-top-color: var(--color-xp); opacity: 0.6; }
   .boss-card.boss-escaped  { border-top-color: #444; opacity: 0.5; }
 
+  .boss-card-delete {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+    width: 26px;
+    height: 26px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(0,0,0,0.45);
+    color: rgba(255,255,255,0.8);
+    font-size: 14px;
+    border-radius: 0px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, color 0.2s;
+  }
+  .boss-card-delete:hover {
+    background: rgba(255,68,68,0.25);
+    color: #ff4444;
+  }
+
   .boss-card-img {
     width: 100%;
     height: 110px;
@@ -5493,6 +5516,7 @@ function bossCardHTML(b) {
   return `
   <div class="boss-card ${b.status === 'defeated' ? 'boss-defeated' : b.status === 'escaped' ? 'boss-escaped' : ''}"
        onclick="openBossDetail('${b.id}')">
+    <button class="boss-card-delete" onclick="event.stopPropagation(); deleteBoss('${b.id}')" title="Eliminar jefe">🗑</button>
     ${b.image
       ? `<img class="boss-card-img" src="${b.image}" alt="">`
       : `<div class="boss-card-placeholder">💀</div>`}
@@ -5796,6 +5820,9 @@ function onQuestCompleteBossCheck(questId) {
 function deleteBoss(bossId) {
   if (!confirm('¿Eliminar este jefe permanentemente?')) return;
   state.bosses = state.bosses.filter(b => b.id !== bossId);
+  if (typeof currentBossId !== 'undefined' && currentBossId === bossId) {
+    closeBossDetail();
+  }
   saveState();
   renderBossList();
 }
