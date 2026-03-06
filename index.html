@@ -2431,6 +2431,10 @@
           <input class="form-input" id="new-stat-name" placeholder="Nueva estadística..." style="flex:1;">
           <button class="btn-secondary" onclick="addStat()">+ Añadir</button>
         </div>
+        <div style="padding:0 16px 14px;display:flex;align-items:center;gap:10px;">
+          <span style="font-size:11px;color:var(--text3);">Color puntos radar</span>
+          <input type="color" id="config-radar-dot-color" value="#ff4444" title="Color dots radar" style="width:32px;height:32px;border:none;background:none;cursor:pointer;border-radius: 0px;" onchange="updateRadarDotColor(this.value)">
+        </div>
       </div>
 
       <div class="card config-card">
@@ -2985,6 +2989,7 @@ let state = {
     { name: 'Espiritual', val: 0, color: '#40c880' },
     { name: 'Core',       val: 0, color: '#d4a017' },
   ],
+  radarDotColor: '#ff4444',
   arcs: [],        // { id, name, desc, cover, start, end, objectives:[{id,text,done}], status:'active'|'paused'|'closed', xpBonus, titleUnlocked }
   activeArcId: null,
   quests: [],
@@ -3084,6 +3089,9 @@ function loadState() {
           { label: 'SS', icon: '★★', minLevel: 25 },
         ];
       }
+
+      // Radar dot color (configurable)
+      if (!state.radarDotColor) state.radarDotColor = '#ff4444';
 
     } catch(e) { console.warn('Error loading state:', e); }
   }
@@ -3335,8 +3343,9 @@ function renderRadar(svgId) {
   html += `<polygon class="radar-polygon" points="${dataPts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ')}"/>`;
 
   // Colored dots per stat
+  const dotColor = state.radarDotColor || 'var(--accent)';
   dataPts.forEach((p, i) => {
-    html += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3" fill="${stats[i].color || '#e04040'}" stroke="#000" stroke-width="1"/>`;
+    html += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3" fill="${dotColor}" stroke="#000" stroke-width="1"/>`;
   });
 
   // Labels — color-coded, smart anchor
@@ -4294,6 +4303,9 @@ function renderConfig() {
         <button class="remove-btn" onclick="removeStat(${i})">✕</button>
       </div>`).join('');
   }
+
+  const radarDotInput = document.getElementById('config-radar-dot-color');
+  if (radarDotInput) radarDotInput.value = state.radarDotColor || '#ff4444';
 
   // Ranks config — editable
   const ranksEl = document.getElementById('ranks-display');
@@ -5898,6 +5910,13 @@ function removeStat(i) {
 function updateStatColor(i, val) {
   state.stats[i].color = val;
   saveState(); renderAll();
+}
+
+function updateRadarDotColor(val) {
+  state.radarDotColor = val;
+  saveState();
+  renderRadar('radar-svg');
+  renderRadar('radar-svg2');
 }
 
 function updateStatName(i, val) {
