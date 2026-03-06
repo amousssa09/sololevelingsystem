@@ -1860,17 +1860,6 @@
           </div>
           <div class="player-title" id="player-title-text">Aprendiz del Sistema</div>
 
-          <!-- PLAYER HP BAR -->
-          <div style="margin-top:8px;margin-bottom:2px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-              <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:#aa3333;letter-spacing:1.5px;">HP</span>
-              <span id="player-hp-label" style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--color-hp);"></span>
-            </div>
-            <div style="height:5px;background:#0a0000;border:1px solid #1a1a1a;cursor:pointer;" title="Clic para editar HP" onclick="openPlayerHpModal()">
-              <div id="player-hp-bar" style="height:100%;background:var(--color-hp);transition:width 0.4s;width:100%;"></div>
-            </div>
-          </div>
-
           <div class="xp-section">
             <div class="xp-label">
               <span>XP</span>
@@ -2890,35 +2879,6 @@
 <!-- NAME EDIT MODAL -->
 <div class="modal-overlay" id="name-modal">
 
-<!-- PLAYER HP MODAL -->
-<div class="modal-overlay" id="player-hp-modal">
-  <div class="modal" style="width:340px;">
-    <div class="modal-header">
-      <div class="modal-title">❤ Vida del Jugador</div>
-      <button class="modal-close" onclick="document.getElementById('player-hp-modal').classList.remove('open')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">HP actual</label>
-          <input class="form-input" type="number" id="php-current" min="0" max="9999">
-        </div>
-        <div class="form-group">
-          <label class="form-label">HP máxima</label>
-          <input class="form-input" type="number" id="php-max" min="1" max="9999">
-        </div>
-      </div>
-      <div style="font-size:11px;color:var(--text3);margin-top:4px;margin-bottom:8px;line-height:1.5;">
-        Los jefes activos descontarán su daño diario de este HP al final del día.
-        Si llega a 0, el jugador entra en estado crítico.
-      </div>
-      <div class="btn-row">
-        <button class="btn-secondary" onclick="document.getElementById('player-hp-modal').classList.remove('open')">Cancelar</button>
-        <button class="btn-primary" onclick="savePlayerHp()">Guardar</button>
-      </div>
-    </div>
-  </div>
-</div>
   <div class="modal" style="width:360px;">
     <div class="modal-header">
       <div class="modal-title">Editar Nombre</div>
@@ -3204,36 +3164,6 @@ function renderVitals() {
     container.appendChild(row);
     renderVitalDots(`vital-dots-${v.id}`, v.id, v.val, v.color || '#ff4444', `vital-num-${v.id}`);
   });
-
-  renderPlayerHp();
-}
-
-function renderPlayerHp() {
-  const hp    = Math.max(0, state.hp || 0);
-  const maxHp = state.maxHp || 100;
-  const pct   = Math.round((hp / maxHp) * 100);
-  const color = pct > 50 ? 'var(--color-hp)' : pct > 25 ? '#ff6600' : '#ff2222';
-  const label = document.getElementById('player-hp-label');
-  const bar   = document.getElementById('player-hp-bar');
-  if (label) { label.textContent = `${hp} / ${maxHp}`; label.style.color = color; }
-  if (bar)   { bar.style.width = pct + '%'; bar.style.background = color; }
-}
-
-function openPlayerHpModal() {
-  document.getElementById('php-current').value = state.hp ?? 100;
-  document.getElementById('php-max').value = state.maxHp ?? 100;
-  document.getElementById('player-hp-modal').classList.add('open');
-}
-
-function savePlayerHp() {
-  const cur = parseInt(document.getElementById('php-current').value) || 0;
-  const max = parseInt(document.getElementById('php-max').value) || 100;
-  state.hp    = Math.min(cur, max);
-  state.maxHp = max;
-  saveState();
-  renderPlayerHp();
-  document.getElementById('player-hp-modal').classList.remove('open');
-  showNotification('❤', `HP: ${state.hp}/${state.maxHp}`);
 }
 
 function renderVitalDots(containerId, statId, val, color, numId) {
