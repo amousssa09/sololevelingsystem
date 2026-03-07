@@ -1921,7 +1921,7 @@
   <div class="profile-grid">
     <div class="profile-left">
       <div class="card">
-        <div class="big-portrait" onclick="triggerPortraitUpload('portrait-input2')">
+        <div class="big-portrait" onclick="triggerPortraitUpload('portrait-input2')" id="profile-portrait-wrap">
           <div class="portrait-placeholder" id="portrait-placeholder2">⚔️</div>
           <img id="portrait-img2" src="" alt="" style="display:none;">
           <div class="portrait-overlay"></div>
@@ -4329,31 +4329,85 @@ function renderLogs() {
   container.appendChild(makeSection('Progreso', 'var(--color-xp)', progressHTML));
 
   // ────────────────────────────────────────────────────────────────
-  // SECCIÓN 3: CONSEJO DEL ORÁCULO
+  // SECCIÓN 3: AVISOS DEL SISTEMA + ORÁCULO
   // ────────────────────────────────────────────────────────────────
-  let adviceText = '';
-  let adviceColor = 'var(--color-mp)';
+
+  // — Avisos activos —
+  const alerts = [];
+  const activeBosses  = (state.bosses || []).filter(b => b.status === 'active');
+  const escapedBosses = (state.bosses || []).filter(b => b.status === 'escaped');
+  const activeArc     = (state.arcs  || []).find(a => a.id === state.activeArcId);
+  const today2        = new Date().toISOString().split('T')[0];
+
+  activeBosses.forEach(b => {
+    const hpPct = Math.round((b.currentHP / b.maxHP) * 100);
+    if (hpPct <= 25)
+      alerts.push({ color: 'var(--color-hp)',      icon: '💀', text: `${b.name} está al ${hpPct}% HP — un último esfuerzo y cae.` });
+    else if (b.deadline && b.deadline <= today2)
+      alerts.push({ color: 'var(--color-hp)',      icon: '⚠️', text: `¡${b.name} ha llegado a su límite de tiempo!` });
+    else
+      alerts.push({ color: '#cc4400',              icon: '⚔️', text: `Jefe activo: ${b.name} (${b.currentHP}/${b.maxHP} HP). Completa misiones vinculadas.` });
+  });
+  escapedBosses.forEach(b => {
+    alerts.push({ color: 'var(--color-hp)',        icon: '💔', text: `${b.name} escapó. Reflexiona y prepara la revancha.` });
+  });
 
   const totalPending = pendingQuests.length;
   const ratio = completedToday / Math.max(1, completedToday + totalPending);
 
-  if (totalPending === 0 && completedToday > 0) {
+  if (completedToday === 0 && totalPending > 0)
+    alerts.push({ color: 'var(--color-mp)',        icon: '🔕', text: 'Sin actividad registrada hoy. La inacción también es una decisión.' });
+  if (totalPending >= 8)
+    alerts.push({ color: 'var(--color-hp)',        icon: '📋', text: `Cola crítica: ${totalPending} misiones pendientes. Prioriza o limpia.` });
+  if (xpMissing > 0 && xpMissing <= xpEarnedToday && xpEarnedToday > 0)
+    alerts.push({ color: 'var(--color-xp)',        icon: '⬆️', text: `¡A un paso del Nivel ${currentLevel + 1}! Faltan solo ${xpMissing} XP.` });
+  if (activeArc)
+    alerts.push({ color: 'var(--color-xp)',        icon: '⬡',  text: `Arco activo: "${activeArc.name}". Cada acción de hoy suma a este capítulo.` });
+
+  let alertsHTML = '';
+  if (alerts.length === 0) {
+    alertsHTML = `<div style="font-size:11px;color:#333;font-style:italic;">Sin avisos activos. El sistema en calma.</div>`;
+  } else {
+    alertsHTML = alerts.map(a => `
+      <div style="display:flex;align-items:flex-start;gap:8px;padding:5px 0;border-bottom:1px solid #111;">
+        <span style="flex-shrink:0;">${a.icon}</span>
+        <span style="font-size:11px;color:${a.color};line-height:1.5;">${a.text}</span>
+      </div>`).join('');
+  }
+  container.appendChild(makeSection('Avisos', 'var(--color-hp)', alertsHTML));
+
+  // — Oráculo —
+  let adviceText = '';
+  let adviceColor = 'var(--color-mp)';
+
+  // Priority order: most specific → most generic
+  if (escapedBosses.length > 0) {
+    adviceText = `Has perdido batallas. Los guerreros caen — lo que importa es levantarse más rápido.`;
+    adviceColor = 'var(--color-hp)';
+  } else if (activeBosses.length > 0 && completedToday === 0) {
+    const b = activeBosses[0];
+    adviceText = `${b.name} te observa. Cada hora sin actuar es daño acumulado. Muévete.`;
+    adviceColor = '#cc4400';
+  } else if (totalPending === 0 && completedToday > 0) {
     adviceText = 'El guerrero ha limpiado el tablero. Quien domina el hoy, forja el mañana.';
     adviceColor = 'var(--color-stamina)';
   } else if (completedToday === 0 && totalPending > 0) {
-    adviceText = 'La espada sin uso se oxida. Elige una misión pequeña y comienza.';
+    adviceText = 'La espada sin uso se oxida. Elige una misión pequeña y comienza ahora.';
     adviceColor = 'var(--color-mp)';
   } else if (xpMissing <= xpEarnedToday && xpEarnedToday > 0) {
-    adviceText = 'Estás cerca de subir de nivel. Un último esfuerzo y el rango cambia.';
+    adviceText = 'Estás al límite del nivel. Un último esfuerzo y el rango cambia.';
+    adviceColor = 'var(--color-xp)';
+  } else if (activeArc && ratio >= 0.7) {
+    adviceText = `Avanzas en "${activeArc.name}". La constancia construye la historia.`;
     adviceColor = 'var(--color-xp)';
   } else if (ratio >= 0.7) {
-    adviceText = 'Buen ritmo. Consistencia sostenida es más valiosa que un esfuerzo puntual.';
+    adviceText = 'Buen ritmo. La consistencia sostenida supera al esfuerzo puntual.';
     adviceColor = 'var(--color-stamina)';
   } else if (totalPending >= 5) {
-    adviceText = 'Cola larga. No temas reducir el alcance: menos pero completado supera a mucho sin terminar.';
+    adviceText = 'Cola larga. Menos pero completado supera a mucho sin terminar.';
     adviceColor = 'var(--color-hp)';
-  } else if ((state.totalXP || 0) > 500) {
-    adviceText = 'Veterano en el camino. Busca las misiones que te incomodan: ahí está el crecimiento real.';
+  } else if (currentLevel >= 10) {
+    adviceText = 'Veterana en el camino. Las misiones que te incomodan son las que más te hacen crecer.';
     adviceColor = 'var(--color-xp)';
   } else {
     adviceText = 'Cada punto de XP es una decisión tomada. El progreso es silencioso pero se acumula.';
@@ -6107,13 +6161,13 @@ function handlePortraitChange(input, imgId, phId) {
   reader.onload = (e) => {
     state.portrait = e.target.result;
     showPortrait(imgId, phId, state.portrait);
-    // Sync both portraits
     showPortrait('portrait-img', 'portrait-placeholder', state.portrait);
     showPortrait('portrait-img2', 'portrait-placeholder2', state.portrait);
     saveState();
   };
   reader.readAsDataURL(file);
 }
+
 
 // ============================================================
 // NAME EDIT
