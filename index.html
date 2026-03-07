@@ -1807,11 +1807,10 @@
   <div class="topbar-nav">
     <button class="nav-btn active" onclick="showSection('dashboard')">Dashboard</button>
     <button class="nav-btn" onclick="showSection('profile')">Perfil</button>
-    <button class="nav-btn" onclick="showSection('missions')">Misiones</button>
+    <button class="nav-btn" onclick="showSection('farm')">Farm</button>
     <button class="nav-btn" onclick="showSection('calendar')">Calendario</button>
     <button class="nav-btn" onclick="showSection('evals')">Evaluaciones</button>
     <button class="nav-btn" onclick="showSection('config')">Config</button>
-    <button class="nav-btn" onclick="showSection('bosses')" style="color:var(--color-hp);">💀 Jefes</button>
   </div>
   <div class="topbar-xp">
     <span class="xp-icon">◆</span>
@@ -1897,7 +1896,7 @@
       <!-- ARC CARD -->
       <div class="card arc-card" id="dashboard-arc-card">
         <div class="card-header"><span class="dot" style="background:var(--color-xp);"></span> Arco Activo
-          <button onclick="showSection('missions');setTimeout(()=>showMissionsTab('arcs'),50);" style="margin-left:auto;font-size:10px;color:var(--text3);background:none;border:none;cursor:pointer;letter-spacing:1px;">VER TODOS →</button>
+          <button onclick="showSection('missions');setTimeout(()=>switchFarmTab('arcos',document.getElementById('farm-tab-arcos')),50);" style="margin-left:auto;font-size:10px;color:var(--text3);background:none;border:none;cursor:pointer;letter-spacing:1px;">VER TODOS →</button>
         </div>
         <div id="dashboard-arc-body" style="padding:14px 16px;">
           <div style="font-size:12px;color:var(--text3);font-style:italic;">Sin arco activo</div>
@@ -1977,32 +1976,115 @@
 </div>
 
 <!-- ======== MISSIONS ======== -->
-<div class="section" id="section-missions">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-    <div>
-      <div style="font-family:'Cinzel',serif;font-size:20px;color:var(--text);margin-bottom:4px;">Misiones & Objetivos</div>
-      <div style="font-size:13px;color:var(--text2);">Crea y gestiona tus misiones, hábitos y objetivos</div>
-    </div>
-    <div style="display:flex;gap:8px;" id="missions-header-btns">
-      <button class="btn-secondary" onclick="openQuestModal('habit')">+ Hábito</button>
-      <button class="btn-secondary" onclick="openQuestModal('daily')">+ Misión</button>
-      <button class="btn-primary" onclick="openQuestModal('objective')">+ Objetivo</button>
-      <button class="btn-secondary" onclick="clearPendingMissions()">🧹 Limpiar pendientes</button>
-      <button class="btn-secondary" onclick="clearCompletedMissions()">🧹 Limpiar completadas</button>
-      <button class="btn-primary" id="btn-new-arc" style="display:none;background:var(--color-xp);color:#000;border-color:var(--color-xp);" onclick="openArcModal()">+ Nuevo Arco</button>
-    </div>
+<div class="section" id="section-farm">
+  <!-- Farm top-level tabs -->
+  <div style="display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:20px;">
+    <button class="farm-tab-btn active" id="farm-tab-misiones" onclick="switchFarmTab('misiones',this)" style="padding:10px 28px;background:none;border:none;border-bottom:2px solid var(--gold);margin-bottom:-2px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);cursor:pointer;">Misiones</button>
+    <button class="farm-tab-btn" id="farm-tab-arcos" onclick="switchFarmTab('arcos',this)" style="padding:10px 28px;background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text2);cursor:pointer;">⬡ Arcos</button>
+    <button class="farm-tab-btn" id="farm-tab-jefes" onclick="switchFarmTab('jefes',this)" style="padding:10px 28px;background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text2);cursor:pointer;">💀 Jefes</button>
+    <button class="farm-tab-btn" id="farm-tab-productividad" onclick="switchFarmTab('productividad',this)" style="padding:10px 28px;background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text2);cursor:pointer;">📚 Productividad</button>
   </div>
 
-  <div class="tab-row" id="missions-tab-row">
-    <button class="tab-btn active" onclick="switchMissionsTab('all',this)">Todas</button>
-    <button class="tab-btn" onclick="switchMissionsTab('daily',this)">Diarias</button>
-    <button class="tab-btn" onclick="switchMissionsTab('habit',this)">Hábitos</button>
-    <button class="tab-btn" onclick="switchMissionsTab('objective',this)">Objetivos</button>
-    <button class="tab-btn" onclick="switchMissionsTab('done',this)">Completadas</button>
-    <button class="tab-btn" id="arc-tab-btn" onclick="switchMissionsTab('arcs',this)">⬡ Arcos</button>
+  <!-- Sub-section: Misiones -->
+  <div id="farm-section-misiones">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <div>
+        <div style="font-family:'Cinzel',serif;font-size:20px;color:var(--text);margin-bottom:4px;">Misiones & Objetivos</div>
+        <div style="font-size:13px;color:var(--text2);">Crea y gestiona tus misiones, hábitos y objetivos</div>
+      </div>
+      <div style="display:flex;gap:8px;" id="missions-header-btns">
+        <button class="btn-secondary" onclick="openQuestModal('habit')">+ Hábito</button>
+        <button class="btn-secondary" onclick="openQuestModal('daily')">+ Misión</button>
+        <button class="btn-primary" onclick="openQuestModal('objective')">+ Objetivo</button>
+        <button class="btn-secondary" onclick="clearPendingMissions()">🧹 Limpiar pendientes</button>
+        <button class="btn-secondary" onclick="clearCompletedMissions()">🧹 Limpiar completadas</button>
+        <button class="btn-primary" id="btn-new-arc" style="display:none;background:var(--color-xp);color:#000;border-color:var(--color-xp);" onclick="openArcModal()">+ Nuevo Arco</button>
+      </div>
+    </div>
+    <div class="tab-row" id="missions-tab-row">
+      <button class="tab-btn active" onclick="switchMissionsTab('all',this)">Todas</button>
+      <button class="tab-btn" onclick="switchMissionsTab('daily',this)">Diarias</button>
+      <button class="tab-btn" onclick="switchMissionsTab('habit',this)">Hábitos</button>
+      <button class="tab-btn" onclick="switchMissionsTab('objective',this)">Objetivos</button>
+      <button class="tab-btn" onclick="switchMissionsTab('done',this)">Completadas</button>
+    </div>
+    <div id="missions-list-container"></div>
   </div>
 
-  <div id="missions-list-container"></div>
+  <!-- Sub-section: Arcos -->
+  <div id="farm-section-arcos" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <div>
+        <div style="font-family:'Cinzel',serif;font-size:20px;color:var(--text);margin-bottom:4px;">Arcos Narrativos</div>
+        <div style="font-size:13px;color:var(--text2);">Define los grandes capítulos de tu historia</div>
+      </div>
+      <button class="btn-primary" style="background:var(--color-xp);color:#000;border-color:var(--color-xp);" onclick="openArcModal()">+ Nuevo Arco</button>
+    </div>
+    <div id="arcos-list-container"></div>
+  </div>
+
+  <!-- Sub-section: Jefes -->
+  <div id="farm-section-jefes" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <div>
+        <div style="font-family:'Cinzel',serif;font-size:20px;color:var(--color-hp);margin-bottom:4px;">Jefes</div>
+        <div style="font-size:13px;color:var(--text2);">Invoca jefes y derrótales completando misiones</div>
+      </div>
+      <button class="btn-primary" style="background:var(--color-hp);border-color:var(--color-hp);color:#fff;" onclick="openBossModal()">+ Invocar Jefe</button>
+    </div>
+    <div id="boss-list-container"></div>
+  </div>
+
+  <!-- Sub-section: Productividad -->
+  <div id="farm-section-productividad" style="display:none;height:calc(100vh - 120px);">
+    <!-- Productividad inner tabs -->
+    <div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:0;">
+      <button class="prod-tab-btn active" id="prod-tab-notas" onclick="switchProdTab('notas',this)" style="padding:8px 24px;background:none;border:none;border-bottom:2px solid var(--blue);margin-bottom:-1px;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--blue);cursor:pointer;">📄 Notas</button>
+      <button class="prod-tab-btn" id="prod-tab-books" onclick="switchProdTab('books',this)" style="padding:8px 24px;background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-1px;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text2);cursor:pointer;">📚 Book Tracker</button>
+    </div>
+
+    <!-- Notas panel -->
+    <div id="prod-section-notas" style="display:flex;height:calc(100% - 40px);">
+      <div style="width:240px;min-width:240px;border-right:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;height:100%;">
+        <div style="padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+          <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:2px;">NOTAS</span>
+          <button class="btn-primary" style="padding:3px 10px;font-size:11px;" onclick="createNote()">+ Nueva</button>
+        </div>
+        <input class="form-input" id="notes-search" placeholder="Buscar..." style="margin:8px 10px;width:calc(100% - 20px);font-size:12px;" oninput="renderNotesList()">
+        <div id="notes-list" style="flex:1;overflow-y:auto;padding:4px 0;"></div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;height:100%;overflow:hidden;">
+        <div id="notes-empty-state" style="flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:var(--text3);">
+          <div style="font-size:36px;opacity:0.2;">📄</div>
+          <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;">Selecciona o crea una nota</div>
+        </div>
+        <div id="notes-editor-active" style="display:none;flex-direction:column;height:100%;">
+          <div style="padding:12px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-shrink:0;">
+            <input id="note-title-input" class="form-input" placeholder="Título..." style="flex:1;font-family:'Cinzel',serif;font-size:15px;background:transparent;border-color:transparent;padding-left:0;" oninput="saveCurrentNote()">
+            <span id="note-saved-indicator" style="font-size:10px;color:var(--text3);letter-spacing:1px;font-family:'Share Tech Mono',monospace;flex-shrink:0;">guardado</span>
+            <button onclick="deleteCurrentNote()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:13px;padding:4px 6px;">🗑</button>
+          </div>
+          <textarea id="note-body-input" style="flex:1;background:transparent;border:none;outline:none;resize:none;padding:20px;font-family:'Rajdhani',sans-serif;font-size:14px;color:var(--text);line-height:1.7;" placeholder="Escribe aquí..." oninput="saveCurrentNote()"></textarea>
+          <div style="padding:6px 20px;border-top:1px solid var(--border);font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);display:flex;gap:16px;flex-shrink:0;">
+            <span id="note-char-count">0 caracteres</span>
+            <span id="note-date-info"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Book Tracker panel -->
+    <div id="prod-section-books" style="display:none;height:calc(100% - 40px);overflow-y:auto;padding:20px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <div>
+          <div style="font-family:'Cinzel',serif;font-size:18px;color:var(--text);margin-bottom:4px;">Book Tracker</div>
+          <div style="font-size:12px;color:var(--text2);">Registra tus lecturas y apuntes por libro</div>
+        </div>
+        <button class="btn-primary" onclick="openBookModal()">+ Añadir libro</button>
+      </div>
+      <div id="books-list-container"></div>
+    </div>
+  </div>
 </div>
 
 
@@ -2107,18 +2189,86 @@
 </div>
 
 
+<!-- ======== NOTAS ======== -->
 <!-- ======== CONFIG ======== -->
 
-<!-- ======== JEFES ======== -->
-<div class="section" id="section-bosses">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-    <div>
-      <div style="font-family:'Cinzel',serif;font-size:20px;color:var(--color-hp);margin-bottom:4px;">Jefes</div>
-      <div style="font-size:13px;color:var(--text2);">Invoca jefes y derrótales completando misiones</div>
+
+
+<!-- ======== BOOK MODAL ======== -->
+<div class="modal-overlay" id="book-modal" style="display:none;">
+  <div class="modal" style="width:480px;max-width:96vw;">
+    <div class="modal-header">
+      <div class="modal-title" id="book-modal-title">Añadir libro</div>
+      <button class="modal-close" onclick="closeBookModal()">✕</button>
     </div>
-    <button class="btn-primary" style="background:var(--color-hp);border-color:var(--color-hp);color:#fff;" onclick="openBossModal()">+ Invocar Jefe</button>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Título</label>
+        <input class="form-input" id="book-title" placeholder="Título del libro...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Autor</label>
+        <input class="form-input" id="book-author" placeholder="Autor...">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Fecha inicio</label>
+          <input class="form-input" type="date" id="book-start">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Fecha fin <span style="font-size:10px;color:var(--text3);">opcional</span></label>
+          <input class="form-input" type="date" id="book-end">
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="closeBookModal()">Cancelar</button>
+        <button class="btn-primary" onclick="saveBook()">Guardar libro</button>
+      </div>
+    </div>
   </div>
-  <div id="boss-list-container"></div>
+</div>
+
+<!-- ======== BOOK ENTRY MODAL ======== -->
+<div class="modal-overlay" id="book-entry-modal" style="display:none;">
+  <div class="modal" style="width:560px;max-width:96vw;max-height:90vh;overflow-y:auto;">
+    <div class="modal-header">
+      <div class="modal-title" id="book-entry-modal-title">Añadir entrada</div>
+      <button class="modal-close" onclick="closeBookEntryModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Fecha</label>
+        <input class="form-input" type="date" id="entry-date">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Reflexión / Resumen</label>
+        <textarea class="form-textarea" id="entry-reflection" rows="3" placeholder="¿Qué leíste hoy? ¿Qué ideas aparecieron?"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Ideas clave <span style="font-size:10px;color:var(--text3);">una por línea</span></label>
+        <textarea class="form-textarea" id="entry-ideas" rows="3" placeholder="Una idea por línea"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Lo más importante aprendido</label>
+        <textarea class="form-textarea" id="entry-takeaway" rows="2" placeholder="El takeaway principal..."></textarea>
+      </div>
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="closeBookEntryModal()">Cancelar</button>
+        <button class="btn-primary" onclick="saveBookEntry()">Guardar entrada</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======== BOOK ENTRIES VIEW MODAL ======== -->
+<div class="modal-overlay" id="book-entries-modal" style="display:none;">
+  <div class="modal" style="width:640px;max-width:96vw;max-height:90vh;display:flex;flex-direction:column;">
+    <div class="modal-header">
+      <div class="modal-title" id="book-entries-modal-title">Entradas</div>
+      <button class="modal-close" onclick="closeBookEntriesModal()">✕</button>
+    </div>
+    <div id="book-entries-list" style="overflow-y:auto;padding:16px;flex:1;display:flex;flex-direction:column;gap:12px;"></div>
+  </div>
 </div>
 
 <!-- ======== BOSS MODAL ======== -->
@@ -2936,6 +3086,8 @@ let state = {
   kaizenEntries: [], // { id, date, summary, good, bad, improve, tasks:[{id,text,done}] }
   automations: [],   // { id, name, type:'task'|'habit'|'block', priority, difficulty, stat, startDate, endDate, startTime, endTime, weekDays:[0-6], color, lastRun }
   bosses: [],        // { id, name, desc, lore, condition, image, maxHP, currentHP, dmgPerDay, reward, linkedQuests, status:'active'|'defeated'|'escaped', createdAt, defeatDate, log:[] }
+  notes: [],         // { id, title, body, createdAt, updatedAt }
+  books: [],         // { id, title, author, start, end, entries:[{id,date,reflection,ideas,takeaway}] }
   // RANKS stored in state so they're customizable
   ranks: [
     { label: 'C',  icon: '◈',  minLevel: 1  },
@@ -3012,18 +3164,23 @@ function loadState() {
       if (state.vitals && !Array.isArray(state.vitals)) {
         const o = state.vitals;
         state.vitals = [
-          { id: 'energy',    name: 'Energía', val: o.energy ?? 7, color: 'var(--color-hp)', icon: '❤️' },
-          { id: 'focus',     name: 'Foco',    val: o.focus ?? 6,  color: 'var(--color-mp)', icon: '🔷' },
-          { id: 'mood',      name: 'Humor',   val: o.mood ?? 8,   color: 'var(--color-stamina)', icon: '🌸' },
+          { id: 'energy', name: 'Energía', val: o.energy ?? 7, color: '#FF4444', icon: '❤️' },
+          { id: 'focus',  name: 'Foco',    val: o.focus  ?? 6, color: '#44AAFF', icon: '🔷' },
+          { id: 'mood',   name: 'Humor',   val: o.mood   ?? 8, color: '#44FF44', icon: '🌸' },
         ];
       }
       if (!Array.isArray(state.vitals)) {
         state.vitals = [
-          { id: 'energy',    name: 'Energía', val: 7, color: 'var(--color-hp)', icon: '❤️' },
-          { id: 'focus',     name: 'Foco',    val: 6, color: 'var(--color-mp)', icon: '🔷' },
-          { id: 'mood',      name: 'Humor',   val: 8, color: 'var(--color-stamina)', icon: '🌸' },
+          { id: 'energy', name: 'Energía', val: 7, color: '#FF4444', icon: '❤️' },
+          { id: 'focus',  name: 'Foco',    val: 6, color: '#44AAFF', icon: '🔷' },
+          { id: 'mood',   name: 'Humor',   val: 8, color: '#44FF44', icon: '🌸' },
         ];
       }
+      // Normalize any CSS var colors to hex
+      const cssVarHexMap = { 'var(--color-hp)': '#FF4444', 'var(--color-mp)': '#44AAFF', 'var(--color-stamina)': '#44FF44' };
+      state.vitals = state.vitals.map(v => ({
+        ...v, color: cssVarHexMap[v.color] || (v.color && v.color.startsWith('#') ? v.color : '#ffffff')
+      }));
 
       // Migrate quests missing time fields
       state.quests = state.quests.map(q => ({
@@ -3046,8 +3203,20 @@ function loadState() {
   }
   if (!state.bosses) state.bosses = [];
   if (!state.arcs) state.arcs = [];
+  if (!state.notes) state.notes = [];
+  if (!state.books) state.books = [];
   if (state.hp === undefined) state.hp = 100;
   if (state.maxHp === undefined) state.maxHp = 100;
+  // Final safety: ensure vitals is always a proper array
+  if (!Array.isArray(state.vitals)) {
+    const cssVarHexMap = { 'var(--color-hp)': '#FF4444', 'var(--color-mp)': '#44AAFF', 'var(--color-stamina)': '#44FF44' };
+    const o = (state.vitals && typeof state.vitals === 'object') ? state.vitals : {};
+    state.vitals = [
+      { id: 'energy', name: 'Energía', val: o.energy ?? 7, color: cssVarHexMap[o.colorHp]  || '#FF4444', icon: '❤️' },
+      { id: 'focus',  name: 'Foco',    val: o.focus  ?? 6, color: cssVarHexMap[o.colorMp]  || '#44AAFF', icon: '🔷' },
+      { id: 'mood',   name: 'Humor',   val: o.mood   ?? 8, color: cssVarHexMap[o.colorStam] || '#44FF44', icon: '🌸' },
+    ];
+  }
 }
 
 // ============================================================
@@ -3152,7 +3321,7 @@ function renderVitals() {
   if (!container) return;
   container.innerHTML = '';
 
-  (state.vitals || []).forEach(v => {
+  (Array.isArray(state.vitals) ? state.vitals : []).forEach(v => {
     const row = document.createElement('div');
     row.className = 'vital-row';
     row.innerHTML = `
@@ -3420,12 +3589,31 @@ function switchMissionsTab(tab, btn) {
   const headerBtnsEl = document.getElementById('missions-header-btns');
   if (headerBtnsEl) {
     Array.from(headerBtnsEl.children).forEach(b => {
-      if (b.id === 'btn-new-arc') b.style.display = tab === 'arcs' ? 'inline-flex' : 'none';
-      else b.style.display = tab === 'arcs' ? 'none' : 'inline-flex';
+      if (b.id === 'btn-new-arc') b.style.display = 'none';
+      else b.style.display = 'inline-flex';
     });
   }
-  if (tab === 'arcs') { renderArcsView(); return; }
   renderMissions();
+}
+
+function switchFarmTab(tab, btn) {
+  document.querySelectorAll('.farm-tab-btn').forEach(b => {
+    b.style.color = 'var(--text2)';
+    b.style.borderBottomColor = 'transparent';
+  });
+  if (btn) {
+    btn.style.color = 'var(--gold)';
+    btn.style.borderBottomColor = 'var(--gold)';
+  }
+  document.getElementById('farm-section-misiones').style.display    = tab === 'misiones'     ? 'block' : 'none';
+  document.getElementById('farm-section-arcos').style.display       = tab === 'arcos'        ? 'block' : 'none';
+  document.getElementById('farm-section-jefes').style.display       = tab === 'jefes'        ? 'block' : 'none';
+  document.getElementById('farm-section-productividad').style.display = tab === 'productividad' ? 'block' : 'none';
+
+  if (tab === 'misiones')      renderMissions();
+  if (tab === 'arcos')         renderArcsView();
+  if (tab === 'jefes')         renderBossList();
+  if (tab === 'productividad') { renderNotesList(); renderBooksList(); }
 }
 
 function renderMissions() {
@@ -4200,8 +4388,8 @@ function updateTopbar() {
 // ============================================================
 function renderConfig() {
   document.getElementById('config-name').value = state.name;
-  document.getElementById('config-arc-name').value = state.arc.name || '';
-  document.getElementById('config-arc-mantras').value = state.arc.mantras.join('\n');
+  document.getElementById('config-arc-name').value = (state.arc && state.arc.name) ? state.arc.name : '';
+  document.getElementById('config-arc-mantras').value = (state.arc && Array.isArray(state.arc.mantras)) ? state.arc.mantras.join('\n') : '';
 
   // Titles select — only unlocked ones
   const titleSel = document.getElementById('config-title');
@@ -4247,14 +4435,19 @@ function renderConfig() {
   // Vitals config
   const vitalsCfg = document.getElementById('vitals-config-list');
   if (vitalsCfg) {
-    vitalsCfg.innerHTML = (state.vitals || []).map((v, i) => `
+    const cssVarToHex = { 'var(--color-hp)': '#FF4444', 'var(--color-mp)': '#44AAFF', 'var(--color-stamina)': '#44FF44' };
+    const vitalsArr = Array.isArray(state.vitals) ? state.vitals : [];
+    vitalsCfg.innerHTML = vitalsArr.map((v, i) => {
+      const colorVal = cssVarToHex[v.color] || (v.color && v.color.startsWith('#') ? v.color : '#ffffff');
+      return `
       <div class="stat-config-item">
-        <input type="color" value="${v.color}" style="width:28px;height:28px;border:none;background:none;cursor:pointer;border-radius: 0px;" onchange="updateVitalField(${i},'color',this.value)">
+        <input type="color" value="${colorVal}" style="width:28px;height:28px;border:none;background:none;cursor:pointer;border-radius: 0px;" onchange="updateVitalField(${i},'color',this.value)">
         <input class="form-input" value="${v.name}" style="flex:1;" onchange="updateVitalField(${i},'name',this.value)">
         <input class="form-input" value="${v.icon||''}" style="width:56px;text-align:center;" onchange="updateVitalField(${i},'icon',this.value)">
         <input class="form-input" type="number" min="0" max="10" value="${v.val||0}" style="width:60px;text-align:center;" onchange="updateVitalField(${i},'val',this.value)">
         <button class="remove-btn" onclick="removeVital(${i})">✕</button>
-      </div>`).join('');
+      </div>`;
+    }).join('');
   }
 
   // Ranks config — editable
@@ -4899,7 +5092,7 @@ function renderDashboardArc() {
   const arc = state.arcs.find(a => a.status === 'active') || state.arcs.find(a => a.id === state.activeArcId);
   if (!arc) {
     body.innerHTML = `<div style="font-size:12px;color:var(--text3);padding:4px 0;font-style:italic;">Sin arco activo.</div>
-      <button class="btn-primary" style="margin-top:10px;font-size:11px;padding:5px 14px;" onclick="showSection('missions');setTimeout(()=>showMissionsTab('arcs'),50);">+ Crear arco</button>`;
+      <button class="btn-primary" style="margin-top:10px;font-size:11px;padding:5px 14px;" onclick="openArcModal()">+ Crear arco</button>`;
     return;
   }
   const today = new Date().toISOString().split('T')[0];
@@ -4938,26 +5131,18 @@ function renderDashboardArc() {
 
 // ── Missions tab: arcs view ───────────────────────────────────────
 function showMissionsTab(tab) {
-  // Find the tab button and activate it
-  currentMissionsTab = tab;
-  const btns = document.querySelectorAll('#missions-tab-row .tab-btn');
-  btns.forEach(b => b.classList.remove('active'));
-  const arcBtn = document.getElementById('arc-tab-btn');
-  if (arcBtn && tab === 'arcs') arcBtn.classList.add('active');
-  // Toggle header buttons
-  const headerBtnsEl = document.getElementById('missions-header-btns');
-  if (headerBtnsEl) {
-    Array.from(headerBtnsEl.children).forEach(b => {
-      if (b.id === 'btn-new-arc') b.style.display = tab === 'arcs' ? 'inline-flex' : 'none';
-      else b.style.display = tab === 'arcs' ? 'none' : 'inline-flex';
-    });
+  if (tab === 'arcs') {
+    showSection('missions'); // will map to farm
+    switchFarmTab('arcos', document.getElementById('farm-tab-arcos'));
+    return;
   }
-  if (tab === 'arcs') { renderArcsView(); return; }
+  showSection('missions');
+  currentMissionsTab = tab;
   renderMissions();
 }
 
 function renderArcsView() {
-  const container = document.getElementById('missions-list-container');
+  const container = document.getElementById('arcos-list-container') || document.getElementById('missions-list-container');
   if (!container) return;
 
   if (state.arcs.length === 0) {
@@ -6479,20 +6664,26 @@ function saveBlock() {
 // NAVIGATION
 // ============================================================
 function showSection(id) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s => { s.classList.remove('active'); s.style.display = 'none'; });
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('section-' + id).classList.add('active');
+  const mappedId = (id === 'missions' || id === 'bosses') ? 'farm' : id;
+  const el = document.getElementById('section-' + mappedId);
+  if (!el) return;
+  el.style.display = mappedId === 'calendar' ? 'flex' : 'block';
+  el.classList.add('active');
   const btns = document.querySelectorAll('.nav-btn');
-  const sections = ['dashboard', 'profile', 'missions', 'calendar', 'evals', 'config', 'bosses'];
-  const idx = sections.indexOf(id);
+  const sections = ['dashboard', 'profile', 'farm', 'calendar', 'evals', 'config'];
+  const idx = sections.indexOf(mappedId);
   if (idx >= 0) btns[idx].classList.add('active');
 
-  if (id === 'missions') renderMissions();
-  if (id === 'profile') renderProfile();
-  if (id === 'config') renderConfig();
-  if (id === 'calendar') renderCalendar();
-  if (id === 'evals') renderEvals();
-  if (id === 'bosses') renderBossList();
+  if (mappedId === 'farm') {
+    if (id === 'bosses') switchFarmTab('jefes', document.getElementById('farm-tab-jefes'));
+    else renderMissions();
+  }
+  if (mappedId === 'profile') renderProfile();
+  if (mappedId === 'config') renderConfig();
+  if (mappedId === 'calendar') renderCalendar();
+  if (mappedId === 'evals') renderEvals();
 }
 
 // ============================================================
@@ -7334,6 +7525,280 @@ function importData(input) {
 function resetData() {
   localStorage.removeItem('leveling_state');
   location.reload();
+}
+
+// ============================================================
+// NOTAS
+// ============================================================
+let currentNoteId = null;
+let noteSaveTimer = null;
+
+function createNote() {
+  const id = 'note_' + Date.now();
+  const now = new Date().toISOString();
+  const note = { id, title: '', body: '', createdAt: now, updatedAt: now };
+  if (!state.notes) state.notes = [];
+  state.notes.unshift(note);
+  saveState();
+  renderNotesList();
+  openNote(id);
+}
+
+function openNote(id) {
+  const note = state.notes.find(n => n.id === id);
+  if (!note) return;
+  currentNoteId = id;
+
+  document.getElementById('notes-empty-state').style.display = 'none';
+  const editorActive = document.getElementById('notes-editor-active');
+  editorActive.style.display = 'flex';
+
+  document.getElementById('note-title-input').value = note.title || '';
+  document.getElementById('note-body-input').value = note.body || '';
+  updateNoteFooter(note);
+  document.getElementById('note-saved-indicator').textContent = 'guardado';
+
+  // Highlight selected in list
+  document.querySelectorAll('.note-list-item').forEach(el => el.classList.remove('active-note'));
+  const activeItem = document.querySelector(`.note-list-item[data-id="${id}"]`);
+  if (activeItem) activeItem.classList.add('active-note');
+
+  document.getElementById('note-body-input').focus();
+}
+
+function saveCurrentNote() {
+  if (!currentNoteId) return;
+  const note = state.notes.find(n => n.id === currentNoteId);
+  if (!note) return;
+  note.title = document.getElementById('note-title-input').value;
+  note.body  = document.getElementById('note-body-input').value;
+  note.updatedAt = new Date().toISOString();
+  updateNoteFooter(note);
+  document.getElementById('note-saved-indicator').textContent = '●';
+
+  clearTimeout(noteSaveTimer);
+  noteSaveTimer = setTimeout(() => {
+    saveState();
+    renderNotesList();
+    document.getElementById('note-saved-indicator').textContent = 'guardado';
+  }, 600);
+}
+
+function updateNoteFooter(note) {
+  const chars = (note.body || '').length;
+  document.getElementById('note-char-count').textContent = chars + ' caracteres';
+  const d = new Date(note.updatedAt);
+  document.getElementById('note-date-info').textContent = 'Editado ' + d.toLocaleDateString('es-ES', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+}
+
+function deleteCurrentNote() {
+  if (!currentNoteId) return;
+  if (!confirm('¿Eliminar esta nota?')) return;
+  state.notes = state.notes.filter(n => n.id !== currentNoteId);
+  currentNoteId = null;
+  saveState();
+  renderNotesList();
+  document.getElementById('notes-empty-state').style.display = 'flex';
+  document.getElementById('notes-editor-active').style.display = 'none';
+}
+
+function renderNotesList() {
+  const container = document.getElementById('notes-list');
+  if (!container) return;
+  if (!state.notes) state.notes = [];
+
+  const query = (document.getElementById('notes-search')?.value || '').toLowerCase();
+  const filtered = state.notes.filter(n =>
+    !query || (n.title || '').toLowerCase().includes(query) || (n.body || '').toLowerCase().includes(query)
+  );
+
+  if (filtered.length === 0) {
+    container.innerHTML = '<div style="padding:24px;text-align:center;font-size:12px;color:var(--text3);">Sin notas</div>';
+    return;
+  }
+
+  container.innerHTML = filtered.map(n => {
+    const isActive = n.id === currentNoteId;
+    const title = n.title || 'Sin título';
+    const preview = (n.body || '').replace(/\n/g, ' ').slice(0, 60);
+    const date = new Date(n.updatedAt).toLocaleDateString('es-ES', { day:'2-digit', month:'short' });
+    return `<div class="note-list-item ${isActive ? 'active-note' : ''}" data-id="${n.id}" onclick="openNote('${n.id}')" style="
+      padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);
+      border-left:3px solid ${isActive ? 'var(--gold)' : 'transparent'};
+      background:${isActive ? 'rgba(212,160,23,0.06)' : 'transparent'};
+      transition:all 0.15s;
+    ">
+      <div style="font-size:13px;font-weight:600;color:${isActive ? 'var(--gold)' : 'var(--text)'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;">${title}</div>
+      <div style="font-size:11px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${preview || '—'}</div>
+      <div style="font-size:10px;color:var(--text3);margin-top:4px;font-family:'Share Tech Mono',monospace;">${date}</div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// PRODUCTIVIDAD — sub-tabs
+// ============================================================
+function switchProdTab(tab, btn) {
+  document.querySelectorAll('.prod-tab-btn').forEach(b => {
+    b.style.color = 'var(--text2)';
+    b.style.borderBottomColor = 'transparent';
+  });
+  if (btn) { btn.style.color = 'var(--blue)'; btn.style.borderBottomColor = 'var(--blue)'; }
+  document.getElementById('prod-section-notas').style.display = tab === 'notas' ? 'flex' : 'none';
+  document.getElementById('prod-section-books').style.display = tab === 'books' ? 'block' : 'none';
+  if (tab === 'notas') renderNotesList();
+  if (tab === 'books') renderBooksList();
+}
+
+// ============================================================
+// BOOK TRACKER
+// ============================================================
+let editingBookId = null;
+let entryTargetBookId = null;
+
+function openBookModal(bookId) {
+  editingBookId = bookId || null;
+  const today = new Date().toISOString().split('T')[0];
+  if (bookId) {
+    const b = state.books.find(x => x.id === bookId);
+    if (!b) return;
+    document.getElementById('book-modal-title').textContent = 'Editar libro';
+    document.getElementById('book-title').value  = b.title;
+    document.getElementById('book-author').value = b.author || '';
+    document.getElementById('book-start').value  = b.start || today;
+    document.getElementById('book-end').value    = b.end || '';
+  } else {
+    document.getElementById('book-modal-title').textContent = 'Añadir libro';
+    document.getElementById('book-title').value  = '';
+    document.getElementById('book-author').value = '';
+    document.getElementById('book-start').value  = today;
+    document.getElementById('book-end').value    = '';
+  }
+  document.getElementById('book-modal').style.display = 'flex';
+}
+
+function closeBookModal() {
+  document.getElementById('book-modal').style.display = 'none';
+}
+
+function saveBook() {
+  const title = document.getElementById('book-title').value.trim();
+  if (!title) { alert('El título es obligatorio.'); return; }
+  if (editingBookId) {
+    const b = state.books.find(x => x.id === editingBookId);
+    if (b) {
+      b.title  = title;
+      b.author = document.getElementById('book-author').value.trim();
+      b.start  = document.getElementById('book-start').value;
+      b.end    = document.getElementById('book-end').value;
+    }
+  } else {
+    state.books.unshift({
+      id: 'book_' + Date.now(),
+      title,
+      author:  document.getElementById('book-author').value.trim(),
+      start:   document.getElementById('book-start').value,
+      end:     document.getElementById('book-end').value,
+      entries: [],
+    });
+  }
+  saveState();
+  closeBookModal();
+  renderBooksList();
+}
+
+function deleteBook(bookId) {
+  if (!confirm('¿Eliminar este libro y todas sus entradas?')) return;
+  state.books = state.books.filter(b => b.id !== bookId);
+  saveState();
+  renderBooksList();
+}
+
+function openBookEntryModal(bookId) {
+  entryTargetBookId = bookId;
+  const book = state.books.find(b => b.id === bookId);
+  if (!book) return;
+  document.getElementById('book-entry-modal-title').textContent = 'Añadir entrada — ' + book.title;
+  document.getElementById('entry-date').value        = new Date().toISOString().split('T')[0];
+  document.getElementById('entry-reflection').value  = '';
+  document.getElementById('entry-ideas').value       = '';
+  document.getElementById('entry-takeaway').value    = '';
+  document.getElementById('book-entry-modal').style.display = 'flex';
+}
+
+function closeBookEntryModal() {
+  document.getElementById('book-entry-modal').style.display = 'none';
+}
+
+function saveBookEntry() {
+  const book = state.books.find(b => b.id === entryTargetBookId);
+  if (!book) return;
+  book.entries.push({
+    id:         'entry_' + Date.now(),
+    date:       document.getElementById('entry-date').value,
+    reflection: document.getElementById('entry-reflection').value.trim(),
+    ideas:      document.getElementById('entry-ideas').value.trim().split('\n').filter(Boolean),
+    takeaway:   document.getElementById('entry-takeaway').value.trim(),
+  });
+  saveState();
+  closeBookEntryModal();
+  renderBooksList();
+}
+
+function openBookEntriesModal(bookId) {
+  const book = state.books.find(b => b.id === bookId);
+  if (!book) return;
+  document.getElementById('book-entries-modal-title').textContent = book.title + ' — entradas';
+  const container = document.getElementById('book-entries-list');
+  if (book.entries.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text3);font-size:13px;">Sin entradas todavía</div>';
+  } else {
+    container.innerHTML = [...book.entries].reverse().map(e => `
+      <div style="border:1px solid var(--border);border-left:3px solid var(--blue);padding:12px 14px;background:var(--surface2);">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--blue);margin-bottom:8px;">${e.date}</div>
+        ${e.reflection ? `<div style="font-size:13px;color:var(--text);margin-bottom:8px;line-height:1.6;">${e.reflection}</div>` : ''}
+        ${e.ideas && e.ideas.length ? `
+          <div style="font-size:10px;color:var(--text3);letter-spacing:1px;margin-bottom:4px;">IDEAS CLAVE</div>
+          <ul style="margin:0 0 8px 16px;padding:0;">
+            ${e.ideas.map(i => `<li style="font-size:12px;color:var(--text2);margin-bottom:2px;">${i}</li>`).join('')}
+          </ul>` : ''}
+        ${e.takeaway ? `
+          <div style="font-size:10px;color:var(--text3);letter-spacing:1px;margin-bottom:4px;">TAKEAWAY</div>
+          <div style="font-size:12px;color:var(--gold);font-style:italic;">${e.takeaway}</div>` : ''}
+      </div>`).join('');
+  }
+  document.getElementById('book-entries-modal').style.display = 'flex';
+}
+
+function closeBookEntriesModal() {
+  document.getElementById('book-entries-modal').style.display = 'none';
+}
+
+function renderBooksList() {
+  const container = document.getElementById('books-list-container');
+  if (!container) return;
+  if (!state.books || state.books.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:48px;color:var(--text3);font-size:13px;"><div style="font-size:32px;margin-bottom:12px;opacity:0.2;">📚</div><div style="font-family:\'Cinzel\',serif;letter-spacing:2px;">Sin libros todavía</div></div>';
+    return;
+  }
+  container.innerHTML = state.books.map(b => {
+    const entryCount = b.entries ? b.entries.length : 0;
+    const lastEntry  = entryCount > 0 ? b.entries[b.entries.length - 1].date : null;
+    return `
+    <div style="border:1px solid var(--border);border-top:2px solid var(--blue);background:var(--surface);padding:14px 18px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:16px;">
+      <div style="flex:1;min-width:0;">
+        <div style="font-family:'Cinzel',serif;font-size:15px;color:var(--text);margin-bottom:2px;">${b.title}</div>
+        <div style="font-size:12px;color:var(--text2);">${b.author ? b.author + ' · ' : ''}${b.start || ''}</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px;font-family:'Share Tech Mono',monospace;">${entryCount} entrada${entryCount !== 1 ? 's' : ''}${lastEntry ? ' · última: ' + lastEntry : ''}</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0;">
+        <button class="btn-primary" style="padding:4px 12px;font-size:11px;" onclick="openBookEntryModal('${b.id}')">+ Entrada</button>
+        <button class="btn-secondary" style="padding:4px 12px;font-size:11px;" onclick="openBookEntriesModal('${b.id}')">Ver entradas</button>
+        <button class="btn-secondary" style="padding:4px 8px;font-size:11px;" onclick="openBookModal('${b.id}')" title="Editar">✏️</button>
+        <button class="remove-btn" onclick="deleteBook('${b.id}')" title="Eliminar">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 // ============================================================
